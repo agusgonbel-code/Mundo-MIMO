@@ -1,4 +1,4 @@
-const CACHE='mundo-mimo-v6';
+const CACHE='mundo-mimo-v7';
 const ASSETS=['./','./index.html','./manifest.webmanifest','./assets/mimo-bear.svg','./assets/lio-lion.svg','./assets/pipa-elephant.svg'];
 self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)))});
 self.addEventListener('activate',e=>e.waitUntil(Promise.all([self.clients.claim(),caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))))])));
