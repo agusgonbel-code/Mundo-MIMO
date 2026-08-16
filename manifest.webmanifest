@@ -1,0 +1,12 @@
+{
+  "name": "Mundo Mimo",
+  "short_name": "Mundo Mimo",
+  "description": "Juegos educativos tranquilos para niños de 0 a 6 años.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#FFF9ED",
+  "theme_color": "#7459E8",
+  "orientation": "portrait",
+  "icons": []
+}
