@@ -2,11 +2,11 @@
   "name": "Mundo Mimo",
   "short_name": "Mundo Mimo",
   "description": "Mundo educativo, seguro y divertido para niños de 0 a 6 años.",
-  "start_url": "./",
+  "start_url": "./app-v28.html",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#4F59E8",
-  "theme_color": "#4F59E8",
+  "background_color": "#5B52E8",
+  "theme_color": "#5B52E8",
   "orientation": "portrait",
   "icons": []
 }
