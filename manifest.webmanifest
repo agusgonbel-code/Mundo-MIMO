@@ -1,12 +1,12 @@
 {
   "name": "Mundo Mimo",
   "short_name": "Mundo Mimo",
-  "description": "Mundo educativo y tranquilo para niños de 0 a 6 años.",
+  "description": "Mundo educativo, seguro y divertido para niños de 0 a 6 años.",
   "start_url": "./assets/world-map.html",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#FFF8E5",
-  "theme_color": "#6754E8",
+  "background_color": "#4F59D9",
+  "theme_color": "#3C63FF",
   "orientation": "portrait",
   "icons": []
 }
