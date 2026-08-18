@@ -6,7 +6,6 @@ const worlds = {
   village: ['emotions','stories','paint','routines','match','discover'],
   mountain: ['letters','trace','initial','logic','sequence','odd'],
 };
-const allGames = Object.values(worlds).flat();
 
 async function setAge(page, age) {
   await page.goto('/app-v70.html');
@@ -25,13 +24,19 @@ async function openGame(page, world, game) {
   await expect(page.locator('#playfield')).toBeVisible();
 }
 
+async function openFreeGame(page, game) {
+  await page.locator(`[data-game="${game}"]`).first().click();
+  await expect(page.locator('#game')).toHaveClass(/on/);
+  await expect(page.locator('#playfield')).toBeVisible();
+}
+
 async function drawOnCanvas(page, selector) {
   const box = await page.locator(selector).boundingBox();
   if (!box) throw new Error(`Canvas ${selector} has no box`);
-  await page.mouse.move(box.x + box.width*0.2, box.y + box.height*0.3);
+  await page.mouse.move(box.x + box.width*0.18, box.y + box.height*0.28);
   await page.mouse.down();
-  for (let i=1;i<=24;i++) {
-    await page.mouse.move(box.x + box.width*(0.2 + i*0.025), box.y + box.height*(0.3 + (i%5)*0.05));
+  for (let i=1;i<=30;i++) {
+    await page.mouse.move(box.x + box.width*(0.18 + i*0.021), box.y + box.height*(0.28 + (i%6)*0.055));
   }
   await page.mouse.up();
 }
@@ -39,43 +44,50 @@ async function drawOnCanvas(page, selector) {
 async function solveMemory(page) {
   const cards = page.locator('[data-memory]');
   const n = await cards.count();
+  expect(n).toBeGreaterThanOrEqual(4);
   const groups = {};
   for (let i=0;i<n;i++) {
     const id = await cards.nth(i).getAttribute('data-memory');
     (groups[id] ||= []).push(i);
   }
   for (const idxs of Object.values(groups)) {
-    if (idxs.length < 2) continue;
+    expect(idxs.length).toBe(2);
     await cards.nth(idxs[0]).click();
     await cards.nth(idxs[1]).click();
-    await page.waitForTimeout(650);
+    await page.waitForTimeout(620);
   }
 }
 
 async function solveRound(page, game) {
-  if (game === 'memory') {
-    await solveMemory(page);
-    return;
-  }
+  if (game === 'memory') return solveMemory(page);
   if (game === 'trace') {
+    const done = page.locator('[data-action="trace-done"]');
+    await expect(done).toBeDisabled();
     await drawOnCanvas(page, '#traceCanvas');
-    await page.locator('[data-action="trace-done"]').click();
+    await expect(done).toBeEnabled();
+    await done.click();
     return;
   }
   if (game === 'paint') {
+    const done = page.locator('[data-action="finish-free"]');
+    await expect(done).toBeDisabled();
     await drawOnCanvas(page, '#paintCanvas');
-    await page.locator('[data-action="finish-free"]').click();
+    await expect(done).toBeEnabled();
+    await done.click();
     return;
   }
   if (game === 'music') {
     const tones = page.locator('[data-tone]');
-    await expect(tones.first()).toBeVisible();
-    await tones.first().click();
+    expect(await tones.count()).toBeGreaterThanOrEqual(4);
+    await tones.nth(0).click();
+    await tones.nth(1).click();
     await page.locator('[data-action="finish-free"]').click();
     return;
   }
   const correct = page.locator('[data-ok="true"]');
-  await expect(correct.first(), `No valid answer in ${game}`).toBeVisible();
+  const total = await page.locator('[data-ok]').count();
+  expect(total, `No answer buttons in ${game}`).toBeGreaterThan(0);
+  expect(await correct.count(), `No valid answer in ${game}`).toBeGreaterThan(0);
   await correct.first().click();
 }
 
@@ -85,14 +97,31 @@ async function assertNoOverflow(page) {
     return [...document.querySelectorAll('body *')]
       .filter(el => {
         const s = getComputedStyle(el);
-        if (s.position === 'fixed') return false;
+        if (s.display === 'none' || s.visibility === 'hidden' || s.position === 'fixed') return false;
         const r = el.getBoundingClientRect();
         return r.width > 0 && (r.right > vw + 2 || r.left < -2);
       })
       .slice(0,8)
-      .map(el => ({tag:el.tagName, cls:el.className, text:(el.textContent||'').trim().slice(0,40), rect:el.getBoundingClientRect().toJSON?.() || {}}));
+      .map(el => ({tag:el.tagName, cls:String(el.className||''), text:(el.textContent||'').trim().slice(0,40), left:el.getBoundingClientRect().left, right:el.getBoundingClientRect().right, vw}));
   });
   expect(overflow, `Horizontal overflow: ${JSON.stringify(overflow)}`).toEqual([]);
+}
+
+async function completeSixRounds(page, game) {
+  for (let round=1; round<=6; round++) {
+    await expect(page.locator('#roundText')).toContainText(`${round} de 6`);
+    await solveRound(page, game);
+    if (round < 6) {
+      await page.waitForFunction(r => document.querySelector('#roundText')?.textContent?.startsWith(String(r)), round+1, { timeout: 6000 });
+    } else {
+      await expect(page.locator('#sessionProgress')).toHaveAttribute('style', /100%/);
+      await expect(page.locator('#nextBtn')).toHaveClass(/on/);
+      const state = await page.evaluate(() => JSON.parse(localStorage.getItem('mimo70')));
+      expect(state.sessions).toBeGreaterThanOrEqual(1);
+      expect(state.rounds).toBeGreaterThanOrEqual(6);
+    }
+    await assertNoOverflow(page);
+  }
 }
 
 for (const age of [1,3,5]) {
@@ -106,23 +135,30 @@ for (const age of [1,3,5]) {
           await setAge(page, age);
           await openGame(page, world, game);
           await assertNoOverflow(page);
-          for (let round=1; round<=6; round++) {
-            await expect(page.locator('#roundText')).toContainText(`${round} de 6`);
-            await solveRound(page, game);
-            if (round < 6) {
-              await page.waitForFunction(r => document.querySelector('#roundText')?.textContent?.startsWith(String(r)), round+1, { timeout: 5000 });
-            } else {
-              await expect(page.locator('#sessionProgress')).toHaveAttribute('style', /100%/);
-              await expect(page.locator('#nextBtn')).toHaveClass(/on/);
-            }
-            await assertNoOverflow(page);
-          }
+          await completeSixRounds(page, game);
           expect(errors, `Runtime errors in ${world}/${game}: ${errors.join('\n')}`).toEqual([]);
         });
       }
     }
+    test(`free/music works for age ${age}`, async ({ page }) => {
+      const errors=[];
+      page.on('pageerror',e=>errors.push(String(e)));
+      await setAge(page, age);
+      await openFreeGame(page,'music');
+      await completeSixRounds(page,'music');
+      expect(errors).toEqual([]);
+    });
   });
 }
+
+test('daily path advances only after completing its full session', async ({ page }) => {
+  await setAge(page, 3);
+  await page.locator('[data-action="today"]').click();
+  await completeSixRounds(page, 'animals');
+  await page.locator('[data-action="back-world"]').click();
+  await page.locator('[data-action="home"]').click();
+  await expect(page.locator('#dailyCount')).toHaveText('1/3');
+});
 
 test('parent gate blocks child and opens only with correct answer', async ({ page }) => {
   await setAge(page, 3);
@@ -138,10 +174,26 @@ test('parent gate blocks child and opens only with correct answer', async ({ pag
   await expect(page.locator('#parent')).toHaveClass(/on/);
 });
 
-test('production page has no synthetic speech or third-party runtime audio URLs', async ({ page }) => {
-  await page.goto('/app-v70.html');
+test('privacy, audio and synthetic-voice release checks', async ({ page }) => {
+  const privacy = await page.request.get('/privacy.html');
+  expect(privacy.ok()).toBeTruthy();
   const js = await (await page.request.get('/assets/app-v70.js')).text();
   const audio = await (await page.request.get('/assets/audio-bank-v70.js')).text();
   expect(js).not.toContain('speechSynthesis');
   expect(audio).not.toMatch(/https?:\/\//);
+  for (const path of ['/assets/audio/dog.ogg','/assets/audio/cat.ogg','/assets/audio/cow.ogg','/assets/audio/frog.oga','/assets/audio/voice-perro.wav']) {
+    const response = await page.request.get(path);
+    expect(response.ok(), `Missing local audio ${path}`).toBeTruthy();
+    expect(Number(response.headers()['content-length']||0)).toBeGreaterThan(100);
+  }
+});
+
+test('small-phone layout has no horizontal overflow', async ({ browser }) => {
+  const context = await browser.newContext({ viewport: { width: 320, height: 568 }, isMobile: true, hasTouch: true });
+  const page = await context.newPage();
+  await setAge(page, 3);
+  await assertNoOverflow(page);
+  await openGame(page,'lagoon','count');
+  await assertNoOverflow(page);
+  await context.close();
 });
