@@ -1,0 +1,247 @@
+MUNDO MIMO LAUNCH QA
+UTC: 2026-08-18T22:37:34Z
+COMMIT: b7e1c79ead754a0396d3e018d83ca03c37c4d095
+RESULT: FAIL
+EXIT_CODE: 1
+MATRIX: 24 guided games x 3 age bands x 6 rounds + parent/privacy/audio/overflow checks
+--- TEST OUTPUT (tail) ---
+[70/79] qa/e2e.spec.js:131:9 › age-5 › mountain/trace completes all 6 rounds
+  70) qa/e2e.spec.js:131:9 › age-5 › mountain/trace completes all 6 rounds ─────────────────────────
+
+    Error: browserType.launch: Executable doesn't exist at /home/runner/.cache/ms-playwright/webkit-2336/pw_run.sh
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/e2e-age-5-mountain-trace-completes-all-6-rounds/error-context.md
+
+
+[71/79] qa/e2e.spec.js:131:9 › age-5 › mountain/initial completes all 6 rounds
+  71) qa/e2e.spec.js:131:9 › age-5 › mountain/initial completes all 6 rounds ───────────────────────
+
+    Error: browserType.launch: Executable doesn't exist at /home/runner/.cache/ms-playwright/webkit-2336/pw_run.sh
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/e2e-age-5-mountain-initial-completes-all-6-rounds/error-context.md
+
+
+[72/79] qa/e2e.spec.js:131:9 › age-5 › mountain/logic completes all 6 rounds
+  72) qa/e2e.spec.js:131:9 › age-5 › mountain/logic completes all 6 rounds ─────────────────────────
+
+    Error: browserType.launch: Executable doesn't exist at /home/runner/.cache/ms-playwright/webkit-2336/pw_run.sh
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/e2e-age-5-mountain-logic-completes-all-6-rounds/error-context.md
+
+
+[73/79] qa/e2e.spec.js:131:9 › age-5 › mountain/sequence completes all 6 rounds
+  73) qa/e2e.spec.js:131:9 › age-5 › mountain/sequence completes all 6 rounds ──────────────────────
+
+    Error: browserType.launch: Executable doesn't exist at /home/runner/.cache/ms-playwright/webkit-2336/pw_run.sh
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/e2e-age-5-mountain-sequence-completes-all-6-rounds/error-context.md
+
+
+[74/79] qa/e2e.spec.js:131:9 › age-5 › mountain/odd completes all 6 rounds
+  74) qa/e2e.spec.js:131:9 › age-5 › mountain/odd completes all 6 rounds ───────────────────────────
+
+    Error: browserType.launch: Executable doesn't exist at /home/runner/.cache/ms-playwright/webkit-2336/pw_run.sh
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/e2e-age-5-mountain-odd-completes-all-6-rounds/error-context.md
+
+
+[75/79] qa/e2e.spec.js:143:5 › age-5 › free/music works for age 5
+  75) qa/e2e.spec.js:143:5 › age-5 › free/music works for age 5 ────────────────────────────────────
+
+    Error: browserType.launch: Executable doesn't exist at /home/runner/.cache/ms-playwright/webkit-2336/pw_run.sh
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/e2e-age-5-free-music-works-for-age-5/error-context.md
+
+
+[76/79] qa/e2e.spec.js:154:1 › daily path advances only after completing its full session
+  76) qa/e2e.spec.js:154:1 › daily path advances only after completing its full session ────────────
+
+    Error: browserType.launch: Executable doesn't exist at /home/runner/.cache/ms-playwright/webkit-2336/pw_run.sh
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/e2e-daily-path-advances-on-0226d-completing-its-full-session/error-context.md
+
+
+[77/79] qa/e2e.spec.js:163:1 › parent gate blocks child and opens only with correct answer
+  77) qa/e2e.spec.js:163:1 › parent gate blocks child and opens only with correct answer ───────────
+
+    Error: browserType.launch: Executable doesn't exist at /home/runner/.cache/ms-playwright/webkit-2336/pw_run.sh
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/e2e-parent-gate-blocks-chi-8004a-ns-only-with-correct-answer/error-context.md
+
+
+[78/79] qa/e2e.spec.js:177:1 › privacy, audio and synthetic-voice release checks
+  78) qa/e2e.spec.js:177:1 › privacy, audio and synthetic-voice release checks ─────────────────────
+
+    Error: browserType.launch: Executable doesn't exist at /home/runner/.cache/ms-playwright/webkit-2336/pw_run.sh
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/e2e-privacy-audio-and-synthetic-voice-release-checks/error-context.md
+
+
+[79/79] qa/e2e.spec.js:191:1 › small-phone layout has no horizontal overflow
+  79) qa/e2e.spec.js:191:1 › small-phone layout has no horizontal overflow ─────────────────────────
+
+    Error: browserType.launch: Executable doesn't exist at /home/runner/.cache/ms-playwright/webkit-2336/pw_run.sh
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: test-results/e2e-small-phone-layout-has-no-horizontal-overflow/error-context.md
+
+
+  79 failed
+    qa/e2e.spec.js:131:9 › age-1 › forest/animals completes all 6 rounds ───────────────────────────
+    qa/e2e.spec.js:131:9 › age-1 › forest/sounds completes all 6 rounds ────────────────────────────
+    qa/e2e.spec.js:131:9 › age-1 › forest/memory completes all 6 rounds ────────────────────────────
+    qa/e2e.spec.js:131:9 › age-1 › forest/habitat completes all 6 rounds ───────────────────────────
+    qa/e2e.spec.js:131:9 › age-1 › forest/size completes all 6 rounds ──────────────────────────────
+    qa/e2e.spec.js:131:9 › age-1 › forest/tracks completes all 6 rounds ────────────────────────────
+    qa/e2e.spec.js:131:9 › age-1 › lagoon/count completes all 6 rounds ─────────────────────────────
+    qa/e2e.spec.js:131:9 › age-1 › lagoon/more completes all 6 rounds ──────────────────────────────
+    qa/e2e.spec.js:131:9 › age-1 › lagoon/colors completes all 6 rounds ────────────────────────────
+    qa/e2e.spec.js:131:9 › age-1 › lagoon/shapes completes all 6 rounds ────────────────────────────
+    qa/e2e.spec.js:131:9 › age-1 › lagoon/patterns completes all 6 rounds ──────────────────────────
+    qa/e2e.spec.js:131:9 › age-1 › lagoon/sort completes all 6 rounds ──────────────────────────────
+    qa/e2e.spec.js:131:9 › age-1 › village/emotions completes all 6 rounds ─────────────────────────
+    qa/e2e.spec.js:131:9 › age-1 › village/stories completes all 6 rounds ──────────────────────────
+    qa/e2e.spec.js:131:9 › age-1 › village/paint completes all 6 rounds ────────────────────────────
+    qa/e2e.spec.js:131:9 › age-1 › village/routines completes all 6 rounds ─────────────────────────
+    qa/e2e.spec.js:131:9 › age-1 › village/match completes all 6 rounds ────────────────────────────
+    qa/e2e.spec.js:131:9 › age-1 › village/discover completes all 6 rounds ─────────────────────────
+    qa/e2e.spec.js:131:9 › age-1 › mountain/letters completes all 6 rounds ─────────────────────────
+    qa/e2e.spec.js:131:9 › age-1 › mountain/trace completes all 6 rounds ───────────────────────────
+    qa/e2e.spec.js:131:9 › age-1 › mountain/initial completes all 6 rounds ─────────────────────────
+    qa/e2e.spec.js:131:9 › age-1 › mountain/logic completes all 6 rounds ───────────────────────────
+    qa/e2e.spec.js:131:9 › age-1 › mountain/sequence completes all 6 rounds ────────────────────────
+    qa/e2e.spec.js:131:9 › age-1 › mountain/odd completes all 6 rounds ─────────────────────────────
+    qa/e2e.spec.js:143:5 › age-1 › free/music works for age 1 ──────────────────────────────────────
+    qa/e2e.spec.js:131:9 › age-3 › forest/animals completes all 6 rounds ───────────────────────────
+    qa/e2e.spec.js:131:9 › age-3 › forest/sounds completes all 6 rounds ────────────────────────────
+    qa/e2e.spec.js:131:9 › age-3 › forest/memory completes all 6 rounds ────────────────────────────
+    qa/e2e.spec.js:131:9 › age-3 › forest/habitat completes all 6 rounds ───────────────────────────
+    qa/e2e.spec.js:131:9 › age-3 › forest/size completes all 6 rounds ──────────────────────────────
+    qa/e2e.spec.js:131:9 › age-3 › forest/tracks completes all 6 rounds ────────────────────────────
+    qa/e2e.spec.js:131:9 › age-3 › lagoon/count completes all 6 rounds ─────────────────────────────
+    qa/e2e.spec.js:131:9 › age-3 › lagoon/more completes all 6 rounds ──────────────────────────────
+    qa/e2e.spec.js:131:9 › age-3 › lagoon/colors completes all 6 rounds ────────────────────────────
+    qa/e2e.spec.js:131:9 › age-3 › lagoon/shapes completes all 6 rounds ────────────────────────────
+    qa/e2e.spec.js:131:9 › age-3 › lagoon/patterns completes all 6 rounds ──────────────────────────
+    qa/e2e.spec.js:131:9 › age-3 › lagoon/sort completes all 6 rounds ──────────────────────────────
+    qa/e2e.spec.js:131:9 › age-3 › village/emotions completes all 6 rounds ─────────────────────────
+    qa/e2e.spec.js:131:9 › age-3 › village/stories completes all 6 rounds ──────────────────────────
+    qa/e2e.spec.js:131:9 › age-3 › village/paint completes all 6 rounds ────────────────────────────
+    qa/e2e.spec.js:131:9 › age-3 › village/routines completes all 6 rounds ─────────────────────────
+    qa/e2e.spec.js:131:9 › age-3 › village/match completes all 6 rounds ────────────────────────────
+    qa/e2e.spec.js:131:9 › age-3 › village/discover completes all 6 rounds ─────────────────────────
+    qa/e2e.spec.js:131:9 › age-3 › mountain/letters completes all 6 rounds ─────────────────────────
+    qa/e2e.spec.js:131:9 › age-3 › mountain/trace completes all 6 rounds ───────────────────────────
+    qa/e2e.spec.js:131:9 › age-3 › mountain/initial completes all 6 rounds ─────────────────────────
+    qa/e2e.spec.js:131:9 › age-3 › mountain/logic completes all 6 rounds ───────────────────────────
+    qa/e2e.spec.js:131:9 › age-3 › mountain/sequence completes all 6 rounds ────────────────────────
+    qa/e2e.spec.js:131:9 › age-3 › mountain/odd completes all 6 rounds ─────────────────────────────
+    qa/e2e.spec.js:143:5 › age-3 › free/music works for age 3 ──────────────────────────────────────
+    qa/e2e.spec.js:131:9 › age-5 › forest/animals completes all 6 rounds ───────────────────────────
+    qa/e2e.spec.js:131:9 › age-5 › forest/sounds completes all 6 rounds ────────────────────────────
+    qa/e2e.spec.js:131:9 › age-5 › forest/memory completes all 6 rounds ────────────────────────────
+    qa/e2e.spec.js:131:9 › age-5 › forest/habitat completes all 6 rounds ───────────────────────────
+    qa/e2e.spec.js:131:9 › age-5 › forest/size completes all 6 rounds ──────────────────────────────
+    qa/e2e.spec.js:131:9 › age-5 › forest/tracks completes all 6 rounds ────────────────────────────
+    qa/e2e.spec.js:131:9 › age-5 › lagoon/count completes all 6 rounds ─────────────────────────────
+    qa/e2e.spec.js:131:9 › age-5 › lagoon/more completes all 6 rounds ──────────────────────────────
+    qa/e2e.spec.js:131:9 › age-5 › lagoon/colors completes all 6 rounds ────────────────────────────
+    qa/e2e.spec.js:131:9 › age-5 › lagoon/shapes completes all 6 rounds ────────────────────────────
+    qa/e2e.spec.js:131:9 › age-5 › lagoon/patterns completes all 6 rounds ──────────────────────────
+    qa/e2e.spec.js:131:9 › age-5 › lagoon/sort completes all 6 rounds ──────────────────────────────
+    qa/e2e.spec.js:131:9 › age-5 › village/emotions completes all 6 rounds ─────────────────────────
+    qa/e2e.spec.js:131:9 › age-5 › village/stories completes all 6 rounds ──────────────────────────
+    qa/e2e.spec.js:131:9 › age-5 › village/paint completes all 6 rounds ────────────────────────────
+    qa/e2e.spec.js:131:9 › age-5 › village/routines completes all 6 rounds ─────────────────────────
+    qa/e2e.spec.js:131:9 › age-5 › village/match completes all 6 rounds ────────────────────────────
+    qa/e2e.spec.js:131:9 › age-5 › village/discover completes all 6 rounds ─────────────────────────
+    qa/e2e.spec.js:131:9 › age-5 › mountain/letters completes all 6 rounds ─────────────────────────
+    qa/e2e.spec.js:131:9 › age-5 › mountain/trace completes all 6 rounds ───────────────────────────
+    qa/e2e.spec.js:131:9 › age-5 › mountain/initial completes all 6 rounds ─────────────────────────
+    qa/e2e.spec.js:131:9 › age-5 › mountain/logic completes all 6 rounds ───────────────────────────
+    qa/e2e.spec.js:131:9 › age-5 › mountain/sequence completes all 6 rounds ────────────────────────
+    qa/e2e.spec.js:131:9 › age-5 › mountain/odd completes all 6 rounds ─────────────────────────────
+    qa/e2e.spec.js:143:5 › age-5 › free/music works for age 5 ──────────────────────────────────────
+    qa/e2e.spec.js:154:1 › daily path advances only after completing its full session ──────────────
+    qa/e2e.spec.js:163:1 › parent gate blocks child and opens only with correct answer ─────────────
+    qa/e2e.spec.js:177:1 › privacy, audio and synthetic-voice release checks ───────────────────────
+    qa/e2e.spec.js:191:1 › small-phone layout has no horizontal overflow ───────────────────────────
