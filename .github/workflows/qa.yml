@@ -1,6 +1,7 @@
 name: Mundo Mimo Launch QA
 
 on:
+  pull_request:
   push:
     branches: ["main"]
   workflow_dispatch:
@@ -10,7 +11,7 @@ permissions:
 
 jobs:
   e2e:
-    if: ${{ !contains(github.event.head_commit.message, '[skip qa]') }}
+    if: ${{ github.event_name != 'push' || !contains(github.event.head_commit.message, '[skip qa]') }}
     runs-on: ubuntu-latest
     timeout-minutes: 35
     steps:
@@ -19,7 +20,12 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
+      - name: Validate adaptive engine
+        run: |
+          node --check assets/adaptive-engine-v71.js
+          node --check assets/app-v71-enhance.js
+          node --test tests/adaptive-engine-v71.test.cjs
       - name: Install Playwright
         run: |
           npm init -y
@@ -62,13 +68,13 @@ jobs:
             echo "COMMIT: $GITHUB_SHA"
             if [ "$CODE" -eq 0 ]; then echo "RESULT: PASS"; else echo "RESULT: FAIL"; fi
             echo "EXIT_CODE: $CODE"
-            echo "MATRIX: 24 guided games x 3 age bands x 6 rounds + parent/privacy/audio/overflow checks"
+            echo "MATRIX: 24 guided games x 3 age bands x 6 rounds + parent/privacy/audio/overflow checks + adaptive v71 unit tests"
             echo "--- TEST OUTPUT (tail) ---"
             tail -n 240 /tmp/mimo-qa.log
           } > qa/latest-result.txt
           echo "code=$CODE" >> "$GITHUB_OUTPUT"
       - name: Persist QA evidence
-        if: always()
+        if: ${{ always() && github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         shell: bash
         run: |
           git config user.name 'Mundo Mimo QA Bot'
