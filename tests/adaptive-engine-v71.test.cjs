@@ -1,0 +1,5 @@
+const test=require('node:test');const assert=require('node:assert/strict');const e=require('../assets/adaptive-engine-v71.js');
+test('daily path contains 3-5 unique age-appropriate games',()=>{for(const age of [1,3,5]){const p=e.dailyPath(e.fresh(),age,4);assert.equal(p.length,4);assert.equal(new Set(p).size,4);assert.ok(p.every(id=>e.GAME_GROUPS[age].includes(id)))}});
+test('correct answers increase mastery and wrong answers reduce it',()=>{let s=e.fresh();s=e.record(s,'count',true);const afterCorrect=s.games.count.mastery;s=e.record(s,'count',false);assert.ok(afterCorrect>.18);assert.ok(s.games.count.mastery<afterCorrect)});
+test('difficulty stays within 1-4',()=>{let s=e.fresh();for(let i=0;i<40;i++)s=e.record(s,'letters',true);assert.equal(e.difficulty(s,'letters',5),4);for(let i=0;i<20;i++)s=e.record(s,'count',false);assert.ok(e.difficulty(s,'count',1)>=1)});
+test('daily completion is idempotent',()=>{let s=e.fresh();s=e.complete(s,'animals');s=e.complete(s,'animals');assert.deepEqual(s.completed,['animals'])});
