@@ -1,15 +1,25 @@
 {
   "name": "mundo-mimo",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "main": "node_modules/expo/AppEntry.js",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "build:mobile": "node scripts/build-mobile.mjs",
+    "ios:add": "npm run build:mobile && npx cap add ios && npm run ios:privacy",
+    "ios:prepare": "npm run build:mobile && npx cap sync ios && npm run ios:privacy",
+    "ios:open": "npm run ios:prepare && npx cap open ios",
+    "ios:privacy": "node scripts/configure-ios-privacy.mjs"
   },
   "dependencies": {
+    "@capacitor/core": "8.5.0",
+    "@capacitor/ios": "8.5.0",
     "@expo/vector-icons": "^14.0.2",
     "expo": "~51.0.28",
     "expo-status-bar": "~1.12.1",
@@ -17,6 +27,7 @@
     "react-native": "0.74.5"
   },
   "devDependencies": {
-    "@babel/core": "^7.24.0"
+    "@babel/core": "^7.24.0",
+    "@capacitor/cli": "8.5.0"
   }
 }
