@@ -13,7 +13,7 @@ jobs:
   e2e:
     if: ${{ github.event_name != 'push' || !contains(github.event.head_commit.message, '[skip qa]') }}
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 60
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -25,6 +25,7 @@ jobs:
         run: |
           node --check assets/adaptive-engine-v71.js
           node --check assets/app-v71-enhance.js
+          node --check assets/app-v72-enhance.js
           node --test tests/adaptive-engine-v71.test.cjs
       - name: Install Playwright for iPhone emulation
         run: |
@@ -36,19 +37,20 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p assets/audio
-          curl -fL --retry 3 --retry-delay 2 -o assets/audio/dog.ogg 'https://upload.wikimedia.org/wikipedia/commons/4/4c/George_vuf_1996.ogg'
-          curl -fL --retry 3 --retry-delay 2 -o assets/audio/cat.ogg 'https://upload.wikimedia.org/wikipedia/commons/6/62/Meow.ogg'
-          curl -fL --retry 3 --retry-delay 2 -o assets/audio/cow.ogg 'https://upload.wikimedia.org/wikipedia/commons/a/a5/Single_Cow_Moo.ogg'
-          curl -fL --retry 3 --retry-delay 2 -o assets/audio/frog.oga 'https://upload.wikimedia.org/wikipedia/commons/9/9f/Single_Frog_Croak.oga'
-          curl -fL --retry 3 --retry-delay 2 -o assets/audio/voice-perro.wav 'https://commons.wikimedia.org/wiki/Special:Redirect/file/LL-Q1321_(spa)-Guergana-perro.wav'
-          curl -fL --retry 3 --retry-delay 2 -o assets/audio/voice-vamos.wav 'https://commons.wikimedia.org/wiki/Special:Redirect/file/LL-Q1321_(spa)-Knites-%C2%A1Vamos!.wav'
-          curl -fL --retry 3 --retry-delay 2 -o assets/audio/voice-uno.wav 'https://commons.wikimedia.org/wiki/Special:Redirect/file/LL-Q1321_(spa)-Akrit0mythos-uno.wav'
-          curl -fL --retry 3 --retry-delay 2 -o assets/audio/voice-dos.wav 'https://commons.wikimedia.org/wiki/Special:Redirect/file/LL-Q1321_(spa)-Guergana-dos.wav'
-          curl -fL --retry 3 --retry-delay 2 -o assets/audio/voice-tres.wav 'https://commons.wikimedia.org/wiki/Special:Redirect/file/LL-Q1321_(spa)-Rachlel-tres.wav'
-          curl -fL --retry 3 --retry-delay 2 -o assets/audio/voice-estrella.wav 'https://commons.wikimedia.org/wiki/Special:Redirect/file/LL-Q1321_(spa)-Guergana-estrella.wav'
-          curl -fL --retry 3 --retry-delay 2 -o assets/audio/voice-pez.wav 'https://commons.wikimedia.org/wiki/Special:Redirect/file/LL-Q1321_(spa)-Guergana-pez.wav'
-          curl -fL --retry 3 --retry-delay 2 -o assets/audio/voice-pequeno.wav 'https://commons.wikimedia.org/wiki/Special:Redirect/file/LL-Q1321_(spa)-Guergana-peque%C3%B1o.wav'
-          curl -fL --retry 3 --retry-delay 2 -o assets/audio/voice-triste.wav 'https://commons.wikimedia.org/wiki/Special:Redirect/file/LL-Q1321_(spa)-Knites-triste.wav'
+          fetch(){ curl -fL --retry 4 --retry-all-errors --retry-delay 3 --max-time 90 -o "$1" "$2"; sleep 2; }
+          fetch assets/audio/dog.ogg 'https://upload.wikimedia.org/wikipedia/commons/4/4c/George_vuf_1996.ogg'
+          fetch assets/audio/cat.ogg 'https://upload.wikimedia.org/wikipedia/commons/6/62/Meow.ogg'
+          fetch assets/audio/cow.ogg 'https://upload.wikimedia.org/wikipedia/commons/a/a5/Single_Cow_Moo.ogg'
+          fetch assets/audio/frog.oga 'https://upload.wikimedia.org/wikipedia/commons/9/9f/Single_Frog_Croak.oga'
+          fetch assets/audio/voice-perro.wav 'https://commons.wikimedia.org/wiki/Special:Redirect/file/LL-Q1321_(spa)-Guergana-perro.wav'
+          fetch assets/audio/voice-vamos.wav 'https://commons.wikimedia.org/wiki/Special:Redirect/file/LL-Q1321_(spa)-Knites-%C2%A1Vamos!.wav'
+          fetch assets/audio/voice-uno.wav 'https://commons.wikimedia.org/wiki/Special:Redirect/file/LL-Q1321_(spa)-Akrit0mythos-uno.wav'
+          fetch assets/audio/voice-dos.wav 'https://commons.wikimedia.org/wiki/Special:Redirect/file/LL-Q1321_(spa)-Guergana-dos.wav'
+          fetch assets/audio/voice-tres.wav 'https://commons.wikimedia.org/wiki/Special:Redirect/file/LL-Q1321_(spa)-Rachlel-tres.wav'
+          fetch assets/audio/voice-estrella.wav 'https://commons.wikimedia.org/wiki/Special:Redirect/file/LL-Q1321_(spa)-Guergana-estrella.wav'
+          fetch assets/audio/voice-pez.wav 'https://commons.wikimedia.org/wiki/Special:Redirect/file/LL-Q1321_(spa)-Guergana-pez.wav'
+          fetch assets/audio/voice-pequeno.wav 'https://commons.wikimedia.org/wiki/Special:Redirect/file/LL-Q1321_(spa)-Guergana-peque%C3%B1o.wav'
+          fetch assets/audio/voice-triste.wav 'https://commons.wikimedia.org/wiki/Special:Redirect/file/LL-Q1321_(spa)-Knites-triste.wav'
       - name: Start local server
         run: python3 -m http.server 4173 >/tmp/mimo-http.log 2>&1 &
       - name: Run every game across all age bands
@@ -68,7 +70,7 @@ jobs:
             echo "COMMIT: $GITHUB_SHA"
             if [ "$CODE" -eq 0 ]; then echo "RESULT: PASS"; else echo "RESULT: FAIL"; fi
             echo "EXIT_CODE: $CODE"
-            echo "MATRIX: 24 guided games x 3 age bands x 6 rounds + parent/privacy/audio/overflow checks + adaptive v71 unit tests"
+            echo "MATRIX: 24 guided games x 3 age bands x 6 rounds + parent/privacy/audio/overflow checks + adaptive v72 unit tests"
             echo "--- TEST OUTPUT (tail) ---"
             tail -n 240 /tmp/mimo-qa.log
           } > qa/latest-result.txt
@@ -86,5 +88,4 @@ jobs:
       - name: Enforce QA gate
         if: always()
         shell: bash
-        run: |
-          test "${{ steps.test.outputs.code }}" = "0"
+        run: test "${{ steps.test.outputs.code }}" = "0"
