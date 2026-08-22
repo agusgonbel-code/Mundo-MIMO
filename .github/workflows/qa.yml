@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  static-gates:
+  static_gates:
     runs-on: ubuntu-latest
     timeout-minutes: 8
     steps:
@@ -39,8 +39,8 @@ jobs:
           console.log('2400 retos verificados');
           NODE
 
-  webkit-shards:
-    needs: static-gates
+  webkit_shards:
+    needs: static_gates
     runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
@@ -57,7 +57,7 @@ jobs:
       - name: Install Playwright WebKit
         run: |
           npm install --no-save @playwright/test
-          npx playwright install --with-deps webkit ffmpeg
+          npx playwright install --with-deps webkit
       - name: Create deterministic local QA audio fixtures
         shell: bash
         run: |
@@ -87,12 +87,12 @@ jobs:
         run: |
           npx playwright test qa/e2e.spec.js qa/premium-v71.spec.js qa/premium-offline-v72.spec.js qa/challenge-v100.spec.js qa/challenge-runtime-v101.spec.js --config=qa/playwright.config.js --reporter=line --shard=${{ matrix.shard }}/3
 
-  qa-gate:
+  qa_gate:
     if: always()
-    needs: [static-gates, webkit-shards]
+    needs: [static_gates, webkit_shards]
     runs-on: ubuntu-latest
     steps:
       - name: Enforce complete QA matrix
         run: |
-          test "${{ needs.static-gates.result }}" = "success"
-          test "${{ needs.webkit-shards.result }}" = "success"
+          test "${{ needs.static_gates.result }}" = "success"
+          test "${{ needs.webkit_shards.result }}" = "success"
