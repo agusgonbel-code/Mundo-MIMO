@@ -45,6 +45,14 @@ test('premium runtime remains idempotent if script is injected again', async ({ 
   expect(await page.locator('.mimo-family-mission').count()).toBe(before);
 });
 
+test('background time does not count toward the healthy screen-time break', async ({ page }) => {
+  await setAge(page,3);
+  const delta=await page.evaluate(()=>{const api=window.MundoMimoPremiumV71,now=performance.now(),before=api.activeElapsed(now);api.pauseActive(now);const hidden=api.activeElapsed(now+10*60*1000);api.resumeActive(now+10*60*1000);const after=api.activeElapsed(now+10*60*1000+1000);return{hidden:hidden-before,active:after-hidden};});
+  expect(delta.hidden).toBeLessThan(50);
+  expect(delta.active).toBeGreaterThanOrEqual(999);
+  expect(delta.active).toBeLessThan(1100);
+});
+
 test('rapid double tap on a correct choice counts only one adaptive attempt', async ({ page }) => {
   await setAge(page,3);
   await page.locator('[data-world="lagoon"]').first().click();
