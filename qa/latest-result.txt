@@ -1,247 +1,267 @@
 MUNDO MIMO LAUNCH QA
-UTC: 2026-08-18T22:37:34Z
-COMMIT: b7e1c79ead754a0396d3e018d83ca03c37c4d095
+UTC: 2026-08-22T15:13:52Z
+COMMIT: 1d09f87e5966b03fbf18e3b31711b137ba260f10
 RESULT: FAIL
 EXIT_CODE: 1
-MATRIX: 24 guided games x 3 age bands x 6 rounds + parent/privacy/audio/overflow checks
+MATRIX: 24 guided games x 3 age bands x 6 rounds + adaptive v71 + parent/privacy/audio + 320/375/390/430px overflow
 --- TEST OUTPUT (tail) ---
-[70/79] qa/e2e.spec.js:131:9 › age-5 › mountain/trace completes all 6 rounds
-  70) qa/e2e.spec.js:131:9 › age-5 › mountain/trace completes all 6 rounds ─────────────────────────
+    - Array []
+    + Array [
+    +   Object {
+    +     "cls": "spark",
+    +     "left": 342.25347900390625,
+    +     "right": 395.4402770996094,
+    +     "tag": "SPAN",
+    +     "text": "💛",
+    +     "vw": 390,
+    +   },
+    + ]
 
-    Error: browserType.launch: Executable doesn't exist at /home/runner/.cache/ms-playwright/webkit-2336/pw_run.sh
-    ╔════════════════════════════════════════════════════════════╗
-    ║ Looks like Playwright was just installed or updated.       ║
-    ║ Please run the following command to download new browsers: ║
-    ║                                                            ║
-    ║     npx playwright install                                 ║
-    ║                                                            ║
-    ║ <3 Playwright Team                                         ║
-    ╚════════════════════════════════════════════════════════════╝
-
-    Error Context: test-results/e2e-age-5-mountain-trace-completes-all-6-rounds/error-context.md
-
-
-[71/79] qa/e2e.spec.js:131:9 › age-5 › mountain/initial completes all 6 rounds
-  71) qa/e2e.spec.js:131:9 › age-5 › mountain/initial completes all 6 rounds ───────────────────────
-
-    Error: browserType.launch: Executable doesn't exist at /home/runner/.cache/ms-playwright/webkit-2336/pw_run.sh
-    ╔════════════════════════════════════════════════════════════╗
-    ║ Looks like Playwright was just installed or updated.       ║
-    ║ Please run the following command to download new browsers: ║
-    ║                                                            ║
-    ║     npx playwright install                                 ║
-    ║                                                            ║
-    ║ <3 Playwright Team                                         ║
-    ╚════════════════════════════════════════════════════════════╝
+      105 |       .map(el => ({tag:el.tagName, cls:String(el.className||''), text:(el.textContent||'').trim().slice(0,40), left:el.getBoundingClientRect().left, right:el.getBoundingClientRect().right, vw}));
+      106 |   });
+    > 107 |   expect(overflow, `Horizontal overflow: ${JSON.stringify(overflow)}`).toEqual([]);
+          |                                                                        ^
+      108 | }
+      109 |
+      110 | async function completeSixRounds(page, game) {
+        at assertNoOverflow (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:107:72)
+        at completeSixRounds (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:123:5)
+        at /home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:138:11
 
     Error Context: test-results/e2e-age-5-mountain-initial-completes-all-6-rounds/error-context.md
 
 
-[72/79] qa/e2e.spec.js:131:9 › age-5 › mountain/logic completes all 6 rounds
-  72) qa/e2e.spec.js:131:9 › age-5 › mountain/logic completes all 6 rounds ─────────────────────────
+[72/85] qa/e2e.spec.js:131:9 › age-5 › mountain/logic completes all 6 rounds
+  45) qa/e2e.spec.js:131:9 › age-5 › mountain/logic completes all 6 rounds ─────────────────────────
 
-    Error: browserType.launch: Executable doesn't exist at /home/runner/.cache/ms-playwright/webkit-2336/pw_run.sh
-    ╔════════════════════════════════════════════════════════════╗
-    ║ Looks like Playwright was just installed or updated.       ║
-    ║ Please run the following command to download new browsers: ║
-    ║                                                            ║
-    ║     npx playwright install                                 ║
-    ║                                                            ║
-    ║ <3 Playwright Team                                         ║
-    ╚════════════════════════════════════════════════════════════╝
+    Test timeout of 20000ms exceeded.
+
+    Error: locator.click: Test timeout of 20000ms exceeded.
+    Call log:
+      - waiting for locator('[data-game="logic"]').first()
+        - locator resolved to <button class="" data-game="logic">…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not visible
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not visible
+        - retrying click action
+          - waiting 100ms
+        35 × waiting for element to be visible, enabled and stable
+           - element is not visible
+         - retrying click action
+           - waiting 500ms
+
+
+      20 |   await page.locator(`[data-world="${world}"]`).first().click();
+      21 |   await expect(page.locator('#world')).toHaveClass(/on/);
+    > 22 |   await page.locator(`[data-game="${game}"]`).first().click();
+         |                                                       ^
+      23 |   await expect(page.locator('#game')).toHaveClass(/on/);
+      24 |   await expect(page.locator('#playfield')).toBeVisible();
+      25 | }
+        at openGame (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:22:55)
+        at /home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:136:11
 
     Error Context: test-results/e2e-age-5-mountain-logic-completes-all-6-rounds/error-context.md
 
 
-[73/79] qa/e2e.spec.js:131:9 › age-5 › mountain/sequence completes all 6 rounds
-  73) qa/e2e.spec.js:131:9 › age-5 › mountain/sequence completes all 6 rounds ──────────────────────
+[73/85] qa/e2e.spec.js:131:9 › age-5 › mountain/sequence completes all 6 rounds
+  46) qa/e2e.spec.js:131:9 › age-5 › mountain/sequence completes all 6 rounds ──────────────────────
 
-    Error: browserType.launch: Executable doesn't exist at /home/runner/.cache/ms-playwright/webkit-2336/pw_run.sh
-    ╔════════════════════════════════════════════════════════════╗
-    ║ Looks like Playwright was just installed or updated.       ║
-    ║ Please run the following command to download new browsers: ║
-    ║                                                            ║
-    ║     npx playwright install                                 ║
-    ║                                                            ║
-    ║ <3 Playwright Team                                         ║
-    ╚════════════════════════════════════════════════════════════╝
+    Error: Horizontal overflow: [{"tag":"SPAN","cls":"spark","text":"✨","left":341.6207275390625,"right":395.0411376953125,"vw":390}]
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 10
+
+    - Array []
+    + Array [
+    +   Object {
+    +     "cls": "spark",
+    +     "left": 341.6207275390625,
+    +     "right": 395.0411376953125,
+    +     "tag": "SPAN",
+    +     "text": "✨",
+    +     "vw": 390,
+    +   },
+    + ]
+
+      105 |       .map(el => ({tag:el.tagName, cls:String(el.className||''), text:(el.textContent||'').trim().slice(0,40), left:el.getBoundingClientRect().left, right:el.getBoundingClientRect().right, vw}));
+      106 |   });
+    > 107 |   expect(overflow, `Horizontal overflow: ${JSON.stringify(overflow)}`).toEqual([]);
+          |                                                                        ^
+      108 | }
+      109 |
+      110 | async function completeSixRounds(page, game) {
+        at assertNoOverflow (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:107:72)
+        at completeSixRounds (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:123:5)
+        at /home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:138:11
 
     Error Context: test-results/e2e-age-5-mountain-sequence-completes-all-6-rounds/error-context.md
 
 
-[74/79] qa/e2e.spec.js:131:9 › age-5 › mountain/odd completes all 6 rounds
-  74) qa/e2e.spec.js:131:9 › age-5 › mountain/odd completes all 6 rounds ───────────────────────────
+[74/85] qa/e2e.spec.js:131:9 › age-5 › mountain/odd completes all 6 rounds
+[75/85] qa/e2e.spec.js:143:5 › age-5 › free/music works for age 5
+  47) qa/e2e.spec.js:143:5 › age-5 › free/music works for age 5 ────────────────────────────────────
 
-    Error: browserType.launch: Executable doesn't exist at /home/runner/.cache/ms-playwright/webkit-2336/pw_run.sh
-    ╔════════════════════════════════════════════════════════════╗
-    ║ Looks like Playwright was just installed or updated.       ║
-    ║ Please run the following command to download new browsers: ║
-    ║                                                            ║
-    ║     npx playwright install                                 ║
-    ║                                                            ║
-    ║ <3 Playwright Team                                         ║
-    ╚════════════════════════════════════════════════════════════╝
+    Error: expect(locator).toHaveClass(expected) failed
 
-    Error Context: test-results/e2e-age-5-mountain-odd-completes-all-6-rounds/error-context.md
+    Locator: locator('#nextBtn')
+    Expected pattern: /on/
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveClass" with timeout 5000ms
+      - waiting for locator('#nextBtn')
 
 
-[75/79] qa/e2e.spec.js:143:5 › age-5 › free/music works for age 5
-  75) qa/e2e.spec.js:143:5 › age-5 › free/music works for age 5 ────────────────────────────────────
-
-    Error: browserType.launch: Executable doesn't exist at /home/runner/.cache/ms-playwright/webkit-2336/pw_run.sh
-    ╔════════════════════════════════════════════════════════════╗
-    ║ Looks like Playwright was just installed or updated.       ║
-    ║ Please run the following command to download new browsers: ║
-    ║                                                            ║
-    ║     npx playwright install                                 ║
-    ║                                                            ║
-    ║ <3 Playwright Team                                         ║
-    ╚════════════════════════════════════════════════════════════╝
+      116 |     } else {
+      117 |       await expect(page.locator('#sessionProgress')).toHaveAttribute('style', /100%/);
+    > 118 |       await expect(page.locator('#nextBtn')).toHaveClass(/on/);
+          |                                              ^
+      119 |       const state = await page.evaluate(() => JSON.parse(localStorage.getItem('mimo70')));
+      120 |       expect(state.sessions).toBeGreaterThanOrEqual(1);
+      121 |       expect(state.rounds).toBeGreaterThanOrEqual(6);
+        at completeSixRounds (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:118:46)
+        at /home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:148:7
 
     Error Context: test-results/e2e-age-5-free-music-works-for-age-5/error-context.md
 
 
-[76/79] qa/e2e.spec.js:154:1 › daily path advances only after completing its full session
-  76) qa/e2e.spec.js:154:1 › daily path advances only after completing its full session ────────────
+[76/85] qa/e2e.spec.js:154:1 › daily path advances only after completing its full session
+  48) qa/e2e.spec.js:154:1 › daily path advances only after completing its full session ────────────
 
-    Error: browserType.launch: Executable doesn't exist at /home/runner/.cache/ms-playwright/webkit-2336/pw_run.sh
-    ╔════════════════════════════════════════════════════════════╗
-    ║ Looks like Playwright was just installed or updated.       ║
-    ║ Please run the following command to download new browsers: ║
-    ║                                                            ║
-    ║     npx playwright install                                 ║
-    ║                                                            ║
-    ║ <3 Playwright Team                                         ║
-    ╚════════════════════════════════════════════════════════════╝
+    Error: Horizontal overflow: [{"tag":"SPAN","cls":"spark","text":"⭐","left":343.865966796875,"right":396.98419189453125,"vw":390}]
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 10
+
+    - Array []
+    + Array [
+    +   Object {
+    +     "cls": "spark",
+    +     "left": 343.865966796875,
+    +     "right": 396.98419189453125,
+    +     "tag": "SPAN",
+    +     "text": "⭐",
+    +     "vw": 390,
+    +   },
+    + ]
+
+      105 |       .map(el => ({tag:el.tagName, cls:String(el.className||''), text:(el.textContent||'').trim().slice(0,40), left:el.getBoundingClientRect().left, right:el.getBoundingClientRect().right, vw}));
+      106 |   });
+    > 107 |   expect(overflow, `Horizontal overflow: ${JSON.stringify(overflow)}`).toEqual([]);
+          |                                                                        ^
+      108 | }
+      109 |
+      110 | async function completeSixRounds(page, game) {
+        at assertNoOverflow (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:107:72)
+        at completeSixRounds (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:123:5)
+        at /home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:157:3
 
     Error Context: test-results/e2e-daily-path-advances-on-0226d-completing-its-full-session/error-context.md
 
 
-[77/79] qa/e2e.spec.js:163:1 › parent gate blocks child and opens only with correct answer
-  77) qa/e2e.spec.js:163:1 › parent gate blocks child and opens only with correct answer ───────────
+[77/85] qa/e2e.spec.js:163:1 › parent gate blocks child and opens only with correct answer
+[78/85] qa/e2e.spec.js:177:1 › privacy, audio and synthetic-voice release checks
+[79/85] qa/e2e.spec.js:191:1 › small-phone layout has no horizontal overflow
+  49) qa/e2e.spec.js:191:1 › small-phone layout has no horizontal overflow ─────────────────────────
 
-    Error: browserType.launch: Executable doesn't exist at /home/runner/.cache/ms-playwright/webkit-2336/pw_run.sh
-    ╔════════════════════════════════════════════════════════════╗
-    ║ Looks like Playwright was just installed or updated.       ║
-    ║ Please run the following command to download new browsers: ║
-    ║                                                            ║
-    ║     npx playwright install                                 ║
-    ║                                                            ║
-    ║ <3 Playwright Team                                         ║
-    ╚════════════════════════════════════════════════════════════╝
+    Test timeout of 20000ms exceeded.
 
-    Error Context: test-results/e2e-parent-gate-blocks-chi-8004a-ns-only-with-correct-answer/error-context.md
-
-
-[78/79] qa/e2e.spec.js:177:1 › privacy, audio and synthetic-voice release checks
-  78) qa/e2e.spec.js:177:1 › privacy, audio and synthetic-voice release checks ─────────────────────
-
-    Error: browserType.launch: Executable doesn't exist at /home/runner/.cache/ms-playwright/webkit-2336/pw_run.sh
-    ╔════════════════════════════════════════════════════════════╗
-    ║ Looks like Playwright was just installed or updated.       ║
-    ║ Please run the following command to download new browsers: ║
-    ║                                                            ║
-    ║     npx playwright install                                 ║
-    ║                                                            ║
-    ║ <3 Playwright Team                                         ║
-    ╚════════════════════════════════════════════════════════════╝
-
-    Error Context: test-results/e2e-privacy-audio-and-synthetic-voice-release-checks/error-context.md
+    Error: locator.click: Test ended.
+    Call log:
+      - waiting for locator('[data-game="count"]').first()
+        - locator resolved to <button class="" data-game="count">…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not visible
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not visible
+        - retrying click action
+          - waiting 100ms
+        34 × waiting for element to be visible, enabled and stable
+           - element is not visible
+         - retrying click action
+           - waiting 500ms
 
 
-[79/79] qa/e2e.spec.js:191:1 › small-phone layout has no horizontal overflow
-  79) qa/e2e.spec.js:191:1 › small-phone layout has no horizontal overflow ─────────────────────────
-
-    Error: browserType.launch: Executable doesn't exist at /home/runner/.cache/ms-playwright/webkit-2336/pw_run.sh
-    ╔════════════════════════════════════════════════════════════╗
-    ║ Looks like Playwright was just installed or updated.       ║
-    ║ Please run the following command to download new browsers: ║
-    ║                                                            ║
-    ║     npx playwright install                                 ║
-    ║                                                            ║
-    ║ <3 Playwright Team                                         ║
-    ╚════════════════════════════════════════════════════════════╝
+      20 |   await page.locator(`[data-world="${world}"]`).first().click();
+      21 |   await expect(page.locator('#world')).toHaveClass(/on/);
+    > 22 |   await page.locator(`[data-game="${game}"]`).first().click();
+         |                                                       ^
+      23 |   await expect(page.locator('#game')).toHaveClass(/on/);
+      24 |   await expect(page.locator('#playfield')).toBeVisible();
+      25 | }
+        at openGame (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:22:55)
+        at /home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:196:3
 
     Error Context: test-results/e2e-small-phone-layout-has-no-horizontal-overflow/error-context.md
 
 
-  79 failed
+[80/85] qa/premium-v71.spec.js:19:1 › v71 adds family co-play and adaptive parent intelligence
+[81/85] qa/premium-v71.spec.js:36:3 › v71 has no horizontal overflow at 320px
+[82/85] qa/premium-v71.spec.js:36:3 › v71 has no horizontal overflow at 375px
+[83/85] qa/premium-v71.spec.js:36:3 › v71 has no horizontal overflow at 390px
+[84/85] qa/premium-v71.spec.js:36:3 › v71 has no horizontal overflow at 430px
+[85/85] qa/premium-v71.spec.js:49:1 › reduced motion preference is supported by premium stylesheet
+  49 failed
     qa/e2e.spec.js:131:9 › age-1 › forest/animals completes all 6 rounds ───────────────────────────
-    qa/e2e.spec.js:131:9 › age-1 › forest/sounds completes all 6 rounds ────────────────────────────
     qa/e2e.spec.js:131:9 › age-1 › forest/memory completes all 6 rounds ────────────────────────────
-    qa/e2e.spec.js:131:9 › age-1 › forest/habitat completes all 6 rounds ───────────────────────────
     qa/e2e.spec.js:131:9 › age-1 › forest/size completes all 6 rounds ──────────────────────────────
-    qa/e2e.spec.js:131:9 › age-1 › forest/tracks completes all 6 rounds ────────────────────────────
     qa/e2e.spec.js:131:9 › age-1 › lagoon/count completes all 6 rounds ─────────────────────────────
-    qa/e2e.spec.js:131:9 › age-1 › lagoon/more completes all 6 rounds ──────────────────────────────
     qa/e2e.spec.js:131:9 › age-1 › lagoon/colors completes all 6 rounds ────────────────────────────
-    qa/e2e.spec.js:131:9 › age-1 › lagoon/shapes completes all 6 rounds ────────────────────────────
     qa/e2e.spec.js:131:9 › age-1 › lagoon/patterns completes all 6 rounds ──────────────────────────
     qa/e2e.spec.js:131:9 › age-1 › lagoon/sort completes all 6 rounds ──────────────────────────────
     qa/e2e.spec.js:131:9 › age-1 › village/emotions completes all 6 rounds ─────────────────────────
-    qa/e2e.spec.js:131:9 › age-1 › village/stories completes all 6 rounds ──────────────────────────
     qa/e2e.spec.js:131:9 › age-1 › village/paint completes all 6 rounds ────────────────────────────
-    qa/e2e.spec.js:131:9 › age-1 › village/routines completes all 6 rounds ─────────────────────────
-    qa/e2e.spec.js:131:9 › age-1 › village/match completes all 6 rounds ────────────────────────────
     qa/e2e.spec.js:131:9 › age-1 › village/discover completes all 6 rounds ─────────────────────────
     qa/e2e.spec.js:131:9 › age-1 › mountain/letters completes all 6 rounds ─────────────────────────
     qa/e2e.spec.js:131:9 › age-1 › mountain/trace completes all 6 rounds ───────────────────────────
-    qa/e2e.spec.js:131:9 › age-1 › mountain/initial completes all 6 rounds ─────────────────────────
-    qa/e2e.spec.js:131:9 › age-1 › mountain/logic completes all 6 rounds ───────────────────────────
-    qa/e2e.spec.js:131:9 › age-1 › mountain/sequence completes all 6 rounds ────────────────────────
     qa/e2e.spec.js:131:9 › age-1 › mountain/odd completes all 6 rounds ─────────────────────────────
     qa/e2e.spec.js:143:5 › age-1 › free/music works for age 1 ──────────────────────────────────────
     qa/e2e.spec.js:131:9 › age-3 › forest/animals completes all 6 rounds ───────────────────────────
     qa/e2e.spec.js:131:9 › age-3 › forest/sounds completes all 6 rounds ────────────────────────────
-    qa/e2e.spec.js:131:9 › age-3 › forest/memory completes all 6 rounds ────────────────────────────
     qa/e2e.spec.js:131:9 › age-3 › forest/habitat completes all 6 rounds ───────────────────────────
     qa/e2e.spec.js:131:9 › age-3 › forest/size completes all 6 rounds ──────────────────────────────
-    qa/e2e.spec.js:131:9 › age-3 › forest/tracks completes all 6 rounds ────────────────────────────
     qa/e2e.spec.js:131:9 › age-3 › lagoon/count completes all 6 rounds ─────────────────────────────
     qa/e2e.spec.js:131:9 › age-3 › lagoon/more completes all 6 rounds ──────────────────────────────
     qa/e2e.spec.js:131:9 › age-3 › lagoon/colors completes all 6 rounds ────────────────────────────
-    qa/e2e.spec.js:131:9 › age-3 › lagoon/shapes completes all 6 rounds ────────────────────────────
-    qa/e2e.spec.js:131:9 › age-3 › lagoon/patterns completes all 6 rounds ──────────────────────────
     qa/e2e.spec.js:131:9 › age-3 › lagoon/sort completes all 6 rounds ──────────────────────────────
-    qa/e2e.spec.js:131:9 › age-3 › village/emotions completes all 6 rounds ─────────────────────────
     qa/e2e.spec.js:131:9 › age-3 › village/stories completes all 6 rounds ──────────────────────────
     qa/e2e.spec.js:131:9 › age-3 › village/paint completes all 6 rounds ────────────────────────────
-    qa/e2e.spec.js:131:9 › age-3 › village/routines completes all 6 rounds ─────────────────────────
     qa/e2e.spec.js:131:9 › age-3 › village/match completes all 6 rounds ────────────────────────────
     qa/e2e.spec.js:131:9 › age-3 › village/discover completes all 6 rounds ─────────────────────────
     qa/e2e.spec.js:131:9 › age-3 › mountain/letters completes all 6 rounds ─────────────────────────
     qa/e2e.spec.js:131:9 › age-3 › mountain/trace completes all 6 rounds ───────────────────────────
-    qa/e2e.spec.js:131:9 › age-3 › mountain/initial completes all 6 rounds ─────────────────────────
     qa/e2e.spec.js:131:9 › age-3 › mountain/logic completes all 6 rounds ───────────────────────────
     qa/e2e.spec.js:131:9 › age-3 › mountain/sequence completes all 6 rounds ────────────────────────
-    qa/e2e.spec.js:131:9 › age-3 › mountain/odd completes all 6 rounds ─────────────────────────────
     qa/e2e.spec.js:143:5 › age-3 › free/music works for age 3 ──────────────────────────────────────
     qa/e2e.spec.js:131:9 › age-5 › forest/animals completes all 6 rounds ───────────────────────────
-    qa/e2e.spec.js:131:9 › age-5 › forest/sounds completes all 6 rounds ────────────────────────────
     qa/e2e.spec.js:131:9 › age-5 › forest/memory completes all 6 rounds ────────────────────────────
-    qa/e2e.spec.js:131:9 › age-5 › forest/habitat completes all 6 rounds ───────────────────────────
-    qa/e2e.spec.js:131:9 › age-5 › forest/size completes all 6 rounds ──────────────────────────────
     qa/e2e.spec.js:131:9 › age-5 › forest/tracks completes all 6 rounds ────────────────────────────
     qa/e2e.spec.js:131:9 › age-5 › lagoon/count completes all 6 rounds ─────────────────────────────
     qa/e2e.spec.js:131:9 › age-5 › lagoon/more completes all 6 rounds ──────────────────────────────
-    qa/e2e.spec.js:131:9 › age-5 › lagoon/colors completes all 6 rounds ────────────────────────────
-    qa/e2e.spec.js:131:9 › age-5 › lagoon/shapes completes all 6 rounds ────────────────────────────
     qa/e2e.spec.js:131:9 › age-5 › lagoon/patterns completes all 6 rounds ──────────────────────────
     qa/e2e.spec.js:131:9 › age-5 › lagoon/sort completes all 6 rounds ──────────────────────────────
     qa/e2e.spec.js:131:9 › age-5 › village/emotions completes all 6 rounds ─────────────────────────
-    qa/e2e.spec.js:131:9 › age-5 › village/stories completes all 6 rounds ──────────────────────────
     qa/e2e.spec.js:131:9 › age-5 › village/paint completes all 6 rounds ────────────────────────────
-    qa/e2e.spec.js:131:9 › age-5 › village/routines completes all 6 rounds ─────────────────────────
-    qa/e2e.spec.js:131:9 › age-5 › village/match completes all 6 rounds ────────────────────────────
     qa/e2e.spec.js:131:9 › age-5 › village/discover completes all 6 rounds ─────────────────────────
     qa/e2e.spec.js:131:9 › age-5 › mountain/letters completes all 6 rounds ─────────────────────────
     qa/e2e.spec.js:131:9 › age-5 › mountain/trace completes all 6 rounds ───────────────────────────
     qa/e2e.spec.js:131:9 › age-5 › mountain/initial completes all 6 rounds ─────────────────────────
     qa/e2e.spec.js:131:9 › age-5 › mountain/logic completes all 6 rounds ───────────────────────────
     qa/e2e.spec.js:131:9 › age-5 › mountain/sequence completes all 6 rounds ────────────────────────
-    qa/e2e.spec.js:131:9 › age-5 › mountain/odd completes all 6 rounds ─────────────────────────────
     qa/e2e.spec.js:143:5 › age-5 › free/music works for age 5 ──────────────────────────────────────
     qa/e2e.spec.js:154:1 › daily path advances only after completing its full session ──────────────
-    qa/e2e.spec.js:163:1 › parent gate blocks child and opens only with correct answer ─────────────
-    qa/e2e.spec.js:177:1 › privacy, audio and synthetic-voice release checks ───────────────────────
     qa/e2e.spec.js:191:1 › small-phone layout has no horizontal overflow ───────────────────────────
+  36 passed (11.5m)
