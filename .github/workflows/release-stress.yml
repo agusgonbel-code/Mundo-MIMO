@@ -1,0 +1,57 @@
+name: Mundo Mimo Release Stress
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  stress:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install Playwright WebKit
+        run: |
+          npm install --no-save @playwright/test
+          npx playwright install --with-deps webkit
+      - name: Bundle licensed audio locally for QA
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p assets/audio
+          curl -fL --retry 3 -o assets/audio/dog.ogg 'https://upload.wikimedia.org/wikipedia/commons/4/4c/George_vuf_1996.ogg'
+          curl -fL --retry 3 -o assets/audio/cat.ogg 'https://upload.wikimedia.org/wikipedia/commons/6/62/Meow.ogg'
+          curl -fL --retry 3 -o assets/audio/cow.ogg 'https://upload.wikimedia.org/wikipedia/commons/a/a5/Single_Cow_Moo.ogg'
+          curl -fL --retry 3 -o assets/audio/frog.oga 'https://upload.wikimedia.org/wikipedia/commons/9/9f/Single_Frog_Croak.oga'
+          curl -fL --retry 3 -o assets/audio/voice-perro.wav 'https://commons.wikimedia.org/wiki/Special:Redirect/file/LL-Q1321_(spa)-Guergana-perro.wav'
+          curl -fL --retry 3 -o assets/audio/voice-vamos.wav 'https://commons.wikimedia.org/wiki/Special:Redirect/file/LL-Q1321_(spa)-Knites-%C2%A1Vamos!.wav'
+          curl -fL --retry 3 -o assets/audio/voice-uno.wav 'https://commons.wikimedia.org/wiki/Special:Redirect/file/LL-Q1321_(spa)-Akrit0mythos-uno.wav'
+          curl -fL --retry 3 -o assets/audio/voice-dos.wav 'https://commons.wikimedia.org/wiki/Special:Redirect/file/LL-Q1321_(spa)-Guergana-dos.wav'
+          curl -fL --retry 3 -o assets/audio/voice-tres.wav 'https://commons.wikimedia.org/wiki/Special:Redirect/file/LL-Q1321_(spa)-Rachlel-tres.wav'
+          curl -fL --retry 3 -o assets/audio/voice-estrella.wav 'https://commons.wikimedia.org/wiki/Special:Redirect/file/LL-Q1321_(spa)-Guergana-estrella.wav'
+          curl -fL --retry 3 -o assets/audio/voice-pez.wav 'https://commons.wikimedia.org/wiki/Special:Redirect/file/LL-Q1321_(spa)-Guergana-pez.wav'
+          curl -fL --retry 3 -o assets/audio/voice-pequeno.wav 'https://commons.wikimedia.org/wiki/Special:Redirect/file/LL-Q1321_(spa)-Guergana-peque%C3%B1o.wav'
+          curl -fL --retry 3 -o assets/audio/voice-triste.wav 'https://commons.wikimedia.org/wiki/Special:Redirect/file/LL-Q1321_(spa)-Knites-triste.wav'
+      - name: Start app
+        run: python3 -m http.server 4173 >/tmp/mimo-http.log 2>&1 &
+      - name: Run full launch matrix once
+        env:
+          PLAYWRIGHT_BASE_URL: http://127.0.0.1:4173
+        run: npx playwright test qa/e2e.spec.js --config=qa/playwright.config.js --reporter=line
+      - name: Repeat critical iPhone journeys 10 times
+        env:
+          PLAYWRIGHT_BASE_URL: http://127.0.0.1:4173
+        shell: bash
+        run: |
+          set -euo pipefail
+          for i in $(seq 1 10); do
+            echo "=== Mundo Mimo critical pass $i/10 ==="
+            npx playwright test qa/e2e.spec.js --config=qa/playwright.config.js --grep "daily path|parent gate|privacy|small-phone" --reporter=line
+          done
