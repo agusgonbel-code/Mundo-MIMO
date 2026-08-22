@@ -1,5 +1,5 @@
-const CACHE='mundo-mimo-v73-fresh-code-offline';
-const CORE=['./','./index.html','./app-v70.html','./manifest.webmanifest','./privacy.html','./support.html','./credits.html','./assets/app-icon.svg','./assets/app-v70.css','./assets/premium-v71.css','./assets/app-v70.js','./assets/app-v70-audit.js','./assets/premium-v71.js','./assets/audio-bank-v70.js','./assets/mimo-bear.svg','./assets/lio-lion.svg','./assets/pipa-elephant.svg','./assets/dog-mimo.svg','./assets/cat-mimo.svg','./assets/cow-mimo.svg','./assets/frog-mimo.svg','./assets/audio/dog.ogg','./assets/audio/cat.ogg','./assets/audio/cow.ogg','./assets/audio/frog.oga','./assets/audio/voice-perro.wav','./assets/audio/voice-vamos.wav','./assets/audio/voice-uno.wav','./assets/audio/voice-dos.wav','./assets/audio/voice-tres.wav','./assets/audio/voice-estrella.wav','./assets/audio/voice-pez.wav','./assets/audio/voice-pequeno.wav','./assets/audio/voice-triste.wav'];
+const CACHE='mundo-mimo-v100-challenges-offline';
+const CORE=['./','./index.html','./app-v70.html','./manifest.webmanifest','./privacy.html','./support.html','./credits.html','./assets/app-icon.svg','./assets/app-v70.css','./assets/premium-v71.css','./assets/app-v70.js','./assets/app-v70-audit.js','./assets/premium-v71.js','./assets/challenge-engine-v100.js','./assets/audio-bank-v70.js','./assets/mimo-bear.svg','./assets/lio-lion.svg','./assets/pipa-elephant.svg','./assets/dog-mimo.svg','./assets/cat-mimo.svg','./assets/cow-mimo.svg','./assets/frog-mimo.svg','./assets/audio/dog.ogg','./assets/audio/cat.ogg','./assets/audio/cow.ogg','./assets/audio/frog.oga','./assets/audio/voice-perro.wav','./assets/audio/voice-vamos.wav','./assets/audio/voice-uno.wav','./assets/audio/voice-dos.wav','./assets/audio/voice-tres.wav','./assets/audio/voice-estrella.wav','./assets/audio/voice-pez.wav','./assets/audio/voice-pequeno.wav','./assets/audio/voice-triste.wav'];
 const cachePut=(request,response)=>{if(response?.ok&&new URL(request.url).origin===location.origin){const copy=response.clone();caches.open(CACHE).then(c=>c.put(request,copy));}return response;};
 const networkFirst=request=>fetch(request).then(response=>cachePut(request,response)).catch(()=>caches.match(request));
 self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)))});
@@ -11,8 +11,6 @@ self.addEventListener('fetch',e=>{
     return;
   }
   if(e.request.destination==='script'||e.request.destination==='style'){
-    // Código y estilos: red primero para que una actualización no quede atrapada
-    // detrás de una versión antigua del cache; offline conserva la última copia válida.
     e.respondWith(networkFirst(e.request));
     return;
   }
