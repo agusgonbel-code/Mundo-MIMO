@@ -1,0 +1,112 @@
+name: Mundo Mimo iOS Native CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'app-v70.html'
+      - 'privacy.html'
+      - 'support.html'
+      - 'credits.html'
+      - 'PrivacyInfo.xcprivacy'
+      - 'assets/**'
+      - 'scripts/**'
+      - 'package.json'
+      - 'capacitor.config.json'
+      - '.github/workflows/ios-native-ci.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mundo-mimo-ios-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-ios-simulator:
+    runs-on: macos-26
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify Xcode and iOS SDK
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcodebuild -version
+          SDK_VERSION="$(xcrun --sdk iphoneos --show-sdk-version)"
+          echo "iPhoneOS SDK: $SDK_VERSION"
+          test "${SDK_VERSION%%.*}" -ge 26
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Build validated web product for native bundle
+        run: npm run build:mobile
+      - name: Verify packaged product is complete
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f www/index.html
+          test -f www/app-v70.html
+          test -f www/privacy.html
+          test -f www/support.html
+          test -f www/credits.html
+          test -f www/assets/app-v70.js
+          test -f www/assets/app-v70-audit.js
+          grep -q 'Monte Aventura' www/app-v70.html
+          grep -q 'Bosque de Lío' www/app-v70.html
+          grep -q 'Laguna de Pipa' www/app-v70.html
+          grep -q 'Villa Mimo' www/app-v70.html
+      - name: Generate native iOS project
+        run: npx cap add ios
+      - name: Install privacy manifest
+        run: npm run ios:privacy
+      - name: Validate Capacitor configuration
+        run: npx cap doctor ios
+      - name: Compile for iOS Simulator without signing
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcodebuild \
+            -project ios/App/App.xcodeproj \
+            -scheme App \
+            -configuration Debug \
+            -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+      - name: Validate application identity, product and privacy
+        id: app
+        shell: bash
+        run: |
+          set -euo pipefail
+          APP_PATH="$(find "$HOME/Library/Developer/Xcode/DerivedData" -path '*Build/Products/Debug-iphonesimulator/App.app' -print -quit)"
+          test -n "$APP_PATH"
+          PLIST="$APP_PATH/Info.plist"
+          PRIVACY="$APP_PATH/PrivacyInfo.xcprivacy"
+          BUNDLE_ID="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$PLIST")"
+          DISPLAY_NAME="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleDisplayName' "$PLIST" 2>/dev/null || /usr/libexec/PlistBuddy -c 'Print :CFBundleName' "$PLIST")"
+          test "$BUNDLE_ID" = 'com.mundomimo.app'
+          test "$DISPLAY_NAME" = 'Mundo Mimo'
+          test -f "$APP_PATH/public/app-v70.html"
+          test -f "$APP_PATH/public/privacy.html"
+          test -f "$APP_PATH/public/support.html"
+          test -f "$PRIVACY"
+          plutil -lint "$PRIVACY"
+          test "$(plutil -extract NSPrivacyTracking raw -o - "$PRIVACY")" = 'false'
+          test "$(plutil -extract NSPrivacyCollectedDataTypes json -o - "$PRIVACY")" = '[]'
+          echo "path=$APP_PATH" >> "$GITHUB_OUTPUT"
+      - name: Stage simulator artifact
+        shell: bash
+        run: |
+          mkdir artifact
+          cp -R "${{ steps.app.outputs.path }}" artifact/MundoMimo.app
+      - name: Upload simulator application
+        uses: actions/upload-artifact@v4
+        with:
+          name: Mundo-Mimo-iOS-Simulator-${{ github.sha }}
+          path: artifact/MundoMimo.app
+          if-no-files-found: error
+          retention-days: 14
