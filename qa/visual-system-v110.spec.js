@@ -54,8 +54,19 @@ test('classification choices remain semantically distinct after vector conversio
   await page.locator('#playfield [data-ok="true"]').first().click();
 });
 
+test('celebration added outside app root is converted to branded vectors',async({page})=>{
+  await setAge(page,5);
+  await page.waitForFunction(()=>Boolean(window.MundoMimoVisualDynamicV111));
+  await page.locator('[data-world="lagoon"]').first().click();
+  await page.locator('#activityGrid [data-game="count"]').click();
+  await page.locator('#playfield [data-ok="true"]').first().click();
+  await expect(page.locator('#celebration .mimo-vector').first()).toBeVisible();
+  expect(await visibleEmoji(page,'#celebration')).toEqual([]);
+});
+
 test('visual system is included in offline core',async({page})=>{
   const sw=await (await page.request.get('/sw.js')).text();
   expect(sw).toContain("'./assets/visual-system-v110.css'");
   expect(sw).toContain("'./assets/visual-system-v110.js'");
+  expect(sw).toContain("'./assets/visual-dynamic-v111.js'");
 });
