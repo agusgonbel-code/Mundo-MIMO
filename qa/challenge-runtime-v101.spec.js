@@ -1,0 +1,2 @@
+const {test,expect}=require('@playwright/test');
+test('v101 loads the 2400 challenge engine in the child runtime',async({page})=>{await page.goto('/app-v70.html?v=101');await page.waitForLoadState('domcontentloaded');const info=await page.evaluate(()=>({loaded:Boolean(globalThis.MundoMimoChallengesV100),total:globalThis.MundoMimoChallengesV100?.totalChallenges,games:globalThis.MundoMimoChallengesV100?.gameIds?.length}));expect(info.loaded).toBeTruthy();expect(info.total).toBe(2400);expect(info.games).toBe(24);});
