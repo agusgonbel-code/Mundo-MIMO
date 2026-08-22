@@ -37,6 +37,14 @@ test('premium script initializes exactly once', async ({ page }) => {
   expect(await page.locator('script[src*="premium-v71.js"]').count()).toBe(1);
 });
 
+test('premium runtime remains idempotent if script is injected again', async ({ page }) => {
+  await setAge(page,3);
+  const before=await page.locator('.mimo-family-mission').count();
+  await page.evaluate(()=>new Promise((resolve,reject)=>{const s=document.createElement('script');s.src='./assets/premium-v71.js?duplicate=1';s.onload=resolve;s.onerror=reject;document.body.appendChild(s);}));
+  expect(await page.evaluate(()=>window.__MundoMimoPremiumV71Booted)).toBe(true);
+  expect(await page.locator('.mimo-family-mission').count()).toBe(before);
+});
+
 test('rapid double tap on a correct choice counts only one adaptive attempt', async ({ page }) => {
   await setAge(page,3);
   await page.locator('[data-world="lagoon"]').first().click();
