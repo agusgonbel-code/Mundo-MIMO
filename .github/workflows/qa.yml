@@ -17,7 +17,7 @@ jobs:
   e2e:
     if: ${{ github.event_name != 'push' || (!contains(github.event.head_commit.message, '[skip qa]') && !contains(github.event.head_commit.message, '[skip ci]')) }}
     runs-on: ubuntu-latest
-    timeout-minutes: 50
+    timeout-minutes: 55
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -49,14 +49,14 @@ jobs:
           curl -fL --retry 3 -o assets/audio/voice-triste.wav 'https://commons.wikimedia.org/wiki/Special:Redirect/file/LL-Q1321_(spa)-Knites-triste.wav'
       - name: Start local server
         run: python3 -m http.server 4173 >/tmp/mimo-http.log 2>&1 &
-      - name: Run every game, content and professional visual gates
+      - name: Run every game, content, visual and accessibility gate
         id: test
         env:
           PLAYWRIGHT_BASE_URL: http://127.0.0.1:4173
         shell: bash
         run: |
           set +e
-          npx playwright test qa/e2e.spec.js qa/premium-v71.spec.js qa/premium-offline-v72.spec.js qa/challenge-v100.spec.js qa/visual-system-v110.spec.js qa/visual-coverage-v112.spec.js --config=qa/playwright.config.js --reporter=line > /tmp/mimo-qa.log 2>&1
+          npx playwright test qa/e2e.spec.js qa/premium-v71.spec.js qa/premium-offline-v72.spec.js qa/challenge-v100.spec.js qa/visual-system-v110.spec.js qa/visual-coverage-v112.spec.js qa/accessibility-v113.spec.js --config=qa/playwright.config.js --reporter=line > /tmp/mimo-qa.log 2>&1
           CODE=$?
           set -e
           mkdir -p qa
@@ -66,9 +66,9 @@ jobs:
             echo "COMMIT: $GITHUB_SHA"
             if [ "$CODE" -eq 0 ]; then echo "RESULT: PASS"; else echo "RESULT: FAIL"; fi
             echo "EXIT_CODE: $CODE"
-            echo "MATRIX: 24 guided games x 3 age bands x 6 rounds + 2400 v100 challenges + per-game branded visual coverage v112 + persistence/offline + adaptive v71 + premium/audio v72 + parent/privacy/audio + 320/375/390/430px overflow"
+            echo "MATRIX: 24 guided games x 3 age bands x 6 rounds + 2400 v100 challenges + per-game branded visual coverage v112 + per-game accessibility v113 + persistence/offline + adaptive v71 + premium/audio v72 + parent/privacy/audio + 320/375/390/430px overflow"
             echo "--- TEST OUTPUT (tail) ---"
-            tail -n 420 /tmp/mimo-qa.log
+            tail -n 520 /tmp/mimo-qa.log
           } > qa/latest-result.txt
           echo "code=$CODE" >> "$GITHUB_OUTPUT"
       - name: Persist QA evidence
