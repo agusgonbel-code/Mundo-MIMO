@@ -9,11 +9,15 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: mundo-mimo-launch-qa-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   e2e:
-    if: ${{ github.event_name != 'push' || !contains(github.event.head_commit.message, '[skip qa]') }}
+    if: ${{ github.event_name != 'push' || (!contains(github.event.head_commit.message, '[skip qa]') && !contains(github.event.head_commit.message, '[skip ci]')) }}
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 50
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -52,7 +56,7 @@ jobs:
         shell: bash
         run: |
           set +e
-          npx playwright test qa/e2e.spec.js qa/premium-v71.spec.js qa/premium-offline-v72.spec.js qa/challenge-v100.spec.js qa/visual-system-v110.spec.js --config=qa/playwright.config.js --reporter=line > /tmp/mimo-qa.log 2>&1
+          npx playwright test qa/e2e.spec.js qa/premium-v71.spec.js qa/premium-offline-v72.spec.js qa/challenge-v100.spec.js qa/visual-system-v110.spec.js qa/visual-coverage-v112.spec.js --config=qa/playwright.config.js --reporter=line > /tmp/mimo-qa.log 2>&1
           CODE=$?
           set -e
           mkdir -p qa
@@ -62,23 +66,24 @@ jobs:
             echo "COMMIT: $GITHUB_SHA"
             if [ "$CODE" -eq 0 ]; then echo "RESULT: PASS"; else echo "RESULT: FAIL"; fi
             echo "EXIT_CODE: $CODE"
-            echo "MATRIX: 24 guided games x 3 age bands x 6 rounds + 2400 v100 challenges + persistence/offline + adaptive v71 + premium/audio v72 + professional vector visuals v110 + parent/privacy/audio + 320/375/390/430px overflow"
+            echo "MATRIX: 24 guided games x 3 age bands x 6 rounds + 2400 v100 challenges + per-game branded visual coverage v112 + persistence/offline + adaptive v71 + premium/audio v72 + parent/privacy/audio + 320/375/390/430px overflow"
             echo "--- TEST OUTPUT (tail) ---"
-            tail -n 360 /tmp/mimo-qa.log
+            tail -n 420 /tmp/mimo-qa.log
           } > qa/latest-result.txt
           echo "code=$CODE" >> "$GITHUB_OUTPUT"
       - name: Persist QA evidence
         if: ${{ always() && github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         shell: bash
         run: |
+          set -euo pipefail
           git config user.name 'Mundo Mimo QA Bot'
           git config user.email 'actions@users.noreply.github.com'
           git add qa/latest-result.txt
           if git diff --cached --quiet; then exit 0; fi
-          git commit -m 'QA result: automated launch matrix [skip qa]'
-          git push
+          git commit -m 'QA result: automated launch matrix [skip ci]'
+          git pull --rebase origin main
+          git push origin HEAD:main
       - name: Enforce QA gate
         if: always()
         shell: bash
-        run: |
-          test "${{ steps.test.outputs.code }}" = "0"
+        run: test "${{ steps.test.outputs.code }}" = "0"
