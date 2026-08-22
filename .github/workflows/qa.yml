@@ -19,11 +19,10 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
       - name: Install Playwright WebKit for iPhone emulation
         run: |
-          npm init -y
-          npm install --save-dev @playwright/test
+          npm install --no-save @playwright/test
           npx playwright install --with-deps webkit
       - name: Bundle licensed audio locally for QA
         shell: bash
