@@ -1,6 +1,6 @@
 MUNDO MIMO LAUNCH QA
-UTC: 2026-08-22T17:16:53Z
-COMMIT: 11816675d0389ffd5413879ee2a310b4eec158e9
+UTC: 2026-08-22T18:21:41Z
+COMMIT: 795b011e99543312f9fd9a3db694193004d71a42
 RESULT: FAIL
 EXIT_CODE: 1
 MATRIX: 24 guided games x 3 age bands x 6 rounds + adaptive v71 + offline premium/audio v72 + parent/privacy/audio + 320/375/390/430px overflow
@@ -116,8 +116,8 @@ Running 89 tests using 1 worker
 [87/89] qa/premium-v71.spec.js:48:3 › v71 has no horizontal overflow at 390px
 [88/89] qa/premium-v71.spec.js:48:3 › v71 has no horizontal overflow at 430px
 [89/89] qa/premium-v71.spec.js:61:1 › reduced motion preference is supported by premium stylesheet
-  Slow test file: qa/e2e.spec.js (7.9m)
+  Slow test file: qa/e2e.spec.js (7.8m)
   Consider running tests from slow files in parallel. See: https://playwright.dev/docs/test-parallel
   1 failed
     qa/premium-v71.spec.js:35:1 › rapid double tap on a correct choice counts only one adaptive attempt 
-  88 passed (8.1m)
+  88 passed (8.0m)
