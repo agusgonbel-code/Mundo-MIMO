@@ -32,6 +32,11 @@ test('v71 adds family co-play and adaptive parent intelligence', async ({ page }
   expect(learned.games?.colors?.attempts).toBeGreaterThanOrEqual(2);
 });
 
+test('premium script initializes exactly once', async ({ page }) => {
+  await setAge(page,3);
+  expect(await page.locator('script[src*="premium-v71.js"]').count()).toBe(1);
+});
+
 test('rapid double tap on a correct choice counts only one adaptive attempt', async ({ page }) => {
   await setAge(page,3);
   await page.locator('[data-world="lagoon"]').first().click();
