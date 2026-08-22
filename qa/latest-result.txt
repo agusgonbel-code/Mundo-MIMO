@@ -1,18 +1,32 @@
 MUNDO MIMO LAUNCH QA
-UTC: 2026-08-22T15:13:52Z
-COMMIT: 1d09f87e5966b03fbf18e3b31711b137ba260f10
+UTC: 2026-08-22T16:18:17Z
+COMMIT: 00eb9782515625317f626746f2be1d1a4216ff5d
 RESULT: FAIL
 EXIT_CODE: 1
-MATRIX: 24 guided games x 3 age bands x 6 rounds + adaptive v71 + parent/privacy/audio + 320/375/390/430px overflow
+MATRIX: 24 guided games x 3 age bands x 6 rounds + adaptive v71 + offline premium/audio v72 + parent/privacy/audio + 320/375/390/430px overflow
 --- TEST OUTPUT (tail) ---
+
+    Error Context: test-results/e2e-age-5-mountain-letters-completes-all-6-rounds/error-context.md
+
+
+[70/89] qa/e2e.spec.js:131:9 › age-5 › mountain/trace completes all 6 rounds
+  31) qa/e2e.spec.js:131:9 › age-5 › mountain/trace completes all 6 rounds ─────────────────────────
+
+    Error: Horizontal overflow: [{"tag":"SPAN","cls":"spark","text":"✨","left":340.272216796875,"right":393.39044189453125,"vw":390}]
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 10
+
     - Array []
     + Array [
     +   Object {
     +     "cls": "spark",
-    +     "left": 342.25347900390625,
-    +     "right": 395.4402770996094,
+    +     "left": 340.272216796875,
+    +     "right": 393.39044189453125,
     +     "tag": "SPAN",
-    +     "text": "💛",
+    +     "text": "✨",
     +     "vw": 390,
     +   },
     + ]
@@ -28,50 +42,14 @@ MATRIX: 24 guided games x 3 age bands x 6 rounds + adaptive v71 + parent/privacy
         at completeSixRounds (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:123:5)
         at /home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:138:11
 
-    Error Context: test-results/e2e-age-5-mountain-initial-completes-all-6-rounds/error-context.md
+    Error Context: test-results/e2e-age-5-mountain-trace-completes-all-6-rounds/error-context.md
 
 
-[72/85] qa/e2e.spec.js:131:9 › age-5 › mountain/logic completes all 6 rounds
-  45) qa/e2e.spec.js:131:9 › age-5 › mountain/logic completes all 6 rounds ─────────────────────────
+[71/89] qa/e2e.spec.js:131:9 › age-5 › mountain/initial completes all 6 rounds
+[72/89] qa/e2e.spec.js:131:9 › age-5 › mountain/logic completes all 6 rounds
+  32) qa/e2e.spec.js:131:9 › age-5 › mountain/logic completes all 6 rounds ─────────────────────────
 
-    Test timeout of 20000ms exceeded.
-
-    Error: locator.click: Test timeout of 20000ms exceeded.
-    Call log:
-      - waiting for locator('[data-game="logic"]').first()
-        - locator resolved to <button class="" data-game="logic">…</button>
-      - attempting click action
-        2 × waiting for element to be visible, enabled and stable
-          - element is not visible
-        - retrying click action
-        - waiting 20ms
-        2 × waiting for element to be visible, enabled and stable
-          - element is not visible
-        - retrying click action
-          - waiting 100ms
-        35 × waiting for element to be visible, enabled and stable
-           - element is not visible
-         - retrying click action
-           - waiting 500ms
-
-
-      20 |   await page.locator(`[data-world="${world}"]`).first().click();
-      21 |   await expect(page.locator('#world')).toHaveClass(/on/);
-    > 22 |   await page.locator(`[data-game="${game}"]`).first().click();
-         |                                                       ^
-      23 |   await expect(page.locator('#game')).toHaveClass(/on/);
-      24 |   await expect(page.locator('#playfield')).toBeVisible();
-      25 | }
-        at openGame (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:22:55)
-        at /home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:136:11
-
-    Error Context: test-results/e2e-age-5-mountain-logic-completes-all-6-rounds/error-context.md
-
-
-[73/85] qa/e2e.spec.js:131:9 › age-5 › mountain/sequence completes all 6 rounds
-  46) qa/e2e.spec.js:131:9 › age-5 › mountain/sequence completes all 6 rounds ──────────────────────
-
-    Error: Horizontal overflow: [{"tag":"SPAN","cls":"spark","text":"✨","left":341.6207275390625,"right":395.0411376953125,"vw":390}]
+    Error: Horizontal overflow: [{"tag":"SPAN","cls":"spark","text":"✨","left":342.0776672363281,"right":395.3658142089844,"vw":390}]
 
     expect(received).toEqual(expected) // deep equality
 
@@ -82,10 +60,46 @@ MATRIX: 24 guided games x 3 age bands x 6 rounds + adaptive v71 + parent/privacy
     + Array [
     +   Object {
     +     "cls": "spark",
-    +     "left": 341.6207275390625,
-    +     "right": 395.0411376953125,
+    +     "left": 342.0776672363281,
+    +     "right": 395.3658142089844,
     +     "tag": "SPAN",
     +     "text": "✨",
+    +     "vw": 390,
+    +   },
+    + ]
+
+      105 |       .map(el => ({tag:el.tagName, cls:String(el.className||''), text:(el.textContent||'').trim().slice(0,40), left:el.getBoundingClientRect().left, right:el.getBoundingClientRect().right, vw}));
+      106 |   });
+    > 107 |   expect(overflow, `Horizontal overflow: ${JSON.stringify(overflow)}`).toEqual([]);
+          |                                                                        ^
+      108 | }
+      109 |
+      110 | async function completeSixRounds(page, game) {
+        at assertNoOverflow (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:107:72)
+        at completeSixRounds (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:123:5)
+        at /home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:138:11
+
+    Error Context: test-results/e2e-age-5-mountain-logic-completes-all-6-rounds/error-context.md
+
+
+[73/89] qa/e2e.spec.js:131:9 › age-5 › mountain/sequence completes all 6 rounds
+  33) qa/e2e.spec.js:131:9 › age-5 › mountain/sequence completes all 6 rounds ──────────────────────
+
+    Error: Horizontal overflow: [{"tag":"SPAN","cls":"spark","text":"⭐","left":343.33770751953125,"right":397.07318115234375,"vw":390}]
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 10
+
+    - Array []
+    + Array [
+    +   Object {
+    +     "cls": "spark",
+    +     "left": 343.33770751953125,
+    +     "right": 397.07318115234375,
+    +     "tag": "SPAN",
+    +     "text": "⭐",
     +     "vw": 390,
     +   },
     + ]
@@ -104,39 +118,10 @@ MATRIX: 24 guided games x 3 age bands x 6 rounds + adaptive v71 + parent/privacy
     Error Context: test-results/e2e-age-5-mountain-sequence-completes-all-6-rounds/error-context.md
 
 
-[74/85] qa/e2e.spec.js:131:9 › age-5 › mountain/odd completes all 6 rounds
-[75/85] qa/e2e.spec.js:143:5 › age-5 › free/music works for age 5
-  47) qa/e2e.spec.js:143:5 › age-5 › free/music works for age 5 ────────────────────────────────────
+[74/89] qa/e2e.spec.js:131:9 › age-5 › mountain/odd completes all 6 rounds
+  34) qa/e2e.spec.js:131:9 › age-5 › mountain/odd completes all 6 rounds ───────────────────────────
 
-    Error: expect(locator).toHaveClass(expected) failed
-
-    Locator: locator('#nextBtn')
-    Expected pattern: /on/
-    Timeout: 5000ms
-    Error: element(s) not found
-
-    Call log:
-      - Expect "toHaveClass" with timeout 5000ms
-      - waiting for locator('#nextBtn')
-
-
-      116 |     } else {
-      117 |       await expect(page.locator('#sessionProgress')).toHaveAttribute('style', /100%/);
-    > 118 |       await expect(page.locator('#nextBtn')).toHaveClass(/on/);
-          |                                              ^
-      119 |       const state = await page.evaluate(() => JSON.parse(localStorage.getItem('mimo70')));
-      120 |       expect(state.sessions).toBeGreaterThanOrEqual(1);
-      121 |       expect(state.rounds).toBeGreaterThanOrEqual(6);
-        at completeSixRounds (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:118:46)
-        at /home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:148:7
-
-    Error Context: test-results/e2e-age-5-free-music-works-for-age-5/error-context.md
-
-
-[76/85] qa/e2e.spec.js:154:1 › daily path advances only after completing its full session
-  48) qa/e2e.spec.js:154:1 › daily path advances only after completing its full session ────────────
-
-    Error: Horizontal overflow: [{"tag":"SPAN","cls":"spark","text":"⭐","left":343.865966796875,"right":396.98419189453125,"vw":390}]
+    Error: Horizontal overflow: [{"tag":"SPAN","cls":"spark","text":"✨","left":340.90972900390625,"right":394.0965270996094,"vw":390}]
 
     expect(received).toEqual(expected) // deep equality
 
@@ -147,10 +132,10 @@ MATRIX: 24 guided games x 3 age bands x 6 rounds + adaptive v71 + parent/privacy
     + Array [
     +   Object {
     +     "cls": "spark",
-    +     "left": 343.865966796875,
-    +     "right": 396.98419189453125,
+    +     "left": 340.90972900390625,
+    +     "right": 394.0965270996094,
     +     "tag": "SPAN",
-    +     "text": "⭐",
+    +     "text": "✨",
     +     "vw": 390,
     +   },
     + ]
@@ -164,104 +149,139 @@ MATRIX: 24 guided games x 3 age bands x 6 rounds + adaptive v71 + parent/privacy
       110 | async function completeSixRounds(page, game) {
         at assertNoOverflow (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:107:72)
         at completeSixRounds (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:123:5)
-        at /home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:157:3
+        at /home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:138:11
+
+    Error Context: test-results/e2e-age-5-mountain-odd-completes-all-6-rounds/error-context.md
+
+
+[75/89] qa/e2e.spec.js:143:5 › age-5 › free/music works for age 5
+  35) qa/e2e.spec.js:143:5 › age-5 › free/music works for age 5 ────────────────────────────────────
+
+    Error: Horizontal overflow: [{"tag":"SPAN","cls":"spark","text":"✨","left":342.531982421875,"right":395.78656005859375,"vw":390}]
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 10
+
+    - Array []
+    + Array [
+    +   Object {
+    +     "cls": "spark",
+    +     "left": 342.531982421875,
+    +     "right": 395.78656005859375,
+    +     "tag": "SPAN",
+    +     "text": "✨",
+    +     "vw": 390,
+    +   },
+    + ]
+
+      105 |       .map(el => ({tag:el.tagName, cls:String(el.className||''), text:(el.textContent||'').trim().slice(0,40), left:el.getBoundingClientRect().left, right:el.getBoundingClientRect().right, vw}));
+      106 |   });
+    > 107 |   expect(overflow, `Horizontal overflow: ${JSON.stringify(overflow)}`).toEqual([]);
+          |                                                                        ^
+      108 | }
+      109 |
+      110 | async function completeSixRounds(page, game) {
+        at assertNoOverflow (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:107:72)
+        at completeSixRounds (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:123:5)
+        at /home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:148:7
+
+    Error Context: test-results/e2e-age-5-free-music-works-for-age-5/error-context.md
+
+
+[76/89] qa/e2e.spec.js:154:1 › daily path advances only after completing its full session
+  36) qa/e2e.spec.js:154:1 › daily path advances only after completing its full session ────────────
+
+    Error: locator.click: Error: strict mode violation: locator('[data-action="home"]') resolved to 3 elements:
+        1) <button data-action="home" aria-label="Volver al inicio">←</button> aka getByRole('button', { name: 'Volver al inicio' })
+        2) <button data-action="home" aria-label="Volver al inicio">←</button> aka locator('#progress').getByLabel('Volver al inicio')
+        3) <button data-action="home" aria-label="Volver al inicio">←</button> aka locator('#parent').getByLabel('Volver al inicio')
+
+    Call log:
+      - waiting for locator('[data-action="home"]')
+
+
+      157 |   await completeSixRounds(page, 'animals');
+      158 |   await page.locator('[data-action="back-world"]').click();
+    > 159 |   await page.locator('[data-action="home"]').click();
+          |                                              ^
+      160 |   await expect(page.locator('#dailyCount')).toHaveText('1/3');
+      161 | });
+      162 |
+        at /home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:159:46
 
     Error Context: test-results/e2e-daily-path-advances-on-0226d-completing-its-full-session/error-context.md
 
 
-[77/85] qa/e2e.spec.js:163:1 › parent gate blocks child and opens only with correct answer
-[78/85] qa/e2e.spec.js:177:1 › privacy, audio and synthetic-voice release checks
-[79/85] qa/e2e.spec.js:191:1 › small-phone layout has no horizontal overflow
-  49) qa/e2e.spec.js:191:1 › small-phone layout has no horizontal overflow ─────────────────────────
+[77/89] qa/e2e.spec.js:163:1 › parent gate blocks child and opens only with correct answer
+[78/89] qa/e2e.spec.js:177:1 › privacy, audio and synthetic-voice release checks
+[79/89] qa/e2e.spec.js:191:1 › small-phone layout has no horizontal overflow
+[80/89] qa/premium-offline-v72.spec.js:3:1 › premium experience is part of the offline core cache
+[81/89] qa/premium-offline-v72.spec.js:10:1 › parent progress labels distinguish evidence depth
+[82/89] qa/premium-offline-v72.spec.js:21:1 › music premium layer exposes reusable tone player
+[83/89] qa/premium-v71.spec.js:19:1 › v71 adds family co-play and adaptive parent intelligence
+[84/89] qa/premium-v71.spec.js:35:1 › rapid double tap on a correct choice counts only one adaptive attempt
+  37) qa/premium-v71.spec.js:35:1 › rapid double tap on a correct choice counts only one adaptive attempt 
 
-    Test timeout of 20000ms exceeded.
+    Error: expect(received).toBe(expected) // Object.is equality
 
-    Error: locator.click: Test ended.
-    Call log:
-      - waiting for locator('[data-game="count"]').first()
-        - locator resolved to <button class="" data-game="count">…</button>
-      - attempting click action
-        2 × waiting for element to be visible, enabled and stable
-          - element is not visible
-        - retrying click action
-        - waiting 20ms
-        2 × waiting for element to be visible, enabled and stable
-          - element is not visible
-        - retrying click action
-          - waiting 100ms
-        34 × waiting for element to be visible, enabled and stable
-           - element is not visible
-         - retrying click action
-           - waiting 500ms
+    Expected: 1
+    Received: 2
 
+      41 |   await correct.evaluate(el=>{el.click();el.click();});
+      42 |   const learned=await page.evaluate(()=>JSON.parse(localStorage.getItem('mimo71')||'{}'));
+    > 43 |   expect(learned.games?.colors?.correct).toBe(1);
+         |                                          ^
+      44 |   expect(learned.games?.colors?.attempts).toBe(1);
+      45 | });
+      46 |
+        at /home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/premium-v71.spec.js:43:42
 
-      20 |   await page.locator(`[data-world="${world}"]`).first().click();
-      21 |   await expect(page.locator('#world')).toHaveClass(/on/);
-    > 22 |   await page.locator(`[data-game="${game}"]`).first().click();
-         |                                                       ^
-      23 |   await expect(page.locator('#game')).toHaveClass(/on/);
-      24 |   await expect(page.locator('#playfield')).toBeVisible();
-      25 | }
-        at openGame (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:22:55)
-        at /home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:196:3
-
-    Error Context: test-results/e2e-small-phone-layout-has-no-horizontal-overflow/error-context.md
+    Error Context: test-results/premium-v71-rapid-double-t-89d43-s-only-one-adaptive-attempt/error-context.md
 
 
-[80/85] qa/premium-v71.spec.js:19:1 › v71 adds family co-play and adaptive parent intelligence
-[81/85] qa/premium-v71.spec.js:36:3 › v71 has no horizontal overflow at 320px
-[82/85] qa/premium-v71.spec.js:36:3 › v71 has no horizontal overflow at 375px
-[83/85] qa/premium-v71.spec.js:36:3 › v71 has no horizontal overflow at 390px
-[84/85] qa/premium-v71.spec.js:36:3 › v71 has no horizontal overflow at 430px
-[85/85] qa/premium-v71.spec.js:49:1 › reduced motion preference is supported by premium stylesheet
-  49 failed
-    qa/e2e.spec.js:131:9 › age-1 › forest/animals completes all 6 rounds ───────────────────────────
-    qa/e2e.spec.js:131:9 › age-1 › forest/memory completes all 6 rounds ────────────────────────────
+[85/89] qa/premium-v71.spec.js:48:3 › v71 has no horizontal overflow at 320px
+[86/89] qa/premium-v71.spec.js:48:3 › v71 has no horizontal overflow at 375px
+[87/89] qa/premium-v71.spec.js:48:3 › v71 has no horizontal overflow at 390px
+[88/89] qa/premium-v71.spec.js:48:3 › v71 has no horizontal overflow at 430px
+[89/89] qa/premium-v71.spec.js:61:1 › reduced motion preference is supported by premium stylesheet
+  37 failed
     qa/e2e.spec.js:131:9 › age-1 › forest/size completes all 6 rounds ──────────────────────────────
     qa/e2e.spec.js:131:9 › age-1 › lagoon/count completes all 6 rounds ─────────────────────────────
+    qa/e2e.spec.js:131:9 › age-1 › lagoon/more completes all 6 rounds ──────────────────────────────
     qa/e2e.spec.js:131:9 › age-1 › lagoon/colors completes all 6 rounds ────────────────────────────
+    qa/e2e.spec.js:131:9 › age-1 › lagoon/shapes completes all 6 rounds ────────────────────────────
     qa/e2e.spec.js:131:9 › age-1 › lagoon/patterns completes all 6 rounds ──────────────────────────
-    qa/e2e.spec.js:131:9 › age-1 › lagoon/sort completes all 6 rounds ──────────────────────────────
     qa/e2e.spec.js:131:9 › age-1 › village/emotions completes all 6 rounds ─────────────────────────
-    qa/e2e.spec.js:131:9 › age-1 › village/paint completes all 6 rounds ────────────────────────────
-    qa/e2e.spec.js:131:9 › age-1 › village/discover completes all 6 rounds ─────────────────────────
-    qa/e2e.spec.js:131:9 › age-1 › mountain/letters completes all 6 rounds ─────────────────────────
+    qa/e2e.spec.js:131:9 › age-1 › village/stories completes all 6 rounds ──────────────────────────
     qa/e2e.spec.js:131:9 › age-1 › mountain/trace completes all 6 rounds ───────────────────────────
-    qa/e2e.spec.js:131:9 › age-1 › mountain/odd completes all 6 rounds ─────────────────────────────
+    qa/e2e.spec.js:131:9 › age-1 › mountain/logic completes all 6 rounds ───────────────────────────
     qa/e2e.spec.js:143:5 › age-1 › free/music works for age 1 ──────────────────────────────────────
-    qa/e2e.spec.js:131:9 › age-3 › forest/animals completes all 6 rounds ───────────────────────────
-    qa/e2e.spec.js:131:9 › age-3 › forest/sounds completes all 6 rounds ────────────────────────────
-    qa/e2e.spec.js:131:9 › age-3 › forest/habitat completes all 6 rounds ───────────────────────────
-    qa/e2e.spec.js:131:9 › age-3 › forest/size completes all 6 rounds ──────────────────────────────
-    qa/e2e.spec.js:131:9 › age-3 › lagoon/count completes all 6 rounds ─────────────────────────────
     qa/e2e.spec.js:131:9 › age-3 › lagoon/more completes all 6 rounds ──────────────────────────────
-    qa/e2e.spec.js:131:9 › age-3 › lagoon/colors completes all 6 rounds ────────────────────────────
+    qa/e2e.spec.js:131:9 › age-3 › lagoon/patterns completes all 6 rounds ──────────────────────────
     qa/e2e.spec.js:131:9 › age-3 › lagoon/sort completes all 6 rounds ──────────────────────────────
-    qa/e2e.spec.js:131:9 › age-3 › village/stories completes all 6 rounds ──────────────────────────
+    qa/e2e.spec.js:131:9 › age-3 › village/emotions completes all 6 rounds ─────────────────────────
     qa/e2e.spec.js:131:9 › age-3 › village/paint completes all 6 rounds ────────────────────────────
     qa/e2e.spec.js:131:9 › age-3 › village/match completes all 6 rounds ────────────────────────────
-    qa/e2e.spec.js:131:9 › age-3 › village/discover completes all 6 rounds ─────────────────────────
     qa/e2e.spec.js:131:9 › age-3 › mountain/letters completes all 6 rounds ─────────────────────────
     qa/e2e.spec.js:131:9 › age-3 › mountain/trace completes all 6 rounds ───────────────────────────
-    qa/e2e.spec.js:131:9 › age-3 › mountain/logic completes all 6 rounds ───────────────────────────
     qa/e2e.spec.js:131:9 › age-3 › mountain/sequence completes all 6 rounds ────────────────────────
-    qa/e2e.spec.js:143:5 › age-3 › free/music works for age 3 ──────────────────────────────────────
-    qa/e2e.spec.js:131:9 › age-5 › forest/animals completes all 6 rounds ───────────────────────────
-    qa/e2e.spec.js:131:9 › age-5 › forest/memory completes all 6 rounds ────────────────────────────
+    qa/e2e.spec.js:131:9 › age-3 › mountain/odd completes all 6 rounds ─────────────────────────────
+    qa/e2e.spec.js:131:9 › age-5 › forest/size completes all 6 rounds ──────────────────────────────
     qa/e2e.spec.js:131:9 › age-5 › forest/tracks completes all 6 rounds ────────────────────────────
     qa/e2e.spec.js:131:9 › age-5 › lagoon/count completes all 6 rounds ─────────────────────────────
     qa/e2e.spec.js:131:9 › age-5 › lagoon/more completes all 6 rounds ──────────────────────────────
     qa/e2e.spec.js:131:9 › age-5 › lagoon/patterns completes all 6 rounds ──────────────────────────
-    qa/e2e.spec.js:131:9 › age-5 › lagoon/sort completes all 6 rounds ──────────────────────────────
     qa/e2e.spec.js:131:9 › age-5 › village/emotions completes all 6 rounds ─────────────────────────
     qa/e2e.spec.js:131:9 › age-5 › village/paint completes all 6 rounds ────────────────────────────
     qa/e2e.spec.js:131:9 › age-5 › village/discover completes all 6 rounds ─────────────────────────
     qa/e2e.spec.js:131:9 › age-5 › mountain/letters completes all 6 rounds ─────────────────────────
     qa/e2e.spec.js:131:9 › age-5 › mountain/trace completes all 6 rounds ───────────────────────────
-    qa/e2e.spec.js:131:9 › age-5 › mountain/initial completes all 6 rounds ─────────────────────────
     qa/e2e.spec.js:131:9 › age-5 › mountain/logic completes all 6 rounds ───────────────────────────
     qa/e2e.spec.js:131:9 › age-5 › mountain/sequence completes all 6 rounds ────────────────────────
+    qa/e2e.spec.js:131:9 › age-5 › mountain/odd completes all 6 rounds ─────────────────────────────
     qa/e2e.spec.js:143:5 › age-5 › free/music works for age 5 ──────────────────────────────────────
     qa/e2e.spec.js:154:1 › daily path advances only after completing its full session ──────────────
-    qa/e2e.spec.js:191:1 › small-phone layout has no horizontal overflow ───────────────────────────
-  36 passed (11.5m)
+    qa/premium-v71.spec.js:35:1 › rapid double tap on a correct choice counts only one adaptive attempt 
+  52 passed (7.0m)
