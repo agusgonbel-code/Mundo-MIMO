@@ -19,13 +19,13 @@ async function setAge(page, age) {
 async function openGame(page, world, game) {
   await page.locator(`[data-world="${world}"]`).first().click();
   await expect(page.locator('#world')).toHaveClass(/on/);
-  await page.locator(`[data-game="${game}"]`).first().click();
+  await page.locator(`#activityGrid [data-game="${game}"]`).click();
   await expect(page.locator('#game')).toHaveClass(/on/);
   await expect(page.locator('#playfield')).toBeVisible();
 }
 
 async function openFreeGame(page, game) {
-  await page.locator(`[data-game="${game}"]`).first().click();
+  await page.locator(`.freeGrid [data-game="${game}"]`).click();
   await expect(page.locator('#game')).toHaveClass(/on/);
   await expect(page.locator('#playfield')).toBeVisible();
 }
