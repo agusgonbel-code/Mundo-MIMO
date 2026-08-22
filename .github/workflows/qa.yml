@@ -57,14 +57,14 @@ jobs:
       - name: Install Playwright WebKit
         run: |
           npm install --no-save @playwright/test
-          npx playwright install --with-deps webkit
+          npx playwright install --with-deps webkit ffmpeg
       - name: Create deterministic local QA audio fixtures
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p assets/audio
           python3 - <<'PY'
-          import wave, math, struct, os
+          import wave, math, struct
           path='/tmp/mimo-tone.wav'; rate=8000; duration=.18
           with wave.open(path,'wb') as w:
               w.setnchannels(1); w.setsampwidth(2); w.setframerate(rate)
@@ -73,7 +73,9 @@ jobs:
           for name in ['voice-perro.wav','voice-vamos.wav','voice-uno.wav','voice-dos.wav','voice-tres.wav','voice-estrella.wav','voice-pez.wav','voice-pequeno.wav','voice-triste.wav']:
               open('assets/audio/'+name,'wb').write(open(path,'rb').read())
           PY
-          ffmpeg -loglevel error -y -i /tmp/mimo-tone.wav assets/audio/dog.ogg
+          FFMPEG="$(find "$HOME/.cache/ms-playwright" -type f -name ffmpeg -perm -111 | head -n 1)"
+          test -n "$FFMPEG"
+          "$FFMPEG" -loglevel error -y -i /tmp/mimo-tone.wav assets/audio/dog.ogg
           cp assets/audio/dog.ogg assets/audio/cat.ogg
           cp assets/audio/dog.ogg assets/audio/cow.ogg
           cp assets/audio/dog.ogg assets/audio/frog.oga
