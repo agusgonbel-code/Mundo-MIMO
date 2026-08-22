@@ -1,0 +1,4 @@
+const test=require('node:test');const assert=require('node:assert/strict');const A=require('../assets/adaptive-engine-v71.js');const W=require('../assets/world-engine-v73.js');
+test('world map exposes five coherent learning areas',()=>{const map=W.map(A.fresh());assert.equal(map.length,5);assert.ok(map.every(x=>x.total>0&&x.mastery>=0&&x.mastery<=100));});
+test('next mission prioritizes low mastery or new content',()=>{let s=A.fresh();for(let i=0;i<10;i++)s=A.record(s,'colors',true);const m=W.nextMission(s,3);assert.ok(m.game);assert.notEqual(typeof m.world.label,'undefined');});
+test('session complexity grows with mastery',()=>{let low=A.fresh(),high=A.fresh();for(let i=0;i<20;i++)high=A.record(high,'count',true);const a=W.sessionComplexity(low,'count',3,A),b=W.sessionComplexity(high,'count',3,A);assert.ok(b.choiceTarget>=a.choiceTarget);assert.ok(b.level>=a.level);});
