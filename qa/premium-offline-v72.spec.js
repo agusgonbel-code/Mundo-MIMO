@@ -7,6 +7,13 @@ test('premium experience is part of the offline core cache', async ({ page }) =>
   expect(sw).toContain("'./support.html'");
 });
 
+test('service worker refreshes scripts and styles before falling back to cache', async ({ page }) => {
+  const sw=await (await page.request.get('/sw.js')).text();
+  expect(sw).toContain("e.request.destination==='script'||e.request.destination==='style'");
+  expect(sw).toContain('networkFirst(e.request)');
+  expect(sw).toContain('mundo-mimo-v73-fresh-code-offline');
+});
+
 test('parent progress labels distinguish evidence depth', async ({ page }) => {
   await page.goto('/app-v70.html');
   await page.waitForFunction(() => Boolean(window.MundoMimoPremiumV71));
