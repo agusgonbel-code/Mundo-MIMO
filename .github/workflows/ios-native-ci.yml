@@ -56,6 +56,11 @@ jobs:
           test -f www/credits.html
           test -f www/assets/app-v70.js
           test -f www/assets/app-v70-audit.js
+          test -f www/assets/premium-v71.js
+          test -f www/assets/premium-v71.css
+          for f in dog.ogg cat.ogg cow.ogg frog.oga voice-perro.wav voice-vamos.wav voice-uno.wav voice-dos.wav voice-tres.wav voice-estrella.wav voice-pez.wav voice-pequeno.wav voice-triste.wav; do
+            test -s "www/assets/audio/$f"
+          done
           grep -q 'Monte Aventura' www/app-v70.html
           grep -q 'Bosque de Lío' www/app-v70.html
           grep -q 'Laguna de Pipa' www/app-v70.html
@@ -93,6 +98,9 @@ jobs:
           test -f "$APP_PATH/public/app-v70.html"
           test -f "$APP_PATH/public/privacy.html"
           test -f "$APP_PATH/public/support.html"
+          test -s "$APP_PATH/public/assets/audio/dog.ogg"
+          test -s "$APP_PATH/public/assets/audio/voice-perro.wav"
+          test -f "$APP_PATH/public/assets/premium-v71.js"
           test -f "$PRIVACY"
           plutil -lint "$PRIVACY"
           test "$(plutil -extract NSPrivacyTracking raw -o - "$PRIVACY")" = 'false'
