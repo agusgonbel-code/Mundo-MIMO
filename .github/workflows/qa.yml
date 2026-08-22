@@ -73,8 +73,12 @@ jobs:
           for name in ['voice-perro.wav','voice-vamos.wav','voice-uno.wav','voice-dos.wav','voice-tres.wav','voice-estrella.wav','voice-pez.wav','voice-pequeno.wav','voice-triste.wav']:
               open('assets/audio/'+name,'wb').write(open(path,'rb').read())
           PY
-          FFMPEG="$(find "$HOME/.cache/ms-playwright" -type f -name ffmpeg -perm -111 | head -n 1)"
+          FFMPEG="$(command -v ffmpeg || true)"
+          if [ -z "$FFMPEG" ]; then
+            FFMPEG="$(find "$HOME/.cache/ms-playwright" -type f \( -name 'ffmpeg' -o -name 'ffmpeg-linux' \) | head -n 1)"
+          fi
           test -n "$FFMPEG"
+          chmod +x "$FFMPEG" || true
           "$FFMPEG" -loglevel error -y -i /tmp/mimo-tone.wav assets/audio/dog.ogg
           cp assets/audio/dog.ogg assets/audio/cat.ogg
           cp assets/audio/dog.ogg assets/audio/cow.ogg
