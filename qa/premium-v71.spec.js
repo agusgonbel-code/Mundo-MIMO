@@ -32,6 +32,18 @@ test('v71 adds family co-play and adaptive parent intelligence', async ({ page }
   expect(learned.games?.colors?.attempts).toBeGreaterThanOrEqual(2);
 });
 
+test('rapid double tap on a correct choice counts only one adaptive attempt', async ({ page }) => {
+  await setAge(page,3);
+  await page.locator('[data-world="lagoon"]').first().click();
+  await page.locator('[data-game="colors"]').first().click();
+  const correct=page.locator('#playfield [data-ok="true"]').first();
+  await expect(correct).toBeVisible();
+  await correct.evaluate(el=>{el.click();el.click();});
+  const learned=await page.evaluate(()=>JSON.parse(localStorage.getItem('mimo71')||'{}'));
+  expect(learned.games?.colors?.correct).toBe(1);
+  expect(learned.games?.colors?.attempts).toBe(1);
+});
+
 for(const width of [320,375,390,430]){
   test(`v71 has no horizontal overflow at ${width}px`, async ({ browser }) => {
     const context=await browser.newContext({viewport:{width,height:780},isMobile:true,hasTouch:true});
