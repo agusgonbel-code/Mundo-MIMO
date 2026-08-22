@@ -16,7 +16,7 @@ jobs:
   launch-matrix:
     if: ${{ github.event_name != 'push' || !contains(github.event.head_commit.message, '[skip ci]') }}
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -49,7 +49,7 @@ jobs:
       - name: Run full launch matrix
         env:
           PLAYWRIGHT_BASE_URL: http://127.0.0.1:4173
-        run: npx playwright test qa/e2e.spec.js qa/premium-v71.spec.js qa/premium-offline-v72.spec.js qa/challenge-v100.spec.js qa/visual-system-v110.spec.js --config=qa/playwright.config.js --reporter=line
+        run: npx playwright test qa/e2e.spec.js qa/premium-v71.spec.js qa/premium-offline-v72.spec.js qa/challenge-v100.spec.js qa/visual-system-v110.spec.js qa/visual-coverage-v112.spec.js qa/accessibility-v113.spec.js --config=qa/playwright.config.js --reporter=line
 
   critical-stress:
     if: ${{ github.event_name != 'push' || !contains(github.event.head_commit.message, '[skip ci]') }}
@@ -96,7 +96,7 @@ jobs:
           set -euo pipefail
           for i in $(seq 1 100); do
             echo "=== Mundo Mimo shard ${{ matrix.shard }} critical pass $i/100 ==="
-            npx playwright test qa/e2e.spec.js qa/visual-system-v110.spec.js --config=qa/playwright.config.js --grep "daily path|parent gate|privacy|small-phone|home uses branded|count game replaces|classification choices|celebration added" --reporter=line
+            npx playwright test qa/e2e.spec.js qa/visual-system-v110.spec.js qa/accessibility-v113.spec.js --config=qa/playwright.config.js --grep "daily path|parent gate|privacy|small-phone|home uses branded|count game replaces|classification choices|celebration added|home and parent gate|reduced motion" --reporter=line
           done
       - name: Write shard evidence
         if: always()
@@ -148,7 +148,7 @@ jobs:
             echo "RESULT: $result"
             echo "LAUNCH_MATRIX: ${{ needs.launch-matrix.result }}"
             echo "STRESS_SHARDS: $success/10 successful"
-            echo 'PLANNED_REPETITIONS: 1000 critical iPhone journeys plus one complete launch matrix covering 2400 challenges and all guided games'
+            echo 'PLANNED_REPETITIONS: 1000 critical iPhone visual/accessibility journeys plus one complete launch matrix covering 2400 challenges and all guided games'
             echo "UTC: $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
             echo '--- SHARDS ---'
             cat /tmp/mimo-evidence/shard-*.txt || true
