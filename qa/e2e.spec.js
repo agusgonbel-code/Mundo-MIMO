@@ -156,7 +156,7 @@ test('daily path advances only after completing its full session', async ({ page
   await page.locator('[data-action="today"]').click();
   await completeSixRounds(page, 'animals');
   await page.locator('[data-action="back-world"]').click();
-  await page.locator('[data-action="home"]').click();
+  await page.locator('#world [data-action="home"]').click();
   await expect(page.locator('#dailyCount')).toHaveText('1/3');
 });
 
