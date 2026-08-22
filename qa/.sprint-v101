@@ -1,1 +1,2 @@
 Mundo Mimo v101 candidate: 2400 challenge runtime + sharded WebKit QA
+Release gate: static contract + all 3 WebKit/iPhone shards must pass.
