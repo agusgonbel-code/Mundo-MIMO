@@ -1,6 +1,6 @@
 MUNDO MIMO LAUNCH QA
-UTC: 2026-08-22T18:21:41Z
-COMMIT: 795b011e99543312f9fd9a3db694193004d71a42
+UTC: 2026-08-22T18:46:51Z
+COMMIT: 24920a8feccf226c5335f7923e48b59e761b6dd2
 RESULT: FAIL
 EXIT_CODE: 1
 MATRIX: 24 guided games x 3 age bands x 6 rounds + adaptive v71 + offline premium/audio v72 + parent/privacy/audio + 320/375/390/430px overflow
