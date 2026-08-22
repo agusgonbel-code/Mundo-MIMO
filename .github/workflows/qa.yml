@@ -26,7 +26,10 @@ jobs:
           node --check assets/adaptive-engine-v71.js
           node --check assets/app-v71-enhance.js
           node --check assets/app-v72-enhance.js
+          node --check assets/world-engine-v73.js
+          node --check assets/app-v73-enhance.js
           node --test tests/adaptive-engine-v71.test.cjs
+          node --test tests/world-engine-v73.test.cjs
       - name: Install Playwright for iPhone emulation
         run: |
           npm init -y
@@ -70,7 +73,7 @@ jobs:
             echo "COMMIT: $GITHUB_SHA"
             if [ "$CODE" -eq 0 ]; then echo "RESULT: PASS"; else echo "RESULT: FAIL"; fi
             echo "EXIT_CODE: $CODE"
-            echo "MATRIX: 24 guided games x 3 age bands x 6 rounds + parent/privacy/audio/overflow checks + adaptive v72 unit tests"
+            echo "MATRIX: 24 guided games x 3 age bands x 6 rounds + parent/privacy/audio/overflow checks + adaptive v73 unit tests"
             echo "--- TEST OUTPUT (tail) ---"
             tail -n 240 /tmp/mimo-qa.log
           } > qa/latest-result.txt
