@@ -188,9 +188,10 @@ test('privacy, audio and synthetic-voice release checks', async ({ page }) => {
   const privacy=await (await page.request.get('/privacy.html')).text();
   const support=await (await page.request.get('/support.html')).text();
   const credits=await (await page.request.get('/credits.html')).text();
-  expect(privacy).toContain('Privacidad infantil');
-  expect(privacy).toContain('localStorage');
-  expect(privacy).toContain('No usamos publicidad');
+  expect(privacy).toContain('Privacidad de Mundo Mimo');
+  expect(privacy).toContain('almacenamiento local');
+  expect(privacy).toContain('no contiene anuncios');
+  expect(privacy).toContain('no solicita nombre, correo electrónico, teléfono, ubicación, contactos, cámara ni micrófono');
   expect(support).toContain('Soporte');
   expect(credits).toContain('sonidos reales');
   const audio=await (await page.request.get('/assets/audio-bank-v70.js')).text();
