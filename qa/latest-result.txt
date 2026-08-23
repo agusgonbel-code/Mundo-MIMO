@@ -1,8 +1,8 @@
 MUNDO MIMO LAUNCH QA
-UTC: 2026-08-23T03:27:11Z
-COMMIT: 758d004cdd001ccc7283093868e22466071121e6
-RESULT: PASS
-EXIT_CODE: 0
+UTC: 2026-08-23T06:25:59Z
+COMMIT: b548088a48e2fa707ff48a705f5ed7735d5414c0
+RESULT: FAIL
+EXIT_CODE: 1
 MATRIX: 24 guided games x 3 age bands x 6 rounds + 2400 v100 challenges + per-game branded visual coverage v112 + per-game accessibility v113 + persistence/offline + adaptive v71 + premium/audio v72 + parent/privacy/audio + 320/375/390/430px overflow
 --- TEST OUTPUT (tail) ---
 
@@ -48,6 +48,35 @@ Running 254 tests using 1 worker
 [38/254] qa/accessibility-v113.spec.js:9:100 › age-3 village/emotions has accessible artwork and controls
 [39/254] qa/accessibility-v113.spec.js:9:100 › age-3 village/stories has accessible artwork and controls
 [40/254] qa/accessibility-v113.spec.js:9:100 › age-3 village/paint has accessible artwork and controls
+  1) qa/accessibility-v113.spec.js:9:100 › age-3 village/paint has accessible artwork and controls ─
+
+    Test timeout of 20000ms exceeded.
+
+    Error: expect(locator).toHaveClass(expected) failed
+
+    Locator: locator('#home')
+    Expected pattern: /on/
+    Received string:  ""
+
+    Call log:
+      - Expect "toHaveClass" with timeout 5000ms
+      - waiting for locator('#home')
+      - 
+
+
+      1 | const { test, expect } = require('@playwright/test');
+      2 | const worlds={forest:['animals','sounds','memory','habitat','size','tracks'],lagoon:['count','more','colors','shapes','patterns','sort'],village:['emotions','stories','paint','routines','match','discover'],mountain:['letters','trace','initial','logic','sequence','odd']};
+    > 3 | async function setAge(page,age=5){await page.goto('/app-v70.html');await page.evaluate(a=>localStorage.setItem('mimo70',JSON.stringify({age:a,sessions:0,rounds:0,stars:0,daily:0,dailyDate:new Date().toISOString().slice(0,10),skills:{}})),age);await page.reload();await expect(page.locator('#home')).toHaveClass(/on/);await page.waitForFunction(()=>Boolean(window.MundoMimoVisualDynamicV111));}
+        |                                                                                                                                                                                                                                                                                                            ^
+      4 | async function assertTargets(page,root){const small=await page.locator(`${root} button:visible`).evaluateAll(nodes=>nodes.filter(el=>{const r=el.getBoundingClientRect();return r.width<44||r.height<44}).map(el=>({text:(el.textContent||el.getAttribute('aria-label')||'').trim().slice(0,50),w:el.getBoundingClientRect().width,h:el.getBoundingClientRect().height})));expect(small,`${root}: touch target below 44px`).toEqual([])}
+      5 | async function assertNames(page,root){const unnamed=await page.locator(`${root} button:visible`).evaluateAll(nodes=>nodes.filter(el=>!(el.getAttribute('aria-label')||el.textContent.trim())).map(el=>el.outerHTML.slice(0,180)));expect(unnamed,`${root}: unnamed button`).toEqual([])}
+      6 |
+        at setAge (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/accessibility-v113.spec.js:3:300)
+        at /home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/accessibility-v113.spec.js:9:187
+
+    Error Context: test-results/accessibility-v113-age-3-v-820da-ssible-artwork-and-controls/error-context.md
+
+
 [41/254] qa/accessibility-v113.spec.js:9:100 › age-3 village/routines has accessible artwork and controls
 [42/254] qa/accessibility-v113.spec.js:9:100 › age-3 village/match has accessible artwork and controls
 [43/254] qa/accessibility-v113.spec.js:9:100 › age-3 village/discover has accessible artwork and controls
@@ -262,6 +291,8 @@ Running 254 tests using 1 worker
 [252/254] qa/visual-system-v110.spec.js:57:1 › habitat farm uses branded tractor artwork instead of generic fallback
 [253/254] qa/visual-system-v110.spec.js:69:1 › celebration added outside app root is converted to branded vectors
 [254/254] qa/visual-system-v110.spec.js:79:1 › visual system is included in offline core
-  Slow test file: qa/e2e.spec.js (8.7m)
+  Slow test file: qa/e2e.spec.js (8.8m)
   Consider running tests from slow files in parallel. See: https://playwright.dev/docs/test-parallel
-  254 passed (13.0m)
+  1 failed
+    qa/accessibility-v113.spec.js:9:100 › age-3 village/paint has accessible artwork and controls ──
+  253 passed (13.6m)
