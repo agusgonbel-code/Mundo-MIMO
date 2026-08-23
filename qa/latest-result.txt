@@ -1,6 +1,6 @@
 MUNDO MIMO LAUNCH QA
-UTC: 2026-08-23T10:23:40Z
-COMMIT: ed67b26b959070f4be99d71e1a47a7ff2cf66a1d
+UTC: 2026-08-23T11:25:58Z
+COMMIT: 8a248d2f84727b1044554c46c411b3c246c1e17c
 RESULT: FAIL
 EXIT_CODE: 1
 MATRIX: 24 guided games x 3 age bands x 6 rounds + 2400 v100 challenges + per-game branded visual coverage v112 + per-game accessibility v113 + persistence/offline + adaptive v71 + premium/audio v72 + parent/privacy/audio + 320/375/390/430px overflow
@@ -111,30 +111,27 @@ Running 254 tests using 1 worker
 [101/254] qa/e2e.spec.js:146:9 › age-1 › mountain/logic completes all 6 rounds
 [102/254] qa/e2e.spec.js:146:9 › age-1 › mountain/sequence completes all 6 rounds
 [103/254] qa/e2e.spec.js:146:9 › age-1 › mountain/odd completes all 6 rounds
+  1) qa/e2e.spec.js:146:9 › age-1 › mountain/odd completes all 6 rounds ────────────────────────────
+
+    TimeoutError: page.waitForFunction: Timeout 6000ms exceeded.
+
+      128 |     await solveRound(page, game);
+      129 |     if (round < 6) {
+    > 130 |       await page.waitForFunction(r => document.querySelector('#roundText')?.textContent?.startsWith(String(r)), round+1, { timeout: 6000 });
+          |                  ^
+      131 |     } else {
+      132 |       await expect(page.locator('#sessionProgress')).toHaveAttribute('style', /100%/);
+      133 |       await expect(page.locator('#nextBtn')).toHaveClass(/on/);
+        at completeSixRounds (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:130:18)
+        at /home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:153:11
+
+    Error Context: test-results/e2e-age-1-mountain-odd-completes-all-6-rounds/error-context.md
+
+
 [104/254] qa/e2e.spec.js:158:5 › age-1 › free/music works for age 1
 [105/254] qa/e2e.spec.js:146:9 › age-3 › forest/animals completes all 6 rounds
 [106/254] qa/e2e.spec.js:146:9 › age-3 › forest/sounds completes all 6 rounds
 [107/254] qa/e2e.spec.js:146:9 › age-3 › forest/memory completes all 6 rounds
-  1) qa/e2e.spec.js:146:9 › age-3 › forest/memory completes all 6 rounds ───────────────────────────
-
-    Test timeout of 20000ms exceeded.
-
-    Error: page.waitForFunction: Test timeout of 20000ms exceeded.
-
-      62 |     const isLast = pairIndex === pairs.length - 1;
-      63 |     if (!isLast) {
-    > 64 |       await page.waitForFunction(expected => document.querySelectorAll('[data-memory].done').length >= expected, doneBefore + 2, {timeout:3500});
-         |                  ^
-      65 |       await expect(page.locator(`[data-memory="${id}"].done`)).toHaveCount(2);
-      66 |     } else {
-      67 |       await page.waitForFunction(before => {
-        at solveMemory (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:64:18)
-        at completeSixRounds (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:128:5)
-        at /home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:153:11
-
-    Error Context: test-results/e2e-age-3-forest-memory-completes-all-6-rounds/error-context.md
-
-
 [108/254] qa/e2e.spec.js:146:9 › age-3 › forest/habitat completes all 6 rounds
 [109/254] qa/e2e.spec.js:146:9 › age-3 › forest/size completes all 6 rounds
 [110/254] qa/e2e.spec.js:146:9 › age-3 › forest/tracks completes all 6 rounds
@@ -160,26 +157,6 @@ Running 254 tests using 1 worker
 [130/254] qa/e2e.spec.js:146:9 › age-5 › forest/animals completes all 6 rounds
 [131/254] qa/e2e.spec.js:146:9 › age-5 › forest/sounds completes all 6 rounds
 [132/254] qa/e2e.spec.js:146:9 › age-5 › forest/memory completes all 6 rounds
-  2) qa/e2e.spec.js:146:9 › age-5 › forest/memory completes all 6 rounds ───────────────────────────
-
-    Test timeout of 20000ms exceeded.
-
-    Error: page.waitForFunction: Test timeout of 20000ms exceeded.
-
-      62 |     const isLast = pairIndex === pairs.length - 1;
-      63 |     if (!isLast) {
-    > 64 |       await page.waitForFunction(expected => document.querySelectorAll('[data-memory].done').length >= expected, doneBefore + 2, {timeout:3500});
-         |                  ^
-      65 |       await expect(page.locator(`[data-memory="${id}"].done`)).toHaveCount(2);
-      66 |     } else {
-      67 |       await page.waitForFunction(before => {
-        at solveMemory (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:64:18)
-        at completeSixRounds (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:128:5)
-        at /home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:153:11
-
-    Error Context: test-results/e2e-age-5-forest-memory-completes-all-6-rounds/error-context.md
-
-
 [133/254] qa/e2e.spec.js:146:9 › age-5 › forest/habitat completes all 6 rounds
 [134/254] qa/e2e.spec.js:146:9 › age-5 › forest/size completes all 6 rounds
 [135/254] qa/e2e.spec.js:146:9 › age-5 › forest/tracks completes all 6 rounds
@@ -302,7 +279,6 @@ Running 254 tests using 1 worker
 [252/254] qa/visual-system-v110.spec.js:57:1 › habitat farm uses branded tractor artwork instead of generic fallback
 [253/254] qa/visual-system-v110.spec.js:69:1 › celebration added outside app root is converted to branded vectors
 [254/254] qa/visual-system-v110.spec.js:79:1 › visual system is included in offline core
-  2 failed
-    qa/e2e.spec.js:146:9 › age-3 › forest/memory completes all 6 rounds ────────────────────────────
-    qa/e2e.spec.js:146:9 › age-5 › forest/memory completes all 6 rounds ────────────────────────────
-  252 passed (14.8m)
+  1 failed
+    qa/e2e.spec.js:146:9 › age-1 › mountain/odd completes all 6 rounds ─────────────────────────────
+  253 passed (15.3m)
