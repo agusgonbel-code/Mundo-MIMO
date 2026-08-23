@@ -1,6 +1,6 @@
 MUNDO MIMO LAUNCH QA
-UTC: 2026-08-23T13:38:35Z
-COMMIT: e5d1ecfb42033890471f5cb2aaabce358dae1502
+UTC: 2026-08-23T14:35:09Z
+COMMIT: f46877fe6c7b2166f3cfe40c0fac8cfb713ede4f
 RESULT: FAIL
 EXIT_CODE: 1
 MATRIX: 24 guided games x 3 age bands x 6 rounds + 2400 v100 challenges + per-game branded visual coverage v112 + per-game accessibility v113 + persistence/offline + adaptive v71 + premium/audio v72 + parent/privacy/audio + 320/375/390/430px overflow
@@ -169,25 +169,25 @@ Running 254 tests using 1 worker
 
     Error: expect(received).toContain(expected) // indexOf
 
-    Expected substring: "Privacidad infantil"
-    Received string:    "<!doctype html><html lang=\"es\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Privacidad · Mundo Mimo</title><style>body{margin:0;background:#f7f4ff;color:#2d3152;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}.wrap{max-width:720px;margin:auto;padding:24px}h1,h2{color:#4939aa}.card{background:#fff;border-radius:22px;padding:18px;margin:14px 0;box-shadow:0 4px 0 #e1ddec}a{color:#4939aa;font-weight:700}</style></head><body><main class=\"wrap\"><h1>Privacidad de Mundo Mimo</h1><p>Última actualización: 22 de agosto de 2026.</p><div class=\"card\"><h2>Diseñada para niños</h2><p>Mundo Mimo está diseñada para niños pequeños y utiliza un enfoque de minimización de datos. La zona infantil no contiene anuncios, chat, redes sociales ni compras.</p></div><div class=\"card\"><h2>Datos del niño</h2><p>La versión actual no solicita nombre, correo electrónico, teléfono, ubicación, contactos, cámara ni micrófono. El rango de edad seleccionado, las sesiones, rondas y progreso se guardan localmente en el dispositivo.</p></div><div class=\"card\"><h2>Audio y recursos</h2><p>Los sonidos y locuciones utilizados durante el juego se incluyen o sirven como recursos del propio producto. No se utiliza publicidad personalizada ni identificadores publicitarios.</p><p><a href=\"./credits.html\">Ver créditos y licencias de los recursos</a>.</p></div><div class=\"card\"><h2>Área familiar</h2><p>Los ajustes para adultos están protegidos mediante una puerta parental. Cualquier futura función que implique cuentas, pagos, enlaces externos o tratamiento adicional de datos se ubicará en el área de adultos y requerirá una revisión previa de privacidad.</p></div><div class=\"card\"><h2>Retención y eliminación</h2><p>El progreso permanece en el almacenamiento local del dispositivo. Puede eliminarse desde la Zona familiar mediante el control “Reiniciar progreso” o eliminando la aplicación y sus datos del dispositivo.</p></div><div class=\"card\"><h2>Contacto y soporte</h2><p>Para consultas sobre privacidad, funcionamiento o incidencias técnicas, utiliza la página oficial de soporte del producto.</p><p><a href=\"./support.html\">Abrir soporte de Mundo Mimo</a>.</p></div><p><a href=\"./\">← Volver a Mundo Mimo</a></p></main></body></html>"
+    Expected substring: "sonidos reales"
+    Received string:    "<!doctype html><html lang=\"es\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Créditos · Mundo Mimo</title><style>body{margin:0;background:#f7f4ff;color:#2d3152;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}.wrap{max-width:760px;margin:auto;padding:24px}h1,h2{color:#4939aa}.card{background:#fff;border-radius:22px;padding:18px;margin:14px 0;box-shadow:0 4px 0 #e1ddec}a{color:#4939aa;font-weight:700}</style></head><body><main class=\"wrap\"><h1>Créditos y licencias</h1><p>Recursos temporales de la versión candidata de Mundo Mimo. Esta página se mantiene para trazabilidad y cumplimiento de atribuciones.</p><div class=\"card\"><h2>Sonidos de animales</h2><p><b>Perro — George_vuf_1996.ogg.</b> Autor: Broadbeer. Publicado en dominio público por el titular.</p><p><b>Gato — Meow.ogg.</b> Autor original: Dan Crosby / Dcrosby. Creative Commons Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0).</p><p><b>Vaca — Single_Cow_Moo.ogg.</b> Autor indicado en Wikimedia Commons: MichaeltheFox8621. Disponible, entre otras, bajo Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0).</p><p><b>Rana — Single_Frog_Croak.oga.</b> Autor: MichaeltheFox8621. Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0).</p><p>Los archivos se copian al paquete de despliegue y se sirven desde Mundo Mimo. No se modifican intencionadamente en el build actual.</p></div><div class=\"card\"><h2>Locuciones humanas</h2><p>Las pronunciaciones temporales proceden de Lingua Libre / Wikimedia Commons. Antes del lanzamiento comercial se verificará la licencia de cada archivo exacto y se conservará la atribución que corresponda. El objetivo de producción es sustituir estas locuciones temporales por un paquete de voz propio, grabado y contratado para Mundo Mimo.</p></div><div class=\"card\"><h2>Personajes e interfaz</h2><p>Los personajes Mimo, Lío y Pipa y los gráficos SVG producidos específicamente para este proyecto forman parte de la identidad visual de Mundo Mimo. No se utilizan personajes ni recursos gráficos de Keiki, Stumble Guys o Brawl Stars.</p></div><p><a href=\"./privacy.html\">Privacidad</a> · <a href=\"./\">Volver a Mundo Mimo</a></p></main></body></html>"
 
-      189 |   const support=await (await page.request.get('/support.html')).text();
-      190 |   const credits=await (await page.request.get('/credits.html')).text();
-    > 191 |   expect(privacy).toContain('Privacidad infantil');
+      194 |   expect(privacy).toContain('no solicita nombre, correo electrónico, teléfono, ubicación, contactos, cámara ni micrófono');
+      195 |   expect(support).toContain('Soporte');
+    > 196 |   expect(credits).toContain('sonidos reales');
           |                   ^
-      192 |   expect(privacy).toContain('localStorage');
-      193 |   expect(privacy).toContain('No usamos publicidad');
-      194 |   expect(support).toContain('Soporte');
-        at /home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:191:19
+      197 |   const audio=await (await page.request.get('/assets/audio-bank-v70.js')).text();
+      198 |   expect(audio).toContain('speechSynthesis');
+      199 |   expect(audio).toContain("'./assets/audio/dog.ogg'");
+        at /home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:196:19
 
     Error Context: test-results/e2e-privacy-audio-and-synthetic-voice-release-checks/error-context.md
 
 
-[158/254] qa/e2e.spec.js:201:1 › small-phone layout has no horizontal overflow
-[159/254] qa/e2e.spec.js:209:162 › iPhone landscape stays usable on home and in game
-[160/254] qa/e2e.spec.js:209:162 › iPad portrait stays usable on home and in game
-[161/254] qa/e2e.spec.js:209:162 › iPad landscape stays usable on home and in game
+[158/254] qa/e2e.spec.js:202:1 › small-phone layout has no horizontal overflow
+[159/254] qa/e2e.spec.js:210:162 › iPhone landscape stays usable on home and in game
+[160/254] qa/e2e.spec.js:210:162 › iPad portrait stays usable on home and in game
+[161/254] qa/e2e.spec.js:210:162 › iPad landscape stays usable on home and in game
 [162/254] qa/premium-offline-v72.spec.js:3:1 › premium experience is part of the offline core cache
 [163/254] qa/premium-offline-v72.spec.js:10:1 › service worker refreshes scripts and styles before falling back to cache
 [164/254] qa/premium-offline-v72.spec.js:18:1 › parent progress labels distinguish evidence depth
@@ -212,6 +212,26 @@ Running 254 tests using 1 worker
 [183/254] qa/visual-coverage-v112.spec.js:45:7 › age-1 lagoon/more has complete branded visual coverage
 [184/254] qa/visual-coverage-v112.spec.js:45:7 › age-1 lagoon/colors has complete branded visual coverage
 [185/254] qa/visual-coverage-v112.spec.js:45:7 › age-1 lagoon/shapes has complete branded visual coverage
+  2) qa/visual-coverage-v112.spec.js:45:7 › age-1 lagoon/shapes has complete branded visual coverage 
+
+    Error: page.reload: WebKit encountered an internal error
+    Call log:
+      - waiting for navigation until "load"
+
+
+      11 |   await page.goto('/app-v70.html');
+      12 |   await page.evaluate(a=>localStorage.setItem('mimo70',JSON.stringify({age:a,sessions:0,rounds:0,stars:0,daily:0,dailyDate:new Date().toISOString().slice(0,10),skills:{}})),age);
+    > 13 |   await page.reload();
+         |              ^
+      14 |   await expect(page.locator('#home')).toHaveClass(/on/);
+      15 |   await page.waitForFunction(()=>Boolean(window.MundoMimoVisualV110));
+      16 |   await expect(page.locator('body')).toHaveClass(/mimo-vector-ready/);
+        at setAge (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/visual-coverage-v112.spec.js:13:14)
+        at /home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/visual-coverage-v112.spec.js:46:9
+
+    Error Context: test-results/visual-coverage-v112-age-1-47bdb-ete-branded-visual-coverage/error-context.md
+
+
 [186/254] qa/visual-coverage-v112.spec.js:45:7 › age-1 lagoon/patterns has complete branded visual coverage
 [187/254] qa/visual-coverage-v112.spec.js:45:7 › age-1 lagoon/sort has complete branded visual coverage
 [188/254] qa/visual-coverage-v112.spec.js:45:7 › age-1 village/emotions has complete branded visual coverage
@@ -281,6 +301,7 @@ Running 254 tests using 1 worker
 [252/254] qa/visual-system-v110.spec.js:57:1 › habitat farm uses branded tractor artwork instead of generic fallback
 [253/254] qa/visual-system-v110.spec.js:69:1 › celebration added outside app root is converted to branded vectors
 [254/254] qa/visual-system-v110.spec.js:79:1 › visual system is included in offline core
-  1 failed
+  2 failed
     qa/e2e.spec.js:187:1 › privacy, audio and synthetic-voice release checks ───────────────────────
-  253 passed (14.9m)
+    qa/visual-coverage-v112.spec.js:45:7 › age-1 lagoon/shapes has complete branded visual coverage 
+  252 passed (14.9m)
