@@ -11,7 +11,8 @@ test('service worker refreshes scripts and styles before falling back to cache',
   const sw=await (await page.request.get('/sw.js')).text();
   expect(sw).toContain("e.request.destination==='script'||e.request.destination==='style'");
   expect(sw).toContain('networkFirst(e.request)');
-  expect(sw).toContain('mundo-mimo-v73-fresh-code-offline');
+  expect(sw).toContain("fetch(request,{cache:'no-store'})");
+  expect(sw).toMatch(/const CACHE='mundo-mimo-v\d+-[a-z0-9-]+'/i);
 });
 
 test('parent progress labels distinguish evidence depth', async ({ page }) => {
