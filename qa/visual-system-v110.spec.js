@@ -54,6 +54,18 @@ test('classification choices remain semantically distinct after vector conversio
   await page.locator('#playfield [data-ok="true"]').first().click();
 });
 
+test('habitat farm uses branded tractor artwork instead of generic fallback',async({page})=>{
+  await setAge(page,3);
+  await page.evaluate(()=>{Math.random=()=>0.5});
+  await page.locator('[data-world="forest"]').first().click();
+  await page.locator('#activityGrid [data-game="habitat"]').click();
+  await expect(page.locator('#game')).toHaveClass(/on/);
+  await expect(page.locator('.sceneVisual')).toContainText('Granja');
+  await expect(page.locator('.sceneVisual .mimo-vector[data-kind="tractor"]')).toBeVisible();
+  await expect(page.locator('.sceneVisual .mimo-vector[data-kind="generic"]')).toHaveCount(0);
+  expect(await visibleEmoji(page,'#game')).toEqual([]);
+});
+
 test('celebration added outside app root is converted to branded vectors',async({page})=>{
   await setAge(page,5);
   await page.waitForFunction(()=>Boolean(window.MundoMimoVisualDynamicV111));
