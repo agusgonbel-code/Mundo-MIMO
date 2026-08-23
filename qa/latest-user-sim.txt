@@ -1,0 +1,40 @@
+MUNDO MIMO USER SIMULATION
+SOURCE_COMMIT: 9509d1839115edd355b4be4edb29060f71168dab
+RESULT: PASS
+EXIT_CODE: 0
+SCENARIOS: 30
+UTC: 2026-08-23T19:00:02Z
+
+Running 30 tests using 1 worker
+
+[1/30] qa/user-100-sim.spec.js:6:32 › familia puede elegir franja 1
+[2/30] qa/user-100-sim.spec.js:6:32 › familia puede elegir franja 3
+[3/30] qa/user-100-sim.spec.js:6:32 › familia puede elegir franja 5
+[4/30] qa/user-100-sim.spec.js:7:1 › familia ve promesa sin anuncios ni compras infantiles
+[5/30] qa/user-100-sim.spec.js:8:1 › niño inicia aventura de hoy
+[6/30] qa/user-100-sim.spec.js:9:1 › zona familiar queda detrás de control parental
+[7/30] qa/user-100-sim.spec.js:10:61 › niño abre mundo forest
+[8/30] qa/user-100-sim.spec.js:10:61 › niño abre mundo lagoon
+[9/30] qa/user-100-sim.spec.js:10:61 › niño abre mundo village
+[10/30] qa/user-100-sim.spec.js:10:61 › niño abre mundo mountain
+[11/30] qa/user-100-sim.spec.js:11:196 › niño abre forest/animals
+[12/30] qa/user-100-sim.spec.js:11:196 › niño abre forest/memory
+[13/30] qa/user-100-sim.spec.js:11:196 › niño abre lagoon/count
+[14/30] qa/user-100-sim.spec.js:11:196 › niño abre lagoon/shapes
+[15/30] qa/user-100-sim.spec.js:11:196 › niño abre village/emotions
+[16/30] qa/user-100-sim.spec.js:11:196 › niño abre village/paint
+[17/30] qa/user-100-sim.spec.js:11:196 › niño abre mountain/letters
+[18/30] qa/user-100-sim.spec.js:11:196 › niño abre mountain/logic
+[19/30] qa/user-100-sim.spec.js:12:38 › Mundo Mimo cabe a 320px
+[20/30] qa/user-100-sim.spec.js:12:38 › Mundo Mimo cabe a 375px
+[21/30] qa/user-100-sim.spec.js:12:38 › Mundo Mimo cabe a 390px
+[22/30] qa/user-100-sim.spec.js:12:38 › Mundo Mimo cabe a 430px
+[23/30] qa/user-100-sim.spec.js:13:1 › niño puede volver del mundo al inicio
+[24/30] qa/user-100-sim.spec.js:14:1 › niño puede explorar dibujo libre
+[25/30] qa/user-100-sim.spec.js:15:1 › niño puede explorar música libre
+[26/30] qa/user-100-sim.spec.js:16:1 › navegación inferior ofrece cuatro destinos
+[27/30] qa/user-100-sim.spec.js:17:1 › targets principales son de al menos 44px
+[28/30] qa/user-100-sim.spec.js:18:1 › reduced motion conserva experiencia
+[29/30] qa/user-100-sim.spec.js:19:1 › recarga conserva edad elegida
+[30/30] qa/user-100-sim.spec.js:20:1 › recorrido infantil básico no lanza pageerror
+  30 passed (45.7s)
