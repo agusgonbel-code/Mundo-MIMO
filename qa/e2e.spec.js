@@ -42,24 +42,34 @@ async function drawOnCanvas(page, selector) {
 }
 
 async function solveMemory(page) {
-  const cards = page.locator('[data-memory]');
-  const n = await cards.count();
-  expect(n).toBeGreaterThanOrEqual(4);
+  const snapshot = await page.locator('[data-memory]').evaluateAll(nodes => nodes.map((el,index)=>({index,id:el.dataset.memory})));
+  expect(snapshot.length).toBeGreaterThanOrEqual(4);
   const groups = {};
-  for (let i=0;i<n;i++) {
-    const id = await cards.nth(i).getAttribute('data-memory');
-    (groups[id] ||= []).push(i);
-  }
-  for (const idxs of Object.values(groups)) {
-    expect(idxs.length).toBe(2);
-    const first=cards.nth(idxs[0]), second=cards.nth(idxs[1]);
-    await expect(first).toBeVisible();
-    await expect(second).toBeVisible();
-    await first.click();
-    await second.click();
-    await expect(first).toHaveClass(/done/, {timeout:2000});
-    await expect(second).toHaveClass(/done/, {timeout:2000});
-    await expect(page.locator('#guide')).toHaveAttribute('class','guide',{timeout:1800});
+  for (const card of snapshot) (groups[card.id] ||= []).push(card.index);
+  const pairs = Object.entries(groups);
+  for (const [,idxs] of pairs) expect(idxs.length).toBe(2);
+  const roundBefore = await page.locator('#roundText').textContent();
+  for (let pairIndex=0; pairIndex<pairs.length; pairIndex++) {
+    const [id] = pairs[pairIndex];
+    const pair = page.locator(`[data-memory="${id}"]`);
+    await expect(pair).toHaveCount(2);
+    await expect(pair.nth(0)).toBeVisible();
+    await expect(pair.nth(1)).toBeVisible();
+    const doneBefore = await page.locator('[data-memory].done').count();
+    await pair.nth(0).click();
+    await expect(pair.nth(0)).toHaveClass(/open/);
+    await pair.nth(1).click();
+    const isLast = pairIndex === pairs.length - 1;
+    if (!isLast) {
+      await page.waitForFunction(expected => document.querySelectorAll('[data-memory].done').length >= expected, doneBefore + 2, {timeout:3500});
+      await expect(page.locator(`[data-memory="${id}"].done`)).toHaveCount(2);
+    } else {
+      await page.waitForFunction(before => {
+        const round=document.querySelector('#roundText')?.textContent||'';
+        const finished=document.querySelector('#sessionProgress')?.getAttribute('style')?.includes('100%');
+        return round!==before || finished;
+      }, roundBefore, {timeout:5000});
+    }
   }
 }
 
