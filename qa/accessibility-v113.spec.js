@@ -1,6 +1,13 @@
 const { test, expect } = require('@playwright/test');
+test.setTimeout(30000);
 const worlds={forest:['animals','sounds','memory','habitat','size','tracks'],lagoon:['count','more','colors','shapes','patterns','sort'],village:['emotions','stories','paint','routines','match','discover'],mountain:['letters','trace','initial','logic','sequence','odd']};
-async function setAge(page,age=5){await page.goto('/app-v70.html');await page.evaluate(a=>localStorage.setItem('mimo70',JSON.stringify({age:a,sessions:0,rounds:0,stars:0,daily:0,dailyDate:new Date().toISOString().slice(0,10),skills:{}})),age);await page.reload();await expect(page.locator('#home')).toHaveClass(/on/);await page.waitForFunction(()=>Boolean(window.MundoMimoVisualDynamicV111));}
+async function setAge(page,age=5){
+  await page.goto('/app-v70.html',{waitUntil:'domcontentloaded'});
+  await page.evaluate(a=>localStorage.setItem('mimo70',JSON.stringify({age:a,sessions:0,rounds:0,stars:0,daily:0,dailyDate:new Date().toISOString().slice(0,10),skills:{}})),age);
+  await page.reload({waitUntil:'domcontentloaded'});
+  await page.waitForFunction(()=>document.getElementById('home')?.classList.contains('on')&&Boolean(window.MundoMimoVisualDynamicV111),null,{timeout:15000});
+  await expect(page.locator('#home')).toHaveClass(/on/);
+}
 async function assertTargets(page,root){const small=await page.locator(`${root} button:visible`).evaluateAll(nodes=>nodes.filter(el=>{const r=el.getBoundingClientRect();return r.width<44||r.height<44}).map(el=>({text:(el.textContent||el.getAttribute('aria-label')||'').trim().slice(0,50),w:el.getBoundingClientRect().width,h:el.getBoundingClientRect().height})));expect(small,`${root}: touch target below 44px`).toEqual([])}
 async function assertNames(page,root){const unnamed=await page.locator(`${root} button:visible`).evaluateAll(nodes=>nodes.filter(el=>!(el.getAttribute('aria-label')||el.textContent.trim())).map(el=>el.outerHTML.slice(0,180)));expect(unnamed,`${root}: unnamed button`).toEqual([])}
 
