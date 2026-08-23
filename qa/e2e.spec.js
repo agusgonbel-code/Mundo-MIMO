@@ -197,3 +197,16 @@ test('small-phone layout has no horizontal overflow', async ({ browser }) => {
   await assertNoOverflow(page);
   await context.close();
 });
+
+for (const [name,width,height] of [['iPhone landscape',844,390],['iPad portrait',768,1024],['iPad landscape',1024,768]]) {
+  test(`${name} keeps Mundo Mimo home and gameplay inside the viewport`, async ({ browser }) => {
+    const context = await browser.newContext({ viewport: { width, height }, isMobile: true, hasTouch: true });
+    const page = await context.newPage();
+    await setAge(page, 3);
+    await assertNoOverflow(page);
+    await openGame(page,'lagoon','count');
+    await assertNoOverflow(page);
+    await expect(page.locator('#playfield')).toBeVisible();
+    await context.close();
+  });
+}
