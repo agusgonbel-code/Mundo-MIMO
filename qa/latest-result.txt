@@ -1,6 +1,6 @@
 MUNDO MIMO LAUNCH QA
-UTC: 2026-08-23T15:26:52Z
-COMMIT: d9e1fc476cf3e6102c2edc743ea3ab62272c73a8
+UTC: 2026-08-23T16:03:00Z
+COMMIT: a3762832f45a6874b281c8640c0f75e077b257ae
 RESULT: FAIL
 EXIT_CODE: 1
 MATRIX: 24 guided games x 3 age bands x 6 rounds + 2400 v100 challenges + per-game branded visual coverage v112 + per-game accessibility v113 + persistence/offline + adaptive v71 + premium/audio v72 + parent/privacy/audio + 320/375/390/430px overflow
@@ -8,205 +8,186 @@ MATRIX: 24 guided games x 3 age bands x 6 rounds + 2400 v100 challenges + per-ga
 
 Running 254 tests using 1 worker
 
-[1/254] qa/accessibility-v113.spec.js:14:1 › home and parent gate meet child touch and labelling baseline
-  1) qa/accessibility-v113.spec.js:14:1 › home and parent gate meet child touch and labelling baseline 
-
-    Test timeout of 30000ms exceeded.
-
-    Error: page.waitForFunction: Test timeout of 30000ms exceeded.
-
-       6 |   await page.evaluate(a=>localStorage.setItem('mimo70',JSON.stringify({age:a,sessions:0,rounds:0,stars:0,daily:0,dailyDate:new Date().toISOString().slice(0,10),skills:{}})),age);
-       7 |   await page.reload({waitUntil:'domcontentloaded'});
-    >  8 |   await page.waitForFunction(()=>document.getElementById('home')?.classList.contains('on')&&Boolean(window.MundoMimoVisualDynamicV111),null,{timeout:15000});
-         |              ^
-       9 |   await expect(page.locator('#home')).toHaveClass(/on/);
-      10 | }
-      11 | async function assertTargets(page,root){const small=await page.locator(`${root} button:visible`).evaluateAll(nodes=>nodes.filter(el=>{const r=el.getBoundingClientRect();return r.width<44||r.height<44}).map(el=>({text:(el.textContent||el.getAttribute('aria-label')||'').trim().slice(0,50),w:el.getBoundingClientRect().width,h:el.getBoundingClientRect().height})));expect(small,`${root}: touch target below 44px`).toEqual([])}
-        at setAge (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/accessibility-v113.spec.js:8:14)
-        at /home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/accessibility-v113.spec.js:14:85
-
-    Error Context: test-results/accessibility-v113-home-an-de64f-ouch-and-labelling-baseline/error-context.md
-
-
-[2/254] qa/accessibility-v113.spec.js:16:100 › age-1 forest/animals has accessible artwork and controls
-[3/254] qa/accessibility-v113.spec.js:16:100 › age-1 forest/sounds has accessible artwork and controls
-[4/254] qa/accessibility-v113.spec.js:16:100 › age-1 forest/memory has accessible artwork and controls
-[5/254] qa/accessibility-v113.spec.js:16:100 › age-1 forest/habitat has accessible artwork and controls
-[6/254] qa/accessibility-v113.spec.js:16:100 › age-1 forest/size has accessible artwork and controls
-[7/254] qa/accessibility-v113.spec.js:16:100 › age-1 forest/tracks has accessible artwork and controls
-[8/254] qa/accessibility-v113.spec.js:16:100 › age-1 lagoon/count has accessible artwork and controls
-[9/254] qa/accessibility-v113.spec.js:16:100 › age-1 lagoon/more has accessible artwork and controls
-[10/254] qa/accessibility-v113.spec.js:16:100 › age-1 lagoon/colors has accessible artwork and controls
-[11/254] qa/accessibility-v113.spec.js:16:100 › age-1 lagoon/shapes has accessible artwork and controls
-[12/254] qa/accessibility-v113.spec.js:16:100 › age-1 lagoon/patterns has accessible artwork and controls
-[13/254] qa/accessibility-v113.spec.js:16:100 › age-1 lagoon/sort has accessible artwork and controls
-[14/254] qa/accessibility-v113.spec.js:16:100 › age-1 village/emotions has accessible artwork and controls
-[15/254] qa/accessibility-v113.spec.js:16:100 › age-1 village/stories has accessible artwork and controls
-[16/254] qa/accessibility-v113.spec.js:16:100 › age-1 village/paint has accessible artwork and controls
-[17/254] qa/accessibility-v113.spec.js:16:100 › age-1 village/routines has accessible artwork and controls
-[18/254] qa/accessibility-v113.spec.js:16:100 › age-1 village/match has accessible artwork and controls
-[19/254] qa/accessibility-v113.spec.js:16:100 › age-1 village/discover has accessible artwork and controls
-[20/254] qa/accessibility-v113.spec.js:16:100 › age-1 mountain/letters has accessible artwork and controls
-[21/254] qa/accessibility-v113.spec.js:16:100 › age-1 mountain/trace has accessible artwork and controls
-[22/254] qa/accessibility-v113.spec.js:16:100 › age-1 mountain/initial has accessible artwork and controls
-[23/254] qa/accessibility-v113.spec.js:16:100 › age-1 mountain/logic has accessible artwork and controls
-[24/254] qa/accessibility-v113.spec.js:16:100 › age-1 mountain/sequence has accessible artwork and controls
-[25/254] qa/accessibility-v113.spec.js:16:100 › age-1 mountain/odd has accessible artwork and controls
-[26/254] qa/accessibility-v113.spec.js:16:100 › age-3 forest/animals has accessible artwork and controls
-[27/254] qa/accessibility-v113.spec.js:16:100 › age-3 forest/sounds has accessible artwork and controls
-[28/254] qa/accessibility-v113.spec.js:16:100 › age-3 forest/memory has accessible artwork and controls
-[29/254] qa/accessibility-v113.spec.js:16:100 › age-3 forest/habitat has accessible artwork and controls
-[30/254] qa/accessibility-v113.spec.js:16:100 › age-3 forest/size has accessible artwork and controls
-[31/254] qa/accessibility-v113.spec.js:16:100 › age-3 forest/tracks has accessible artwork and controls
-[32/254] qa/accessibility-v113.spec.js:16:100 › age-3 lagoon/count has accessible artwork and controls
-[33/254] qa/accessibility-v113.spec.js:16:100 › age-3 lagoon/more has accessible artwork and controls
-[34/254] qa/accessibility-v113.spec.js:16:100 › age-3 lagoon/colors has accessible artwork and controls
-[35/254] qa/accessibility-v113.spec.js:16:100 › age-3 lagoon/shapes has accessible artwork and controls
-[36/254] qa/accessibility-v113.spec.js:16:100 › age-3 lagoon/patterns has accessible artwork and controls
-[37/254] qa/accessibility-v113.spec.js:16:100 › age-3 lagoon/sort has accessible artwork and controls
-[38/254] qa/accessibility-v113.spec.js:16:100 › age-3 village/emotions has accessible artwork and controls
-[39/254] qa/accessibility-v113.spec.js:16:100 › age-3 village/stories has accessible artwork and controls
-[40/254] qa/accessibility-v113.spec.js:16:100 › age-3 village/paint has accessible artwork and controls
-[41/254] qa/accessibility-v113.spec.js:16:100 › age-3 village/routines has accessible artwork and controls
-[42/254] qa/accessibility-v113.spec.js:16:100 › age-3 village/match has accessible artwork and controls
-[43/254] qa/accessibility-v113.spec.js:16:100 › age-3 village/discover has accessible artwork and controls
-[44/254] qa/accessibility-v113.spec.js:16:100 › age-3 mountain/letters has accessible artwork and controls
-[45/254] qa/accessibility-v113.spec.js:16:100 › age-3 mountain/trace has accessible artwork and controls
-[46/254] qa/accessibility-v113.spec.js:16:100 › age-3 mountain/initial has accessible artwork and controls
-[47/254] qa/accessibility-v113.spec.js:16:100 › age-3 mountain/logic has accessible artwork and controls
-[48/254] qa/accessibility-v113.spec.js:16:100 › age-3 mountain/sequence has accessible artwork and controls
-[49/254] qa/accessibility-v113.spec.js:16:100 › age-3 mountain/odd has accessible artwork and controls
-[50/254] qa/accessibility-v113.spec.js:16:100 › age-5 forest/animals has accessible artwork and controls
-[51/254] qa/accessibility-v113.spec.js:16:100 › age-5 forest/sounds has accessible artwork and controls
-[52/254] qa/accessibility-v113.spec.js:16:100 › age-5 forest/memory has accessible artwork and controls
-[53/254] qa/accessibility-v113.spec.js:16:100 › age-5 forest/habitat has accessible artwork and controls
-[54/254] qa/accessibility-v113.spec.js:16:100 › age-5 forest/size has accessible artwork and controls
-[55/254] qa/accessibility-v113.spec.js:16:100 › age-5 forest/tracks has accessible artwork and controls
-[56/254] qa/accessibility-v113.spec.js:16:100 › age-5 lagoon/count has accessible artwork and controls
-[57/254] qa/accessibility-v113.spec.js:16:100 › age-5 lagoon/more has accessible artwork and controls
-[58/254] qa/accessibility-v113.spec.js:16:100 › age-5 lagoon/colors has accessible artwork and controls
-[59/254] qa/accessibility-v113.spec.js:16:100 › age-5 lagoon/shapes has accessible artwork and controls
-[60/254] qa/accessibility-v113.spec.js:16:100 › age-5 lagoon/patterns has accessible artwork and controls
-[61/254] qa/accessibility-v113.spec.js:16:100 › age-5 lagoon/sort has accessible artwork and controls
-[62/254] qa/accessibility-v113.spec.js:16:100 › age-5 village/emotions has accessible artwork and controls
-[63/254] qa/accessibility-v113.spec.js:16:100 › age-5 village/stories has accessible artwork and controls
-[64/254] qa/accessibility-v113.spec.js:16:100 › age-5 village/paint has accessible artwork and controls
-[65/254] qa/accessibility-v113.spec.js:16:100 › age-5 village/routines has accessible artwork and controls
-[66/254] qa/accessibility-v113.spec.js:16:100 › age-5 village/match has accessible artwork and controls
-[67/254] qa/accessibility-v113.spec.js:16:100 › age-5 village/discover has accessible artwork and controls
-[68/254] qa/accessibility-v113.spec.js:16:100 › age-5 mountain/letters has accessible artwork and controls
-[69/254] qa/accessibility-v113.spec.js:16:100 › age-5 mountain/trace has accessible artwork and controls
-[70/254] qa/accessibility-v113.spec.js:16:100 › age-5 mountain/initial has accessible artwork and controls
-[71/254] qa/accessibility-v113.spec.js:16:100 › age-5 mountain/logic has accessible artwork and controls
-[72/254] qa/accessibility-v113.spec.js:16:100 › age-5 mountain/sequence has accessible artwork and controls
-[73/254] qa/accessibility-v113.spec.js:16:100 › age-5 mountain/odd has accessible artwork and controls
-[74/254] qa/accessibility-v113.spec.js:18:1 › Mundo Mimo supports reduced motion for animated UI
+[1/254] qa/accessibility-v113.spec.js:15:1 › home and parent gate meet child touch and labelling baseline
+[2/254] qa/accessibility-v113.spec.js:17:100 › age-1 forest/animals has accessible artwork and controls
+[3/254] qa/accessibility-v113.spec.js:17:100 › age-1 forest/sounds has accessible artwork and controls
+[4/254] qa/accessibility-v113.spec.js:17:100 › age-1 forest/memory has accessible artwork and controls
+[5/254] qa/accessibility-v113.spec.js:17:100 › age-1 forest/habitat has accessible artwork and controls
+[6/254] qa/accessibility-v113.spec.js:17:100 › age-1 forest/size has accessible artwork and controls
+[7/254] qa/accessibility-v113.spec.js:17:100 › age-1 forest/tracks has accessible artwork and controls
+[8/254] qa/accessibility-v113.spec.js:17:100 › age-1 lagoon/count has accessible artwork and controls
+[9/254] qa/accessibility-v113.spec.js:17:100 › age-1 lagoon/more has accessible artwork and controls
+[10/254] qa/accessibility-v113.spec.js:17:100 › age-1 lagoon/colors has accessible artwork and controls
+[11/254] qa/accessibility-v113.spec.js:17:100 › age-1 lagoon/shapes has accessible artwork and controls
+[12/254] qa/accessibility-v113.spec.js:17:100 › age-1 lagoon/patterns has accessible artwork and controls
+[13/254] qa/accessibility-v113.spec.js:17:100 › age-1 lagoon/sort has accessible artwork and controls
+[14/254] qa/accessibility-v113.spec.js:17:100 › age-1 village/emotions has accessible artwork and controls
+[15/254] qa/accessibility-v113.spec.js:17:100 › age-1 village/stories has accessible artwork and controls
+[16/254] qa/accessibility-v113.spec.js:17:100 › age-1 village/paint has accessible artwork and controls
+[17/254] qa/accessibility-v113.spec.js:17:100 › age-1 village/routines has accessible artwork and controls
+[18/254] qa/accessibility-v113.spec.js:17:100 › age-1 village/match has accessible artwork and controls
+[19/254] qa/accessibility-v113.spec.js:17:100 › age-1 village/discover has accessible artwork and controls
+[20/254] qa/accessibility-v113.spec.js:17:100 › age-1 mountain/letters has accessible artwork and controls
+[21/254] qa/accessibility-v113.spec.js:17:100 › age-1 mountain/trace has accessible artwork and controls
+[22/254] qa/accessibility-v113.spec.js:17:100 › age-1 mountain/initial has accessible artwork and controls
+[23/254] qa/accessibility-v113.spec.js:17:100 › age-1 mountain/logic has accessible artwork and controls
+[24/254] qa/accessibility-v113.spec.js:17:100 › age-1 mountain/sequence has accessible artwork and controls
+[25/254] qa/accessibility-v113.spec.js:17:100 › age-1 mountain/odd has accessible artwork and controls
+[26/254] qa/accessibility-v113.spec.js:17:100 › age-3 forest/animals has accessible artwork and controls
+[27/254] qa/accessibility-v113.spec.js:17:100 › age-3 forest/sounds has accessible artwork and controls
+[28/254] qa/accessibility-v113.spec.js:17:100 › age-3 forest/memory has accessible artwork and controls
+[29/254] qa/accessibility-v113.spec.js:17:100 › age-3 forest/habitat has accessible artwork and controls
+[30/254] qa/accessibility-v113.spec.js:17:100 › age-3 forest/size has accessible artwork and controls
+[31/254] qa/accessibility-v113.spec.js:17:100 › age-3 forest/tracks has accessible artwork and controls
+[32/254] qa/accessibility-v113.spec.js:17:100 › age-3 lagoon/count has accessible artwork and controls
+[33/254] qa/accessibility-v113.spec.js:17:100 › age-3 lagoon/more has accessible artwork and controls
+[34/254] qa/accessibility-v113.spec.js:17:100 › age-3 lagoon/colors has accessible artwork and controls
+[35/254] qa/accessibility-v113.spec.js:17:100 › age-3 lagoon/shapes has accessible artwork and controls
+[36/254] qa/accessibility-v113.spec.js:17:100 › age-3 lagoon/patterns has accessible artwork and controls
+[37/254] qa/accessibility-v113.spec.js:17:100 › age-3 lagoon/sort has accessible artwork and controls
+[38/254] qa/accessibility-v113.spec.js:17:100 › age-3 village/emotions has accessible artwork and controls
+[39/254] qa/accessibility-v113.spec.js:17:100 › age-3 village/stories has accessible artwork and controls
+[40/254] qa/accessibility-v113.spec.js:17:100 › age-3 village/paint has accessible artwork and controls
+[41/254] qa/accessibility-v113.spec.js:17:100 › age-3 village/routines has accessible artwork and controls
+[42/254] qa/accessibility-v113.spec.js:17:100 › age-3 village/match has accessible artwork and controls
+[43/254] qa/accessibility-v113.spec.js:17:100 › age-3 village/discover has accessible artwork and controls
+[44/254] qa/accessibility-v113.spec.js:17:100 › age-3 mountain/letters has accessible artwork and controls
+[45/254] qa/accessibility-v113.spec.js:17:100 › age-3 mountain/trace has accessible artwork and controls
+[46/254] qa/accessibility-v113.spec.js:17:100 › age-3 mountain/initial has accessible artwork and controls
+[47/254] qa/accessibility-v113.spec.js:17:100 › age-3 mountain/logic has accessible artwork and controls
+[48/254] qa/accessibility-v113.spec.js:17:100 › age-3 mountain/sequence has accessible artwork and controls
+[49/254] qa/accessibility-v113.spec.js:17:100 › age-3 mountain/odd has accessible artwork and controls
+[50/254] qa/accessibility-v113.spec.js:17:100 › age-5 forest/animals has accessible artwork and controls
+[51/254] qa/accessibility-v113.spec.js:17:100 › age-5 forest/sounds has accessible artwork and controls
+[52/254] qa/accessibility-v113.spec.js:17:100 › age-5 forest/memory has accessible artwork and controls
+[53/254] qa/accessibility-v113.spec.js:17:100 › age-5 forest/habitat has accessible artwork and controls
+[54/254] qa/accessibility-v113.spec.js:17:100 › age-5 forest/size has accessible artwork and controls
+[55/254] qa/accessibility-v113.spec.js:17:100 › age-5 forest/tracks has accessible artwork and controls
+[56/254] qa/accessibility-v113.spec.js:17:100 › age-5 lagoon/count has accessible artwork and controls
+[57/254] qa/accessibility-v113.spec.js:17:100 › age-5 lagoon/more has accessible artwork and controls
+[58/254] qa/accessibility-v113.spec.js:17:100 › age-5 lagoon/colors has accessible artwork and controls
+[59/254] qa/accessibility-v113.spec.js:17:100 › age-5 lagoon/shapes has accessible artwork and controls
+[60/254] qa/accessibility-v113.spec.js:17:100 › age-5 lagoon/patterns has accessible artwork and controls
+[61/254] qa/accessibility-v113.spec.js:17:100 › age-5 lagoon/sort has accessible artwork and controls
+[62/254] qa/accessibility-v113.spec.js:17:100 › age-5 village/emotions has accessible artwork and controls
+[63/254] qa/accessibility-v113.spec.js:17:100 › age-5 village/stories has accessible artwork and controls
+[64/254] qa/accessibility-v113.spec.js:17:100 › age-5 village/paint has accessible artwork and controls
+[65/254] qa/accessibility-v113.spec.js:17:100 › age-5 village/routines has accessible artwork and controls
+[66/254] qa/accessibility-v113.spec.js:17:100 › age-5 village/match has accessible artwork and controls
+[67/254] qa/accessibility-v113.spec.js:17:100 › age-5 village/discover has accessible artwork and controls
+[68/254] qa/accessibility-v113.spec.js:17:100 › age-5 mountain/letters has accessible artwork and controls
+[69/254] qa/accessibility-v113.spec.js:17:100 › age-5 mountain/trace has accessible artwork and controls
+[70/254] qa/accessibility-v113.spec.js:17:100 › age-5 mountain/initial has accessible artwork and controls
+[71/254] qa/accessibility-v113.spec.js:17:100 › age-5 mountain/logic has accessible artwork and controls
+[72/254] qa/accessibility-v113.spec.js:17:100 › age-5 mountain/sequence has accessible artwork and controls
+[73/254] qa/accessibility-v113.spec.js:17:100 › age-5 mountain/odd has accessible artwork and controls
+[74/254] qa/accessibility-v113.spec.js:19:1 › Mundo Mimo supports reduced motion for animated UI
 [75/254] qa/challenge-v100.spec.js:14:1 › v100 exposes 100 challenges for every one of the 24 guided games
 [76/254] qa/challenge-v100.spec.js:35:1 › each game cycles through all 100 challenges before repeating
 [77/254] qa/challenge-v100.spec.js:50:1 › challenge cursor persists across reload and age copy is adapted
 [78/254] qa/challenge-v100.spec.js:63:1 › live rounds receive a challenge id and advance without breaking answers
 [79/254] qa/challenge-v100.spec.js:80:1 › v100 engine is part of the offline core and reset clears its state
-[80/254] qa/e2e.spec.js:148:9 › age-1 › forest/animals completes all 6 rounds
-[81/254] qa/e2e.spec.js:148:9 › age-1 › forest/sounds completes all 6 rounds
-[82/254] qa/e2e.spec.js:148:9 › age-1 › forest/memory completes all 6 rounds
-[83/254] qa/e2e.spec.js:148:9 › age-1 › forest/habitat completes all 6 rounds
-[84/254] qa/e2e.spec.js:148:9 › age-1 › forest/size completes all 6 rounds
-[85/254] qa/e2e.spec.js:148:9 › age-1 › forest/tracks completes all 6 rounds
-[86/254] qa/e2e.spec.js:148:9 › age-1 › lagoon/count completes all 6 rounds
-[87/254] qa/e2e.spec.js:148:9 › age-1 › lagoon/more completes all 6 rounds
-[88/254] qa/e2e.spec.js:148:9 › age-1 › lagoon/colors completes all 6 rounds
-[89/254] qa/e2e.spec.js:148:9 › age-1 › lagoon/shapes completes all 6 rounds
-[90/254] qa/e2e.spec.js:148:9 › age-1 › lagoon/patterns completes all 6 rounds
-[91/254] qa/e2e.spec.js:148:9 › age-1 › lagoon/sort completes all 6 rounds
-[92/254] qa/e2e.spec.js:148:9 › age-1 › village/emotions completes all 6 rounds
-[93/254] qa/e2e.spec.js:148:9 › age-1 › village/stories completes all 6 rounds
-[94/254] qa/e2e.spec.js:148:9 › age-1 › village/paint completes all 6 rounds
-[95/254] qa/e2e.spec.js:148:9 › age-1 › village/routines completes all 6 rounds
-[96/254] qa/e2e.spec.js:148:9 › age-1 › village/match completes all 6 rounds
-[97/254] qa/e2e.spec.js:148:9 › age-1 › village/discover completes all 6 rounds
-[98/254] qa/e2e.spec.js:148:9 › age-1 › mountain/letters completes all 6 rounds
-[99/254] qa/e2e.spec.js:148:9 › age-1 › mountain/trace completes all 6 rounds
-[100/254] qa/e2e.spec.js:148:9 › age-1 › mountain/initial completes all 6 rounds
-[101/254] qa/e2e.spec.js:148:9 › age-1 › mountain/logic completes all 6 rounds
-[102/254] qa/e2e.spec.js:148:9 › age-1 › mountain/sequence completes all 6 rounds
-[103/254] qa/e2e.spec.js:148:9 › age-1 › mountain/odd completes all 6 rounds
-[104/254] qa/e2e.spec.js:155:5 › age-1 › free/music works for age 1
-[105/254] qa/e2e.spec.js:148:9 › age-3 › forest/animals completes all 6 rounds
-[106/254] qa/e2e.spec.js:148:9 › age-3 › forest/sounds completes all 6 rounds
-[107/254] qa/e2e.spec.js:148:9 › age-3 › forest/memory completes all 6 rounds
-[108/254] qa/e2e.spec.js:148:9 › age-3 › forest/habitat completes all 6 rounds
-[109/254] qa/e2e.spec.js:148:9 › age-3 › forest/size completes all 6 rounds
-[110/254] qa/e2e.spec.js:148:9 › age-3 › forest/tracks completes all 6 rounds
-[111/254] qa/e2e.spec.js:148:9 › age-3 › lagoon/count completes all 6 rounds
-[112/254] qa/e2e.spec.js:148:9 › age-3 › lagoon/more completes all 6 rounds
-[113/254] qa/e2e.spec.js:148:9 › age-3 › lagoon/colors completes all 6 rounds
-[114/254] qa/e2e.spec.js:148:9 › age-3 › lagoon/shapes completes all 6 rounds
-[115/254] qa/e2e.spec.js:148:9 › age-3 › lagoon/patterns completes all 6 rounds
-[116/254] qa/e2e.spec.js:148:9 › age-3 › lagoon/sort completes all 6 rounds
-[117/254] qa/e2e.spec.js:148:9 › age-3 › village/emotions completes all 6 rounds
-[118/254] qa/e2e.spec.js:148:9 › age-3 › village/stories completes all 6 rounds
-[119/254] qa/e2e.spec.js:148:9 › age-3 › village/paint completes all 6 rounds
-[120/254] qa/e2e.spec.js:148:9 › age-3 › village/routines completes all 6 rounds
-[121/254] qa/e2e.spec.js:148:9 › age-3 › village/match completes all 6 rounds
-[122/254] qa/e2e.spec.js:148:9 › age-3 › village/discover completes all 6 rounds
-[123/254] qa/e2e.spec.js:148:9 › age-3 › mountain/letters completes all 6 rounds
-[124/254] qa/e2e.spec.js:148:9 › age-3 › mountain/trace completes all 6 rounds
-[125/254] qa/e2e.spec.js:148:9 › age-3 › mountain/initial completes all 6 rounds
-[126/254] qa/e2e.spec.js:148:9 › age-3 › mountain/logic completes all 6 rounds
-[127/254] qa/e2e.spec.js:148:9 › age-3 › mountain/sequence completes all 6 rounds
-[128/254] qa/e2e.spec.js:148:9 › age-3 › mountain/odd completes all 6 rounds
-[129/254] qa/e2e.spec.js:155:5 › age-3 › free/music works for age 3
-[130/254] qa/e2e.spec.js:148:9 › age-5 › forest/animals completes all 6 rounds
-[131/254] qa/e2e.spec.js:148:9 › age-5 › forest/sounds completes all 6 rounds
-[132/254] qa/e2e.spec.js:148:9 › age-5 › forest/memory completes all 6 rounds
-[133/254] qa/e2e.spec.js:148:9 › age-5 › forest/habitat completes all 6 rounds
-[134/254] qa/e2e.spec.js:148:9 › age-5 › forest/size completes all 6 rounds
-[135/254] qa/e2e.spec.js:148:9 › age-5 › forest/tracks completes all 6 rounds
-[136/254] qa/e2e.spec.js:148:9 › age-5 › lagoon/count completes all 6 rounds
-[137/254] qa/e2e.spec.js:148:9 › age-5 › lagoon/more completes all 6 rounds
-[138/254] qa/e2e.spec.js:148:9 › age-5 › lagoon/colors completes all 6 rounds
-[139/254] qa/e2e.spec.js:148:9 › age-5 › lagoon/shapes completes all 6 rounds
-[140/254] qa/e2e.spec.js:148:9 › age-5 › lagoon/patterns completes all 6 rounds
-[141/254] qa/e2e.spec.js:148:9 › age-5 › lagoon/sort completes all 6 rounds
-[142/254] qa/e2e.spec.js:148:9 › age-5 › village/emotions completes all 6 rounds
-[143/254] qa/e2e.spec.js:148:9 › age-5 › village/stories completes all 6 rounds
-[144/254] qa/e2e.spec.js:148:9 › age-5 › village/paint completes all 6 rounds
-[145/254] qa/e2e.spec.js:148:9 › age-5 › village/routines completes all 6 rounds
-[146/254] qa/e2e.spec.js:148:9 › age-5 › village/match completes all 6 rounds
-[147/254] qa/e2e.spec.js:148:9 › age-5 › village/discover completes all 6 rounds
-[148/254] qa/e2e.spec.js:148:9 › age-5 › mountain/letters completes all 6 rounds
-[149/254] qa/e2e.spec.js:148:9 › age-5 › mountain/trace completes all 6 rounds
-[150/254] qa/e2e.spec.js:148:9 › age-5 › mountain/initial completes all 6 rounds
-[151/254] qa/e2e.spec.js:148:9 › age-5 › mountain/logic completes all 6 rounds
-[152/254] qa/e2e.spec.js:148:9 › age-5 › mountain/sequence completes all 6 rounds
-[153/254] qa/e2e.spec.js:148:9 › age-5 › mountain/odd completes all 6 rounds
-[154/254] qa/e2e.spec.js:155:5 › age-5 › free/music works for age 5
-[155/254] qa/e2e.spec.js:164:1 › daily path advances only after completing its full session
-[156/254] qa/e2e.spec.js:172:1 › parent gate blocks child and opens only with correct answer
-[157/254] qa/e2e.spec.js:187:1 › privacy, audio and synthetic-voice release checks
-  2) qa/e2e.spec.js:187:1 › privacy, audio and synthetic-voice release checks ──────────────────────
+[80/254] qa/e2e.spec.js:109:142 › age-1 › forest/animals completes all 6 rounds
+[81/254] qa/e2e.spec.js:109:142 › age-1 › forest/sounds completes all 6 rounds
+[82/254] qa/e2e.spec.js:109:142 › age-1 › forest/memory completes all 6 rounds
+[83/254] qa/e2e.spec.js:109:142 › age-1 › forest/habitat completes all 6 rounds
+[84/254] qa/e2e.spec.js:109:142 › age-1 › forest/size completes all 6 rounds
+[85/254] qa/e2e.spec.js:109:142 › age-1 › forest/tracks completes all 6 rounds
+[86/254] qa/e2e.spec.js:109:142 › age-1 › lagoon/count completes all 6 rounds
+[87/254] qa/e2e.spec.js:109:142 › age-1 › lagoon/more completes all 6 rounds
+[88/254] qa/e2e.spec.js:109:142 › age-1 › lagoon/colors completes all 6 rounds
+[89/254] qa/e2e.spec.js:109:142 › age-1 › lagoon/shapes completes all 6 rounds
+[90/254] qa/e2e.spec.js:109:142 › age-1 › lagoon/patterns completes all 6 rounds
+[91/254] qa/e2e.spec.js:109:142 › age-1 › lagoon/sort completes all 6 rounds
+[92/254] qa/e2e.spec.js:109:142 › age-1 › village/emotions completes all 6 rounds
+[93/254] qa/e2e.spec.js:109:142 › age-1 › village/stories completes all 6 rounds
+[94/254] qa/e2e.spec.js:109:142 › age-1 › village/paint completes all 6 rounds
+[95/254] qa/e2e.spec.js:109:142 › age-1 › village/routines completes all 6 rounds
+[96/254] qa/e2e.spec.js:109:142 › age-1 › village/match completes all 6 rounds
+[97/254] qa/e2e.spec.js:109:142 › age-1 › village/discover completes all 6 rounds
+[98/254] qa/e2e.spec.js:109:142 › age-1 › mountain/letters completes all 6 rounds
+[99/254] qa/e2e.spec.js:109:142 › age-1 › mountain/trace completes all 6 rounds
+[100/254] qa/e2e.spec.js:109:142 › age-1 › mountain/initial completes all 6 rounds
+[101/254] qa/e2e.spec.js:109:142 › age-1 › mountain/logic completes all 6 rounds
+[102/254] qa/e2e.spec.js:109:142 › age-1 › mountain/sequence completes all 6 rounds
+[103/254] qa/e2e.spec.js:109:142 › age-1 › mountain/odd completes all 6 rounds
+[104/254] qa/e2e.spec.js:109:313 › age-1 › free/music works for age 1
+[105/254] qa/e2e.spec.js:109:142 › age-3 › forest/animals completes all 6 rounds
+[106/254] qa/e2e.spec.js:109:142 › age-3 › forest/sounds completes all 6 rounds
+[107/254] qa/e2e.spec.js:109:142 › age-3 › forest/memory completes all 6 rounds
+[108/254] qa/e2e.spec.js:109:142 › age-3 › forest/habitat completes all 6 rounds
+[109/254] qa/e2e.spec.js:109:142 › age-3 › forest/size completes all 6 rounds
+[110/254] qa/e2e.spec.js:109:142 › age-3 › forest/tracks completes all 6 rounds
+[111/254] qa/e2e.spec.js:109:142 › age-3 › lagoon/count completes all 6 rounds
+[112/254] qa/e2e.spec.js:109:142 › age-3 › lagoon/more completes all 6 rounds
+[113/254] qa/e2e.spec.js:109:142 › age-3 › lagoon/colors completes all 6 rounds
+[114/254] qa/e2e.spec.js:109:142 › age-3 › lagoon/shapes completes all 6 rounds
+[115/254] qa/e2e.spec.js:109:142 › age-3 › lagoon/patterns completes all 6 rounds
+[116/254] qa/e2e.spec.js:109:142 › age-3 › lagoon/sort completes all 6 rounds
+[117/254] qa/e2e.spec.js:109:142 › age-3 › village/emotions completes all 6 rounds
+[118/254] qa/e2e.spec.js:109:142 › age-3 › village/stories completes all 6 rounds
+[119/254] qa/e2e.spec.js:109:142 › age-3 › village/paint completes all 6 rounds
+[120/254] qa/e2e.spec.js:109:142 › age-3 › village/routines completes all 6 rounds
+[121/254] qa/e2e.spec.js:109:142 › age-3 › village/match completes all 6 rounds
+[122/254] qa/e2e.spec.js:109:142 › age-3 › village/discover completes all 6 rounds
+[123/254] qa/e2e.spec.js:109:142 › age-3 › mountain/letters completes all 6 rounds
+[124/254] qa/e2e.spec.js:109:142 › age-3 › mountain/trace completes all 6 rounds
+[125/254] qa/e2e.spec.js:109:142 › age-3 › mountain/initial completes all 6 rounds
+[126/254] qa/e2e.spec.js:109:142 › age-3 › mountain/logic completes all 6 rounds
+[127/254] qa/e2e.spec.js:109:142 › age-3 › mountain/sequence completes all 6 rounds
+[128/254] qa/e2e.spec.js:109:142 › age-3 › mountain/odd completes all 6 rounds
+[129/254] qa/e2e.spec.js:109:313 › age-3 › free/music works for age 3
+[130/254] qa/e2e.spec.js:109:142 › age-5 › forest/animals completes all 6 rounds
+[131/254] qa/e2e.spec.js:109:142 › age-5 › forest/sounds completes all 6 rounds
+[132/254] qa/e2e.spec.js:109:142 › age-5 › forest/memory completes all 6 rounds
+[133/254] qa/e2e.spec.js:109:142 › age-5 › forest/habitat completes all 6 rounds
+[134/254] qa/e2e.spec.js:109:142 › age-5 › forest/size completes all 6 rounds
+[135/254] qa/e2e.spec.js:109:142 › age-5 › forest/tracks completes all 6 rounds
+[136/254] qa/e2e.spec.js:109:142 › age-5 › lagoon/count completes all 6 rounds
+[137/254] qa/e2e.spec.js:109:142 › age-5 › lagoon/more completes all 6 rounds
+[138/254] qa/e2e.spec.js:109:142 › age-5 › lagoon/colors completes all 6 rounds
+[139/254] qa/e2e.spec.js:109:142 › age-5 › lagoon/shapes completes all 6 rounds
+[140/254] qa/e2e.spec.js:109:142 › age-5 › lagoon/patterns completes all 6 rounds
+[141/254] qa/e2e.spec.js:109:142 › age-5 › lagoon/sort completes all 6 rounds
+[142/254] qa/e2e.spec.js:109:142 › age-5 › village/emotions completes all 6 rounds
+[143/254] qa/e2e.spec.js:109:142 › age-5 › village/stories completes all 6 rounds
+[144/254] qa/e2e.spec.js:109:142 › age-5 › village/paint completes all 6 rounds
+[145/254] qa/e2e.spec.js:109:142 › age-5 › village/routines completes all 6 rounds
+[146/254] qa/e2e.spec.js:109:142 › age-5 › village/match completes all 6 rounds
+[147/254] qa/e2e.spec.js:109:142 › age-5 › village/discover completes all 6 rounds
+[148/254] qa/e2e.spec.js:109:142 › age-5 › mountain/letters completes all 6 rounds
+[149/254] qa/e2e.spec.js:109:142 › age-5 › mountain/trace completes all 6 rounds
+[150/254] qa/e2e.spec.js:109:142 › age-5 › mountain/initial completes all 6 rounds
+[151/254] qa/e2e.spec.js:109:142 › age-5 › mountain/logic completes all 6 rounds
+[152/254] qa/e2e.spec.js:109:142 › age-5 › mountain/sequence completes all 6 rounds
+[153/254] qa/e2e.spec.js:109:142 › age-5 › mountain/odd completes all 6 rounds
+[154/254] qa/e2e.spec.js:109:313 › age-5 › free/music works for age 5
+[155/254] qa/e2e.spec.js:111:1 › daily path advances only after completing its full session
+[156/254] qa/e2e.spec.js:113:1 › parent gate blocks child and opens only with correct answer
+[157/254] qa/e2e.spec.js:115:1 › privacy and packaged-audio release checks
+  1) qa/e2e.spec.js:115:1 › privacy and packaged-audio release checks ──────────────────────────────
 
     Error: expect(received).toContain(expected) // indexOf
 
-    Expected substring: "speechSynthesis"
-    Received string:    "window.MimoAudio=(()=>{const soundUrls={dog:'./assets/audio/dog.ogg',cat:'./assets/audio/cat.ogg',cow:'./assets/audio/cow.ogg',frog:'./assets/audio/frog.oga'};const voiceUrls={dog:'./assets/audio/voice-perro.wav',go:'./assets/audio/voice-vamos.wav',n1:'./assets/audio/voice-uno.wav',n2:'./assets/audio/voice-dos.wav',n3:'./assets/audio/voice-tres.wav',star:'./assets/audio/voice-estrella.wav',fish:'./assets/audio/voice-pez.wav',small:'./assets/audio/voice-pequeno.wav',sad:'./assets/audio/voice-triste.wav'};const pool={};let current=null,ctx=null;function get(type,key){const src=(type==='voice'?voiceUrls:soundUrls)[key];if(!src)return null;const id=type+':'+key;if(!pool[id]){const a=new Audio(src);a.preload='auto';a.playsInline=true;pool[id]=a}return pool[id]}function ensureContext(){const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;if(!ctx)ctx=new C();if(ctx.state==='suspended')ctx.resume().catch(()=>{});return ctx}async function play(type,key){const a=get(type,key);if(!a)return false;try{ensureContext();if(current&&current!==a){current.pause();current.currentTime=0}current=a;a.currentTime=0;a.volume=.92;await a.play();return true}catch(e){console.warn('Mundo Mimo audio unavailable',key);return false}}function tone(freq,d=.14,vol=.045,delay=0){const c=ensureContext();if(!c)return;const start=c.currentTime+delay,o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.value=freq;g.gain.setValueAtTime(vol,start);g.gain.exponentialRampToValueAtTime(.001,start+d);o.connect(g).connect(c.destination);o.start(start);o.stop(start+d+.01)}function success(){tone(620,.10,.04,0);tone(820,.14,.04,.09)}function gentle(){tone(330,.12,.025,0)}function warm(){ensureContext();Object.keys(soundUrls).forEach(k=>{const a=get('sound',k);try{a.load()}catch{}});Object.keys(voiceUrls).forEach(k=>{const a=get('voice',k);try{a.load()}catch{}})}window.addEventListener('load',()=>{Object.keys(soundUrls).forEach(k=>{const a=get('sound',k);try{a.load()}catch{}})},{once:true});document.addEventListener('pointerdown',warm,{once:true,passive:true});document.addEventListener('touchstart',()=>ensureContext(),{once:true,passive:true});return{sound:k=>play('sound',k),voice:k=>play('voice',k),hasVoice:k=>!!voiceUrls[k],hasSound:k=>!!soundUrls[k],success,gentle,warm}})();"
+    Expected substring: "Sonidos de animales"
+    Received string:    "<!doctype html><html lang=\"es\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Créditos · Mundo Mimo</title><style>body{margin:0;background:#f7f4ff;color:#2d3152;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}.wrap{max-width:760px;margin:auto;padding:24px}h1,h2{color:#4939aa}.card{background:#fff;border-radius:22px;padding:18px;margin:14px 0;box-shadow:0 4px 0 #e1ddec}a{color:#4939aa;font-weight:700}</style></head><body><main class=\"wrap\"><h1>Créditos y licencias</h1><p>Recursos temporales de la versión candidata de Mundo Mimo. Esta página se mantiene para trazabilidad y cumplimiento de atribuciones.</p><div class=\"card\"><h2>Sonidos reales de animales</h2><p>Los juegos de animales utilizan sonidos reales procedentes de grabaciones de campo o muestras identificadas, no imitaciones sintetizadas.</p><p><b>Perro — George_vuf_1996.ogg.</b> Autor: Broadbeer. Publicado en dominio público por el titular.</p><p><b>Gato — Meow.ogg.</b> Autor original: Dan Crosby / Dcrosby. Creative Commons Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0).</p><p><b>Vaca — Single_Cow_Moo.ogg.</b> Autor indicado en Wikimedia Commons: MichaeltheFox8621. Disponible, entre otras, bajo Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0).</p><p><b>Rana — Single_Frog_Croak.oga.</b> Autor: MichaeltheFox8621. Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0).</p><p>Los archivos se copian al paquete de despliegue y se sirven desde Mundo Mimo. No se modifican intencionadamente en el build actual.</p></div><div class=\"card\"><h2>Locuciones humanas</h2><p>Las pronunciaciones temporales proceden de Lingua Libre / Wikimedia Commons. Antes del lanzamiento comercial se verificará la licencia de cada archivo exacto y se conservará la atribución que corresponda. El objetivo de producción es sustituir estas locuciones temporales por un paquete de voz propio, grabado y contratado para Mundo Mimo.</p></div><div class=\"card\"><h2>Personajes e interfaz</h2><p>Los personajes Mimo, Lío y Pipa y los gráficos SVG producidos específicamente para este proyecto forman parte de la identidad visual de Mundo Mimo. No se utilizan personajes ni recursos gráficos de Keiki, Stumble Guys o Brawl Stars.</p></div><p><a href=\"./privacy.html\">Privacidad</a> · <a href=\"./\">Volver a Mundo Mimo</a></p></main></body></html>"
 
-      196 |   expect(credits).toContain('sonidos reales');
-      197 |   const audio=await (await page.request.get('/assets/audio-bank-v70.js')).text();
-    > 198 |   expect(audio).toContain('speechSynthesis');
-          |                 ^
-      199 |   expect(audio).toContain("'./assets/audio/dog.ogg'");
-      200 | });
-      201 |
-        at /home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:198:17
+      118 |   const credits=await (await page.request.get('/credits.html')).text();
+      119 |   expect(privacy).toContain('Privacidad de Mundo Mimo'); expect(privacy).toContain('almacenamiento local'); expect(privacy).toContain('no contiene anuncios'); expect(privacy).toContain('no solicita nombre, correo electrónico, teléfono, ubicación, contactos, cámara ni micrófono');
+    > 120 |   expect(support).toContain('Soporte'); expect(credits).toContain('Sonidos de animales'); expect(credits).toContain('Locuciones humanas');
+          |                                                         ^
+      121 |   const audio=await (await page.request.get('/assets/audio-bank-v70.js')).text();
+      122 |   expect(audio).not.toContain('speechSynthesis');
+      123 |   expect(audio).toContain("'./assets/audio/dog.ogg'");
+        at /home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:120:57
 
-    Error Context: test-results/e2e-privacy-audio-and-synthetic-voice-release-checks/error-context.md
+    Error Context: test-results/e2e-privacy-and-packaged-audio-release-checks/error-context.md
 
 
-[158/254] qa/e2e.spec.js:202:1 › small-phone layout has no horizontal overflow
-[159/254] qa/e2e.spec.js:210:162 › iPhone landscape stays usable on home and in game
-[160/254] qa/e2e.spec.js:210:162 › iPad portrait stays usable on home and in game
-[161/254] qa/e2e.spec.js:210:162 › iPad landscape stays usable on home and in game
+[158/254] qa/e2e.spec.js:128:1 › small-phone layout has no horizontal overflow
+[159/254] qa/e2e.spec.js:129:162 › iPhone landscape stays usable on home and in game
+[160/254] qa/e2e.spec.js:129:162 › iPad portrait stays usable on home and in game
+[161/254] qa/e2e.spec.js:129:162 › iPad landscape stays usable on home and in game
 [162/254] qa/premium-offline-v72.spec.js:3:1 › premium experience is part of the offline core cache
 [163/254] qa/premium-offline-v72.spec.js:10:1 › service worker refreshes scripts and styles before falling back to cache
 [164/254] qa/premium-offline-v72.spec.js:18:1 › parent progress labels distinguish evidence depth
@@ -300,7 +281,6 @@ Running 254 tests using 1 worker
 [252/254] qa/visual-system-v110.spec.js:57:1 › habitat farm uses branded tractor artwork instead of generic fallback
 [253/254] qa/visual-system-v110.spec.js:69:1 › celebration added outside app root is converted to branded vectors
 [254/254] qa/visual-system-v110.spec.js:79:1 › visual system is included in offline core
-  2 failed
-    qa/accessibility-v113.spec.js:14:1 › home and parent gate meet child touch and labelling baseline 
-    qa/e2e.spec.js:187:1 › privacy, audio and synthetic-voice release checks ───────────────────────
-  252 passed (14.8m)
+  1 failed
+    qa/e2e.spec.js:115:1 › privacy and packaged-audio release checks ───────────────────────────────
+  253 passed (14.5m)
