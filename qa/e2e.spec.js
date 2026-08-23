@@ -52,9 +52,14 @@ async function solveMemory(page) {
   }
   for (const idxs of Object.values(groups)) {
     expect(idxs.length).toBe(2);
-    await cards.nth(idxs[0]).click();
-    await cards.nth(idxs[1]).click();
-    await page.waitForTimeout(620);
+    const first=cards.nth(idxs[0]), second=cards.nth(idxs[1]);
+    await expect(first).toBeVisible();
+    await expect(second).toBeVisible();
+    await first.click();
+    await second.click();
+    await expect(first).toHaveClass(/done/, {timeout:2000});
+    await expect(second).toHaveClass(/done/, {timeout:2000});
+    await expect(page.locator('#guide')).toHaveAttribute('class','guide',{timeout:1800});
   }
 }
 
