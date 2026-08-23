@@ -35,9 +35,7 @@ async function drawOnCanvas(page, selector) {
   if (!box) throw new Error(`Canvas ${selector} has no box`);
   await page.mouse.move(box.x + box.width*0.18, box.y + box.height*0.28);
   await page.mouse.down();
-  for (let i=1;i<=30;i++) {
-    await page.mouse.move(box.x + box.width*(0.18 + i*0.021), box.y + box.height*(0.28 + (i%6)*0.055));
-  }
+  for (let i=1;i<=30;i++) await page.mouse.move(box.x + box.width*(0.18 + i*0.021), box.y + box.height*(0.28 + (i%6)*0.055));
   await page.mouse.up();
 }
 
@@ -75,30 +73,9 @@ async function solveMemory(page) {
 
 async function solveRound(page, game) {
   if (game === 'memory') return solveMemory(page);
-  if (game === 'trace') {
-    const done = page.locator('[data-action="trace-done"]');
-    await expect(done).toBeDisabled();
-    await drawOnCanvas(page, '#traceCanvas');
-    await expect(done).toBeEnabled();
-    await done.click();
-    return;
-  }
-  if (game === 'paint') {
-    const done = page.locator('[data-action="finish-free"]');
-    await expect(done).toBeDisabled();
-    await drawOnCanvas(page, '#paintCanvas');
-    await expect(done).toBeEnabled();
-    await done.click();
-    return;
-  }
-  if (game === 'music') {
-    const tones = page.locator('[data-tone]');
-    expect(await tones.count()).toBeGreaterThanOrEqual(4);
-    await tones.nth(0).click();
-    await tones.nth(1).click();
-    await page.locator('[data-action="finish-free"]').click();
-    return;
-  }
+  if (game === 'trace') { const done=page.locator('[data-action="trace-done"]'); await expect(done).toBeDisabled(); await drawOnCanvas(page,'#traceCanvas'); await expect(done).toBeEnabled(); await done.click(); return; }
+  if (game === 'paint') { const done=page.locator('[data-action="finish-free"]'); await expect(done).toBeDisabled(); await drawOnCanvas(page,'#paintCanvas'); await expect(done).toBeEnabled(); await done.click(); return; }
+  if (game === 'music') { const tones=page.locator('[data-tone]'); expect(await tones.count()).toBeGreaterThanOrEqual(4); await tones.nth(0).click(); await tones.nth(1).click(); await page.locator('[data-action="finish-free"]').click(); return; }
   const correct = page.locator('[data-ok="true"]');
   const total = await page.locator('[data-ok]').count();
   expect(total, `No answer buttons in ${game}`).toBeGreaterThan(0);
@@ -109,15 +86,10 @@ async function solveRound(page, game) {
 async function assertNoOverflow(page) {
   const overflow = await page.evaluate(() => {
     const vw = document.documentElement.clientWidth;
-    return [...document.querySelectorAll('body *')]
-      .filter(el => {
-        const s = getComputedStyle(el);
-        if (s.display === 'none' || s.visibility === 'hidden' || s.position === 'fixed') return false;
-        const r = el.getBoundingClientRect();
-        return r.width > 0 && (r.right > vw + 2 || r.left < -2);
-      })
-      .slice(0,8)
-      .map(el => ({tag:el.tagName, cls:String(el.className||''), text:(el.textContent||'').trim().slice(0,40), left:el.getBoundingClientRect().left, right:el.getBoundingClientRect().right, vw}));
+    return [...document.querySelectorAll('body *')].filter(el => {
+      const s = getComputedStyle(el); if (s.display === 'none' || s.visibility === 'hidden' || s.position === 'fixed') return false;
+      const r = el.getBoundingClientRect(); return r.width > 0 && (r.right > vw + 2 || r.left < -2);
+    }).slice(0,8).map(el => ({tag:el.tagName, cls:String(el.className||''), text:(el.textContent||'').trim().slice(0,40), left:el.getBoundingClientRect().left, right:el.getBoundingClientRect().right, vw}));
   });
   expect(overflow, `Horizontal overflow: ${JSON.stringify(overflow)}`).toEqual([]);
 }
@@ -128,83 +100,30 @@ async function completeSixRounds(page, game) {
     const roundsBefore = await page.evaluate(() => JSON.parse(localStorage.getItem('mimo70')||'{}').rounds || 0);
     await solveRound(page, game);
     await page.waitForFunction(before => (JSON.parse(localStorage.getItem('mimo70')||'{}').rounds || 0) > before, roundsBefore, { timeout: 10000 });
-    if (round < 6) {
-      await page.waitForFunction(r => document.querySelector('#roundText')?.textContent?.startsWith(String(r)), round+1, { timeout: 10000 });
-    } else {
-      await expect(page.locator('#sessionProgress')).toHaveAttribute('style', /100%/);
-      await expect(page.locator('#nextBtn')).toHaveClass(/on/);
-      const state = await page.evaluate(() => JSON.parse(localStorage.getItem('mimo70')));
-      expect(state.sessions).toBeGreaterThanOrEqual(1);
-      expect(state.rounds).toBeGreaterThanOrEqual(6);
-    }
+    if (round < 6) await page.waitForFunction(r => document.querySelector('#roundText')?.textContent?.startsWith(String(r)), round+1, { timeout: 10000 });
+    else { await expect(page.locator('#sessionProgress')).toHaveAttribute('style', /100%/); await expect(page.locator('#nextBtn')).toHaveClass(/on/); const state=await page.evaluate(()=>JSON.parse(localStorage.getItem('mimo70'))); expect(state.sessions).toBeGreaterThanOrEqual(1); expect(state.rounds).toBeGreaterThanOrEqual(6); }
     await assertNoOverflow(page);
   }
 }
 
-for (const age of [1,3,5]) {
-  test.describe(`age-${age}`, () => {
-    for (const [world,games] of Object.entries(worlds)) {
-      for (const game of games) {
-        test(`${world}/${game} completes all 6 rounds`, async ({ page }) => {
-          await setAge(page, age);
-          await openGame(page, world, game);
-          await completeSixRounds(page, game);
-        });
-      }
-    }
-    test(`free/music works for age ${age}`, async ({ page }) => {
-      await setAge(page, age);
-      await openFreeGame(page, 'music');
-      await solveRound(page, 'music');
-      await expect(page.locator('#nextBtn')).toHaveClass(/on/);
-    });
-  });
-}
+for (const age of [1,3,5]) test.describe(`age-${age}`, () => { for (const [world,games] of Object.entries(worlds)) for (const game of games) test(`${world}/${game} completes all 6 rounds`, async ({ page }) => { await setAge(page, age); await openGame(page, world, game); await completeSixRounds(page, game); }); test(`free/music works for age ${age}`, async ({ page }) => { await setAge(page, age); await openFreeGame(page, 'music'); await solveRound(page, 'music'); await expect(page.locator('#nextBtn')).toHaveClass(/on/); }); });
 
-test('daily path advances only after completing its full session', async ({ page }) => {
-  await setAge(page, 5);
-  await page.locator('[data-action="today"]').click();
-  await completeSixRounds(page, 'letters');
-  const state = await page.evaluate(() => JSON.parse(localStorage.getItem('mimo70')));
-  expect(state.daily).toBe(1);
-});
+test('daily path advances only after completing its full session', async ({ page }) => { await setAge(page,5); await page.locator('[data-action="today"]').click(); await completeSixRounds(page,'letters'); const state=await page.evaluate(()=>JSON.parse(localStorage.getItem('mimo70'))); expect(state.daily).toBe(1); });
 
-test('parent gate blocks child and opens only with correct answer', async ({ page }) => {
-  await setAge(page, 5);
-  await page.locator('[data-action="parent"]').first().click();
-  await expect(page.locator('#parentGate')).toHaveClass(/on/);
-  const answer = await page.locator('#gateQuestion').textContent();
-  const nums = (answer.match(/\d+/g)||[]).map(Number);
-  await page.locator('#gateAnswer').fill(String(nums.reduce((a,b)=>a+b,0)-1));
-  await page.locator('[data-action="gate-check"]').click();
-  await expect(page.locator('#parentGate')).toHaveClass(/on/);
-  await page.locator('#gateAnswer').fill(String(nums.reduce((a,b)=>a+b,0)));
-  await page.locator('[data-action="gate-check"]').click();
-  await expect(page.locator('#parentGate')).not.toHaveClass(/on/);
-  await expect(page.locator('#parent')).toHaveClass(/on/);
-});
+test('parent gate blocks child and opens only with correct answer', async ({ page }) => { await setAge(page,5); await page.locator('[data-action="parent"]').first().click(); await expect(page.locator('#parentGate')).toHaveClass(/on/); const answer=await page.locator('#gateQuestion').textContent(); const nums=(answer.match(/\d+/g)||[]).map(Number); await page.locator('#gateAnswer').fill(String(nums.reduce((a,b)=>a+b,0)-1)); await page.locator('[data-action="gate-check"]').click(); await expect(page.locator('#parentGate')).toHaveClass(/on/); await page.locator('#gateAnswer').fill(String(nums.reduce((a,b)=>a+b,0))); await page.locator('[data-action="gate-check"]').click(); await expect(page.locator('#parentGate')).not.toHaveClass(/on/); await expect(page.locator('#parent')).toHaveClass(/on/); });
 
-test('privacy, audio and synthetic-voice release checks', async ({ page }) => {
+test('privacy and packaged-audio release checks', async ({ page }) => {
   const privacy=await (await page.request.get('/privacy.html')).text();
   const support=await (await page.request.get('/support.html')).text();
   const credits=await (await page.request.get('/credits.html')).text();
-  expect(privacy).toContain('Privacidad de Mundo Mimo');
-  expect(privacy).toContain('almacenamiento local');
-  expect(privacy).toContain('no contiene anuncios');
-  expect(privacy).toContain('no solicita nombre, correo electrónico, teléfono, ubicación, contactos, cámara ni micrófono');
-  expect(support).toContain('Soporte');
-  expect(credits).toContain('sonidos reales');
+  expect(privacy).toContain('Privacidad de Mundo Mimo'); expect(privacy).toContain('almacenamiento local'); expect(privacy).toContain('no contiene anuncios'); expect(privacy).toContain('no solicita nombre, correo electrónico, teléfono, ubicación, contactos, cámara ni micrófono');
+  expect(support).toContain('Soporte'); expect(credits).toContain('Sonidos de animales'); expect(credits).toContain('Locuciones humanas');
   const audio=await (await page.request.get('/assets/audio-bank-v70.js')).text();
-  expect(audio).toContain('speechSynthesis');
+  expect(audio).not.toContain('speechSynthesis');
   expect(audio).toContain("'./assets/audio/dog.ogg'");
+  expect(audio).toContain("'./assets/audio/voice-perro.wav'");
+  expect(audio).toContain("'./assets/audio/voice-vamos.wav'");
 });
 
-test('small-phone layout has no horizontal overflow', async ({ page }) => {
-  await page.setViewportSize({width:320,height:700});
-  await setAge(page, 3);
-  await assertNoOverflow(page);
-  await openGame(page, 'lagoon', 'count');
-  await assertNoOverflow(page);
-});
-
+test('small-phone layout has no horizontal overflow', async ({ page }) => { await page.setViewportSize({width:320,height:700}); await setAge(page,3); await assertNoOverflow(page); await openGame(page,'lagoon','count'); await assertNoOverflow(page); });
 for(const device of [{name:'iPhone landscape',width:844,height:390},{name:'iPad portrait',width:768,height:1024},{name:'iPad landscape',width:1024,height:768}]) test(`${device.name} stays usable on home and in game`,async({browser})=>{const context=await browser.newContext({viewport:{width:device.width,height:device.height},isMobile:device.width<700,hasTouch:true});const page=await context.newPage();await setAge(page,5);await assertNoOverflow(page);await openGame(page,'lagoon','count');await assertNoOverflow(page);await context.close()});
