@@ -1,8 +1,8 @@
 MUNDO MIMO LAUNCH QA
-UTC: 2026-08-23T16:03:00Z
-COMMIT: a3762832f45a6874b281c8640c0f75e077b257ae
-RESULT: FAIL
-EXIT_CODE: 1
+UTC: 2026-08-23T17:22:43Z
+COMMIT: 505374162456111fbdf79804f9d8a0a321544c86
+RESULT: PASS
+EXIT_CODE: 0
 MATRIX: 24 guided games x 3 age bands x 6 rounds + 2400 v100 challenges + per-game branded visual coverage v112 + per-game accessibility v113 + persistence/offline + adaptive v71 + premium/audio v72 + parent/privacy/audio + 320/375/390/430px overflow
 --- TEST OUTPUT (tail) ---
 
@@ -165,25 +165,6 @@ Running 254 tests using 1 worker
 [155/254] qa/e2e.spec.js:111:1 › daily path advances only after completing its full session
 [156/254] qa/e2e.spec.js:113:1 › parent gate blocks child and opens only with correct answer
 [157/254] qa/e2e.spec.js:115:1 › privacy and packaged-audio release checks
-  1) qa/e2e.spec.js:115:1 › privacy and packaged-audio release checks ──────────────────────────────
-
-    Error: expect(received).toContain(expected) // indexOf
-
-    Expected substring: "Sonidos de animales"
-    Received string:    "<!doctype html><html lang=\"es\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Créditos · Mundo Mimo</title><style>body{margin:0;background:#f7f4ff;color:#2d3152;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}.wrap{max-width:760px;margin:auto;padding:24px}h1,h2{color:#4939aa}.card{background:#fff;border-radius:22px;padding:18px;margin:14px 0;box-shadow:0 4px 0 #e1ddec}a{color:#4939aa;font-weight:700}</style></head><body><main class=\"wrap\"><h1>Créditos y licencias</h1><p>Recursos temporales de la versión candidata de Mundo Mimo. Esta página se mantiene para trazabilidad y cumplimiento de atribuciones.</p><div class=\"card\"><h2>Sonidos reales de animales</h2><p>Los juegos de animales utilizan sonidos reales procedentes de grabaciones de campo o muestras identificadas, no imitaciones sintetizadas.</p><p><b>Perro — George_vuf_1996.ogg.</b> Autor: Broadbeer. Publicado en dominio público por el titular.</p><p><b>Gato — Meow.ogg.</b> Autor original: Dan Crosby / Dcrosby. Creative Commons Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0).</p><p><b>Vaca — Single_Cow_Moo.ogg.</b> Autor indicado en Wikimedia Commons: MichaeltheFox8621. Disponible, entre otras, bajo Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0).</p><p><b>Rana — Single_Frog_Croak.oga.</b> Autor: MichaeltheFox8621. Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0).</p><p>Los archivos se copian al paquete de despliegue y se sirven desde Mundo Mimo. No se modifican intencionadamente en el build actual.</p></div><div class=\"card\"><h2>Locuciones humanas</h2><p>Las pronunciaciones temporales proceden de Lingua Libre / Wikimedia Commons. Antes del lanzamiento comercial se verificará la licencia de cada archivo exacto y se conservará la atribución que corresponda. El objetivo de producción es sustituir estas locuciones temporales por un paquete de voz propio, grabado y contratado para Mundo Mimo.</p></div><div class=\"card\"><h2>Personajes e interfaz</h2><p>Los personajes Mimo, Lío y Pipa y los gráficos SVG producidos específicamente para este proyecto forman parte de la identidad visual de Mundo Mimo. No se utilizan personajes ni recursos gráficos de Keiki, Stumble Guys o Brawl Stars.</p></div><p><a href=\"./privacy.html\">Privacidad</a> · <a href=\"./\">Volver a Mundo Mimo</a></p></main></body></html>"
-
-      118 |   const credits=await (await page.request.get('/credits.html')).text();
-      119 |   expect(privacy).toContain('Privacidad de Mundo Mimo'); expect(privacy).toContain('almacenamiento local'); expect(privacy).toContain('no contiene anuncios'); expect(privacy).toContain('no solicita nombre, correo electrónico, teléfono, ubicación, contactos, cámara ni micrófono');
-    > 120 |   expect(support).toContain('Soporte'); expect(credits).toContain('Sonidos de animales'); expect(credits).toContain('Locuciones humanas');
-          |                                                         ^
-      121 |   const audio=await (await page.request.get('/assets/audio-bank-v70.js')).text();
-      122 |   expect(audio).not.toContain('speechSynthesis');
-      123 |   expect(audio).toContain("'./assets/audio/dog.ogg'");
-        at /home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:120:57
-
-    Error Context: test-results/e2e-privacy-and-packaged-audio-release-checks/error-context.md
-
-
 [158/254] qa/e2e.spec.js:128:1 › small-phone layout has no horizontal overflow
 [159/254] qa/e2e.spec.js:129:162 › iPhone landscape stays usable on home and in game
 [160/254] qa/e2e.spec.js:129:162 › iPad portrait stays usable on home and in game
@@ -281,6 +262,6 @@ Running 254 tests using 1 worker
 [252/254] qa/visual-system-v110.spec.js:57:1 › habitat farm uses branded tractor artwork instead of generic fallback
 [253/254] qa/visual-system-v110.spec.js:69:1 › celebration added outside app root is converted to branded vectors
 [254/254] qa/visual-system-v110.spec.js:79:1 › visual system is included in offline core
-  1 failed
-    qa/e2e.spec.js:115:1 › privacy and packaged-audio release checks ───────────────────────────────
-  253 passed (14.5m)
+  Slow test file: qa/e2e.spec.js (9.1m)
+  Consider running tests from slow files in parallel. See: https://playwright.dev/docs/test-parallel
+  254 passed (14.2m)
