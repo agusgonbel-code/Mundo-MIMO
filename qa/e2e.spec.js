@@ -117,7 +117,7 @@ test('privacy and packaged-audio release checks', async ({ page }) => {
   const support=await (await page.request.get('/support.html')).text();
   const credits=await (await page.request.get('/credits.html')).text();
   expect(privacy).toContain('Privacidad de Mundo Mimo'); expect(privacy).toContain('almacenamiento local'); expect(privacy).toContain('no contiene anuncios'); expect(privacy).toContain('no solicita nombre, correo electrónico, teléfono, ubicación, contactos, cámara ni micrófono');
-  expect(support).toContain('Soporte'); expect(credits).toContain('Sonidos de animales'); expect(credits).toContain('Locuciones humanas');
+  expect(support).toContain('Soporte'); expect(credits).toContain('Sonidos reales de animales'); expect(credits).toContain('Locuciones humanas');
   const audio=await (await page.request.get('/assets/audio-bank-v70.js')).text();
   expect(audio).not.toContain('speechSynthesis');
   expect(audio).toContain("'./assets/audio/dog.ogg'");
