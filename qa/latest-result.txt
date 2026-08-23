@@ -1,11 +1,17 @@
 MUNDO MIMO LAUNCH QA
-UTC: 2026-08-22T23:59:48Z
-COMMIT: 4ddc5d99893a2fcadcd673a852c111aecf961ba5
+UTC: 2026-08-23T00:23:07Z
+COMMIT: 07636c1389349f8f7c82f302ee9f5e4883c12474
 RESULT: FAIL
 EXIT_CODE: 1
 MATRIX: 24 guided games x 3 age bands x 6 rounds + 2400 v100 challenges + per-game branded visual coverage v112 + per-game accessibility v113 + persistence/offline + adaptive v71 + premium/audio v72 + parent/privacy/audio + 320/375/390/430px overflow
 --- TEST OUTPUT (tail) ---
 
+Running 250 tests using 1 worker
+
+[1/250] qa/accessibility-v113.spec.js:7:1 › home and parent gate meet child touch and labelling baseline
+[2/250] qa/accessibility-v113.spec.js:9:100 › age-1 forest/animals has accessible artwork and controls
+[3/250] qa/accessibility-v113.spec.js:9:100 › age-1 forest/sounds has accessible artwork and controls
+[4/250] qa/accessibility-v113.spec.js:9:100 › age-1 forest/memory has accessible artwork and controls
 [5/250] qa/accessibility-v113.spec.js:9:100 › age-1 forest/habitat has accessible artwork and controls
 [6/250] qa/accessibility-v113.spec.js:9:100 › age-1 forest/size has accessible artwork and controls
 [7/250] qa/accessibility-v113.spec.js:9:100 › age-1 forest/tracks has accessible artwork and controls
@@ -18,52 +24,6 @@ MATRIX: 24 guided games x 3 age bands x 6 rounds + 2400 v100 challenges + per-ga
 [14/250] qa/accessibility-v113.spec.js:9:100 › age-1 village/emotions has accessible artwork and controls
 [15/250] qa/accessibility-v113.spec.js:9:100 › age-1 village/stories has accessible artwork and controls
 [16/250] qa/accessibility-v113.spec.js:9:100 › age-1 village/paint has accessible artwork and controls
-  2) qa/accessibility-v113.spec.js:9:100 › age-1 village/paint has accessible artwork and controls ─
-
-    Error: #game: touch target below 44px
-
-    expect(received).toEqual(expected) // deep equality
-
-    - Expected  -  1
-    + Received  + 22
-
-    - Array []
-    + Array [
-    +   Object {
-    +     "h": 48,
-    +     "text": "",
-    +     "w": 38,
-    +   },
-    +   Object {
-    +     "h": 48,
-    +     "text": "",
-    +     "w": 38,
-    +   },
-    +   Object {
-    +     "h": 48,
-    +     "text": "",
-    +     "w": 38,
-    +   },
-    +   Object {
-    +     "h": 48,
-    +     "text": "",
-    +     "w": 38,
-    +   },
-    + ]
-
-      2 | const worlds={forest:['animals','sounds','memory','habitat','size','tracks'],lagoon:['count','more','colors','shapes','patterns','sort'],village:['emotions','stories','paint','routines','match','discover'],mountain:['letters','trace','initial','logic','sequence','odd']};
-      3 | async function setAge(page,age=5){await page.goto('/app-v70.html');await page.evaluate(a=>localStorage.setItem('mimo70',JSON.stringify({age:a,sessions:0,rounds:0,stars:0,daily:0,dailyDate:new Date().toISOString().slice(0,10),skills:{}})),age);await page.reload();await expect(page.locator('#home')).toHaveClass(/on/);await page.waitForFunction(()=>Boolean(window.MundoMimoVisualDynamicV111));}
-    > 4 | async function assertTargets(page,root){const small=await page.locator(`${root} button:visible`).evaluateAll(nodes=>nodes.filter(el=>{const r=el.getBoundingClientRect();return r.width<44||r.height<44}).map(el=>({text:(el.textContent||el.getAttribute('aria-label')||'').trim().slice(0,50),w:el.getBoundingClientRect().width,h:el.getBoundingClientRect().height})));expect(small,`${root}: touch target below 44px`).toEqual([])}
-        |                                                                                                                                                                                                                                                                                                                                                                                                                             ^
-      5 | async function assertNames(page,root){const unnamed=await page.locator(`${root} button:visible`).evaluateAll(nodes=>nodes.filter(el=>!(el.getAttribute('aria-label')||el.textContent.trim())).map(el=>el.outerHTML.slice(0,180)));expect(unnamed,`${root}: unnamed button`).toEqual([])}
-      6 |
-      7 | test('home and parent gate meet child touch and labelling baseline',async({page})=>{await setAge(page,3);await assertTargets(page,'#home');await assertNames(page,'#home');await page.locator('[data-action="parent"]').first().click();await expect(page.locator('#parentGate')).toHaveClass(/on/);await assertTargets(page,'#parentGate');await expect(page.locator('#gateAnswer')).toHaveAttribute('aria-label',/Respuesta/)});
-        at assertTargets (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/accessibility-v113.spec.js:4:413)
-        at /home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/accessibility-v113.spec.js:9:422
-
-    Error Context: test-results/accessibility-v113-age-1-v-8a732-ssible-artwork-and-controls/error-context.md
-
-
 [17/250] qa/accessibility-v113.spec.js:9:100 › age-1 village/routines has accessible artwork and controls
 [18/250] qa/accessibility-v113.spec.js:9:100 › age-1 village/match has accessible artwork and controls
 [19/250] qa/accessibility-v113.spec.js:9:100 › age-1 village/discover has accessible artwork and controls
@@ -76,38 +36,6 @@ MATRIX: 24 guided games x 3 age bands x 6 rounds + 2400 v100 challenges + per-ga
 [26/250] qa/accessibility-v113.spec.js:9:100 › age-3 forest/animals has accessible artwork and controls
 [27/250] qa/accessibility-v113.spec.js:9:100 › age-3 forest/sounds has accessible artwork and controls
 [28/250] qa/accessibility-v113.spec.js:9:100 › age-3 forest/memory has accessible artwork and controls
-  3) qa/accessibility-v113.spec.js:9:100 › age-3 forest/memory has accessible artwork and controls ─
-
-    Error: #game: unnamed button
-
-    expect(received).toEqual(expected) // deep equality
-
-    - Expected  - 1
-    + Received  + 8
-
-    - Array []
-    + Array [
-    +   "<button data-memory=\"cow\"><img src=\"./assets/cow-mimo.svg\" data-qa-armed=\"1\" alt=\"\" aria-hidden=\"true\"></button>",
-    +   "<button data-memory=\"frog\"><img src=\"./assets/frog-mimo.svg\" data-qa-armed=\"1\" alt=\"\" aria-hidden=\"true\"></button>",
-    +   "<button data-memory=\"frog\"><img src=\"./assets/frog-mimo.svg\" data-qa-armed=\"1\" alt=\"\" aria-hidden=\"true\"></button>",
-    +   "<button data-memory=\"cat\"><img src=\"./assets/cat-mimo.svg\" data-qa-armed=\"1\" alt=\"\" aria-hidden=\"true\"></button>",
-    +   "<button data-memory=\"cat\"><img src=\"./assets/cat-mimo.svg\" data-qa-armed=\"1\" alt=\"\" aria-hidden=\"true\"></button>",
-    +   "<button data-memory=\"cow\"><img src=\"./assets/cow-mimo.svg\" data-qa-armed=\"1\" alt=\"\" aria-hidden=\"true\"></button>",
-    + ]
-
-      3 | async function setAge(page,age=5){await page.goto('/app-v70.html');await page.evaluate(a=>localStorage.setItem('mimo70',JSON.stringify({age:a,sessions:0,rounds:0,stars:0,daily:0,dailyDate:new Date().toISOString().slice(0,10),skills:{}})),age);await page.reload();await expect(page.locator('#home')).toHaveClass(/on/);await page.waitForFunction(()=>Boolean(window.MundoMimoVisualDynamicV111));}
-      4 | async function assertTargets(page,root){const small=await page.locator(`${root} button:visible`).evaluateAll(nodes=>nodes.filter(el=>{const r=el.getBoundingClientRect();return r.width<44||r.height<44}).map(el=>({text:(el.textContent||el.getAttribute('aria-label')||'').trim().slice(0,50),w:el.getBoundingClientRect().width,h:el.getBoundingClientRect().height})));expect(small,`${root}: touch target below 44px`).toEqual([])}
-    > 5 | async function assertNames(page,root){const unnamed=await page.locator(`${root} button:visible`).evaluateAll(nodes=>nodes.filter(el=>!(el.getAttribute('aria-label')||el.textContent.trim())).map(el=>el.outerHTML.slice(0,180)));expect(unnamed,`${root}: unnamed button`).toEqual([])}
-        |                                                                                                                                                                                                                                                                             ^
-      6 |
-      7 | test('home and parent gate meet child touch and labelling baseline',async({page})=>{await setAge(page,3);await assertTargets(page,'#home');await assertNames(page,'#home');await page.locator('[data-action="parent"]').first().click();await expect(page.locator('#parentGate')).toHaveClass(/on/);await assertTargets(page,'#parentGate');await expect(page.locator('#gateAnswer')).toHaveAttribute('aria-label',/Respuesta/)});
-      8 |
-        at assertNames (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/accessibility-v113.spec.js:5:269)
-        at /home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/accessibility-v113.spec.js:9:456
-
-    Error Context: test-results/accessibility-v113-age-3-f-fdecf-ssible-artwork-and-controls/error-context.md
-
-
 [29/250] qa/accessibility-v113.spec.js:9:100 › age-3 forest/habitat has accessible artwork and controls
 [30/250] qa/accessibility-v113.spec.js:9:100 › age-3 forest/size has accessible artwork and controls
 [31/250] qa/accessibility-v113.spec.js:9:100 › age-3 forest/tracks has accessible artwork and controls
@@ -120,52 +48,6 @@ MATRIX: 24 guided games x 3 age bands x 6 rounds + 2400 v100 challenges + per-ga
 [38/250] qa/accessibility-v113.spec.js:9:100 › age-3 village/emotions has accessible artwork and controls
 [39/250] qa/accessibility-v113.spec.js:9:100 › age-3 village/stories has accessible artwork and controls
 [40/250] qa/accessibility-v113.spec.js:9:100 › age-3 village/paint has accessible artwork and controls
-  4) qa/accessibility-v113.spec.js:9:100 › age-3 village/paint has accessible artwork and controls ─
-
-    Error: #game: touch target below 44px
-
-    expect(received).toEqual(expected) // deep equality
-
-    - Expected  -  1
-    + Received  + 22
-
-    - Array []
-    + Array [
-    +   Object {
-    +     "h": 48,
-    +     "text": "",
-    +     "w": 38,
-    +   },
-    +   Object {
-    +     "h": 48,
-    +     "text": "",
-    +     "w": 38,
-    +   },
-    +   Object {
-    +     "h": 48,
-    +     "text": "",
-    +     "w": 38,
-    +   },
-    +   Object {
-    +     "h": 48,
-    +     "text": "",
-    +     "w": 38,
-    +   },
-    + ]
-
-      2 | const worlds={forest:['animals','sounds','memory','habitat','size','tracks'],lagoon:['count','more','colors','shapes','patterns','sort'],village:['emotions','stories','paint','routines','match','discover'],mountain:['letters','trace','initial','logic','sequence','odd']};
-      3 | async function setAge(page,age=5){await page.goto('/app-v70.html');await page.evaluate(a=>localStorage.setItem('mimo70',JSON.stringify({age:a,sessions:0,rounds:0,stars:0,daily:0,dailyDate:new Date().toISOString().slice(0,10),skills:{}})),age);await page.reload();await expect(page.locator('#home')).toHaveClass(/on/);await page.waitForFunction(()=>Boolean(window.MundoMimoVisualDynamicV111));}
-    > 4 | async function assertTargets(page,root){const small=await page.locator(`${root} button:visible`).evaluateAll(nodes=>nodes.filter(el=>{const r=el.getBoundingClientRect();return r.width<44||r.height<44}).map(el=>({text:(el.textContent||el.getAttribute('aria-label')||'').trim().slice(0,50),w:el.getBoundingClientRect().width,h:el.getBoundingClientRect().height})));expect(small,`${root}: touch target below 44px`).toEqual([])}
-        |                                                                                                                                                                                                                                                                                                                                                                                                                             ^
-      5 | async function assertNames(page,root){const unnamed=await page.locator(`${root} button:visible`).evaluateAll(nodes=>nodes.filter(el=>!(el.getAttribute('aria-label')||el.textContent.trim())).map(el=>el.outerHTML.slice(0,180)));expect(unnamed,`${root}: unnamed button`).toEqual([])}
-      6 |
-      7 | test('home and parent gate meet child touch and labelling baseline',async({page})=>{await setAge(page,3);await assertTargets(page,'#home');await assertNames(page,'#home');await page.locator('[data-action="parent"]').first().click();await expect(page.locator('#parentGate')).toHaveClass(/on/);await assertTargets(page,'#parentGate');await expect(page.locator('#gateAnswer')).toHaveAttribute('aria-label',/Respuesta/)});
-        at assertTargets (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/accessibility-v113.spec.js:4:413)
-        at /home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/accessibility-v113.spec.js:9:422
-
-    Error Context: test-results/accessibility-v113-age-3-v-820da-ssible-artwork-and-controls/error-context.md
-
-
 [41/250] qa/accessibility-v113.spec.js:9:100 › age-3 village/routines has accessible artwork and controls
 [42/250] qa/accessibility-v113.spec.js:9:100 › age-3 village/match has accessible artwork and controls
 [43/250] qa/accessibility-v113.spec.js:9:100 › age-3 village/discover has accessible artwork and controls
@@ -178,38 +60,6 @@ MATRIX: 24 guided games x 3 age bands x 6 rounds + 2400 v100 challenges + per-ga
 [50/250] qa/accessibility-v113.spec.js:9:100 › age-5 forest/animals has accessible artwork and controls
 [51/250] qa/accessibility-v113.spec.js:9:100 › age-5 forest/sounds has accessible artwork and controls
 [52/250] qa/accessibility-v113.spec.js:9:100 › age-5 forest/memory has accessible artwork and controls
-  5) qa/accessibility-v113.spec.js:9:100 › age-5 forest/memory has accessible artwork and controls ─
-
-    Error: #game: unnamed button
-
-    expect(received).toEqual(expected) // deep equality
-
-    - Expected  - 1
-    + Received  + 8
-
-    - Array []
-    + Array [
-    +   "<button data-memory=\"dog\"><img src=\"./assets/dog-mimo.svg\" data-qa-armed=\"1\" alt=\"\" aria-hidden=\"true\"></button>",
-    +   "<button data-memory=\"frog\"><img src=\"./assets/frog-mimo.svg\" data-qa-armed=\"1\" alt=\"\" aria-hidden=\"true\"></button>",
-    +   "<button data-memory=\"cat\"><img src=\"./assets/cat-mimo.svg\" data-qa-armed=\"1\" alt=\"\" aria-hidden=\"true\"></button>",
-    +   "<button data-memory=\"cat\"><img src=\"./assets/cat-mimo.svg\" data-qa-armed=\"1\" alt=\"\" aria-hidden=\"true\"></button>",
-    +   "<button data-memory=\"frog\"><img src=\"./assets/frog-mimo.svg\" data-qa-armed=\"1\" alt=\"\" aria-hidden=\"true\"></button>",
-    +   "<button data-memory=\"dog\"><img src=\"./assets/dog-mimo.svg\" data-qa-armed=\"1\" alt=\"\" aria-hidden=\"true\"></button>",
-    + ]
-
-      3 | async function setAge(page,age=5){await page.goto('/app-v70.html');await page.evaluate(a=>localStorage.setItem('mimo70',JSON.stringify({age:a,sessions:0,rounds:0,stars:0,daily:0,dailyDate:new Date().toISOString().slice(0,10),skills:{}})),age);await page.reload();await expect(page.locator('#home')).toHaveClass(/on/);await page.waitForFunction(()=>Boolean(window.MundoMimoVisualDynamicV111));}
-      4 | async function assertTargets(page,root){const small=await page.locator(`${root} button:visible`).evaluateAll(nodes=>nodes.filter(el=>{const r=el.getBoundingClientRect();return r.width<44||r.height<44}).map(el=>({text:(el.textContent||el.getAttribute('aria-label')||'').trim().slice(0,50),w:el.getBoundingClientRect().width,h:el.getBoundingClientRect().height})));expect(small,`${root}: touch target below 44px`).toEqual([])}
-    > 5 | async function assertNames(page,root){const unnamed=await page.locator(`${root} button:visible`).evaluateAll(nodes=>nodes.filter(el=>!(el.getAttribute('aria-label')||el.textContent.trim())).map(el=>el.outerHTML.slice(0,180)));expect(unnamed,`${root}: unnamed button`).toEqual([])}
-        |                                                                                                                                                                                                                                                                             ^
-      6 |
-      7 | test('home and parent gate meet child touch and labelling baseline',async({page})=>{await setAge(page,3);await assertTargets(page,'#home');await assertNames(page,'#home');await page.locator('[data-action="parent"]').first().click();await expect(page.locator('#parentGate')).toHaveClass(/on/);await assertTargets(page,'#parentGate');await expect(page.locator('#gateAnswer')).toHaveAttribute('aria-label',/Respuesta/)});
-      8 |
-        at assertNames (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/accessibility-v113.spec.js:5:269)
-        at /home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/accessibility-v113.spec.js:9:456
-
-    Error Context: test-results/accessibility-v113-age-5-f-3911b-ssible-artwork-and-controls/error-context.md
-
-
 [53/250] qa/accessibility-v113.spec.js:9:100 › age-5 forest/habitat has accessible artwork and controls
 [54/250] qa/accessibility-v113.spec.js:9:100 › age-5 forest/size has accessible artwork and controls
 [55/250] qa/accessibility-v113.spec.js:9:100 › age-5 forest/tracks has accessible artwork and controls
@@ -222,52 +72,6 @@ MATRIX: 24 guided games x 3 age bands x 6 rounds + 2400 v100 challenges + per-ga
 [62/250] qa/accessibility-v113.spec.js:9:100 › age-5 village/emotions has accessible artwork and controls
 [63/250] qa/accessibility-v113.spec.js:9:100 › age-5 village/stories has accessible artwork and controls
 [64/250] qa/accessibility-v113.spec.js:9:100 › age-5 village/paint has accessible artwork and controls
-  6) qa/accessibility-v113.spec.js:9:100 › age-5 village/paint has accessible artwork and controls ─
-
-    Error: #game: touch target below 44px
-
-    expect(received).toEqual(expected) // deep equality
-
-    - Expected  -  1
-    + Received  + 22
-
-    - Array []
-    + Array [
-    +   Object {
-    +     "h": 48,
-    +     "text": "",
-    +     "w": 38,
-    +   },
-    +   Object {
-    +     "h": 48,
-    +     "text": "",
-    +     "w": 38,
-    +   },
-    +   Object {
-    +     "h": 48,
-    +     "text": "",
-    +     "w": 38,
-    +   },
-    +   Object {
-    +     "h": 48,
-    +     "text": "",
-    +     "w": 38,
-    +   },
-    + ]
-
-      2 | const worlds={forest:['animals','sounds','memory','habitat','size','tracks'],lagoon:['count','more','colors','shapes','patterns','sort'],village:['emotions','stories','paint','routines','match','discover'],mountain:['letters','trace','initial','logic','sequence','odd']};
-      3 | async function setAge(page,age=5){await page.goto('/app-v70.html');await page.evaluate(a=>localStorage.setItem('mimo70',JSON.stringify({age:a,sessions:0,rounds:0,stars:0,daily:0,dailyDate:new Date().toISOString().slice(0,10),skills:{}})),age);await page.reload();await expect(page.locator('#home')).toHaveClass(/on/);await page.waitForFunction(()=>Boolean(window.MundoMimoVisualDynamicV111));}
-    > 4 | async function assertTargets(page,root){const small=await page.locator(`${root} button:visible`).evaluateAll(nodes=>nodes.filter(el=>{const r=el.getBoundingClientRect();return r.width<44||r.height<44}).map(el=>({text:(el.textContent||el.getAttribute('aria-label')||'').trim().slice(0,50),w:el.getBoundingClientRect().width,h:el.getBoundingClientRect().height})));expect(small,`${root}: touch target below 44px`).toEqual([])}
-        |                                                                                                                                                                                                                                                                                                                                                                                                                             ^
-      5 | async function assertNames(page,root){const unnamed=await page.locator(`${root} button:visible`).evaluateAll(nodes=>nodes.filter(el=>!(el.getAttribute('aria-label')||el.textContent.trim())).map(el=>el.outerHTML.slice(0,180)));expect(unnamed,`${root}: unnamed button`).toEqual([])}
-      6 |
-      7 | test('home and parent gate meet child touch and labelling baseline',async({page})=>{await setAge(page,3);await assertTargets(page,'#home');await assertNames(page,'#home');await page.locator('[data-action="parent"]').first().click();await expect(page.locator('#parentGate')).toHaveClass(/on/);await assertTargets(page,'#parentGate');await expect(page.locator('#gateAnswer')).toHaveAttribute('aria-label',/Respuesta/)});
-        at assertTargets (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/accessibility-v113.spec.js:4:413)
-        at /home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/accessibility-v113.spec.js:9:422
-
-    Error Context: test-results/accessibility-v113-age-5-v-dfa6c-ssible-artwork-and-controls/error-context.md
-
-
 [65/250] qa/accessibility-v113.spec.js:9:100 › age-5 village/routines has accessible artwork and controls
 [66/250] qa/accessibility-v113.spec.js:9:100 › age-5 village/match has accessible artwork and controls
 [67/250] qa/accessibility-v113.spec.js:9:100 › age-5 village/discover has accessible artwork and controls
@@ -364,7 +168,7 @@ MATRIX: 24 guided games x 3 age bands x 6 rounds + 2400 v100 challenges + per-ga
 [158/250] qa/e2e.spec.js:191:1 › small-phone layout has no horizontal overflow
 [159/250] qa/premium-offline-v72.spec.js:3:1 › premium experience is part of the offline core cache
 [160/250] qa/premium-offline-v72.spec.js:10:1 › service worker refreshes scripts and styles before falling back to cache
-  7) qa/premium-offline-v72.spec.js:10:1 › service worker refreshes scripts and styles before falling back to cache 
+  1) qa/premium-offline-v72.spec.js:10:1 › service worker refreshes scripts and styles before falling back to cache 
 
     Error: expect(received).toContain(expected) // indexOf
 
@@ -490,7 +294,7 @@ MATRIX: 24 guided games x 3 age bands x 6 rounds + 2400 v100 challenges + per-ga
 [243/250] qa/visual-coverage-v112.spec.js:45:7 › age-5 mountain/sequence has complete branded visual coverage
 [244/250] qa/visual-coverage-v112.spec.js:45:7 › age-5 mountain/odd has complete branded visual coverage
 [245/250] qa/visual-coverage-v112.spec.js:56:1 › free activities have branded visuals without OS emoji
-  8) qa/visual-coverage-v112.spec.js:56:1 › free activities have branded visuals without OS emoji ──
+  2) qa/visual-coverage-v112.spec.js:56:1 › free activities have branded visuals without OS emoji ──
 
     Test timeout of 20000ms exceeded.
 
@@ -513,15 +317,9 @@ MATRIX: 24 guided games x 3 age bands x 6 rounds + 2400 v100 challenges + per-ga
 [248/250] qa/visual-system-v110.spec.js:44:1 › classification choices remain semantically distinct after vector conversion
 [249/250] qa/visual-system-v110.spec.js:57:1 › celebration added outside app root is converted to branded vectors
 [250/250] qa/visual-system-v110.spec.js:67:1 › visual system is included in offline core
-  Slow test file: qa/e2e.spec.js (7.8m)
+  Slow test file: qa/e2e.spec.js (7.9m)
   Consider running tests from slow files in parallel. See: https://playwright.dev/docs/test-parallel
-  8 failed
-    qa/accessibility-v113.spec.js:9:100 › age-1 forest/memory has accessible artwork and controls ──
-    qa/accessibility-v113.spec.js:9:100 › age-1 village/paint has accessible artwork and controls ──
-    qa/accessibility-v113.spec.js:9:100 › age-3 forest/memory has accessible artwork and controls ──
-    qa/accessibility-v113.spec.js:9:100 › age-3 village/paint has accessible artwork and controls ──
-    qa/accessibility-v113.spec.js:9:100 › age-5 forest/memory has accessible artwork and controls ──
-    qa/accessibility-v113.spec.js:9:100 › age-5 village/paint has accessible artwork and controls ──
+  2 failed
     qa/premium-offline-v72.spec.js:10:1 › service worker refreshes scripts and styles before falling back to cache 
     qa/visual-coverage-v112.spec.js:56:1 › free activities have branded visuals without OS emoji ───
-  242 passed (12.1m)
+  248 passed (12.3m)
