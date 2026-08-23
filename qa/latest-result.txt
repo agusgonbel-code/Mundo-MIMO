@@ -1,6 +1,6 @@
 MUNDO MIMO LAUNCH QA
-UTC: 2026-08-23T09:26:29Z
-COMMIT: 5dff0c081a24622bdd220e7163c078108fa3b94e
+UTC: 2026-08-23T10:23:40Z
+COMMIT: ed67b26b959070f4be99d71e1a47a7ff2cf66a1d
 RESULT: FAIL
 EXIT_CODE: 1
 MATRIX: 24 guided games x 3 age bands x 6 rounds + 2400 v100 challenges + per-game branded visual coverage v112 + per-game accessibility v113 + persistence/offline + adaptive v71 + premium/audio v72 + parent/privacy/audio + 320/375/390/430px overflow
@@ -87,152 +87,128 @@ Running 254 tests using 1 worker
 [77/254] qa/challenge-v100.spec.js:50:1 › challenge cursor persists across reload and age copy is adapted
 [78/254] qa/challenge-v100.spec.js:63:1 › live rounds receive a challenge id and advance without breaking answers
 [79/254] qa/challenge-v100.spec.js:80:1 › v100 engine is part of the offline core and reset clears its state
-[80/254] qa/e2e.spec.js:136:9 › age-1 › forest/animals completes all 6 rounds
-[81/254] qa/e2e.spec.js:136:9 › age-1 › forest/sounds completes all 6 rounds
-[82/254] qa/e2e.spec.js:136:9 › age-1 › forest/memory completes all 6 rounds
-[83/254] qa/e2e.spec.js:136:9 › age-1 › forest/habitat completes all 6 rounds
-[84/254] qa/e2e.spec.js:136:9 › age-1 › forest/size completes all 6 rounds
-[85/254] qa/e2e.spec.js:136:9 › age-1 › forest/tracks completes all 6 rounds
-[86/254] qa/e2e.spec.js:136:9 › age-1 › lagoon/count completes all 6 rounds
-[87/254] qa/e2e.spec.js:136:9 › age-1 › lagoon/more completes all 6 rounds
-[88/254] qa/e2e.spec.js:136:9 › age-1 › lagoon/colors completes all 6 rounds
-[89/254] qa/e2e.spec.js:136:9 › age-1 › lagoon/shapes completes all 6 rounds
-[90/254] qa/e2e.spec.js:136:9 › age-1 › lagoon/patterns completes all 6 rounds
-[91/254] qa/e2e.spec.js:136:9 › age-1 › lagoon/sort completes all 6 rounds
-[92/254] qa/e2e.spec.js:136:9 › age-1 › village/emotions completes all 6 rounds
-[93/254] qa/e2e.spec.js:136:9 › age-1 › village/stories completes all 6 rounds
-[94/254] qa/e2e.spec.js:136:9 › age-1 › village/paint completes all 6 rounds
-[95/254] qa/e2e.spec.js:136:9 › age-1 › village/routines completes all 6 rounds
-[96/254] qa/e2e.spec.js:136:9 › age-1 › village/match completes all 6 rounds
-[97/254] qa/e2e.spec.js:136:9 › age-1 › village/discover completes all 6 rounds
-[98/254] qa/e2e.spec.js:136:9 › age-1 › mountain/letters completes all 6 rounds
-[99/254] qa/e2e.spec.js:136:9 › age-1 › mountain/trace completes all 6 rounds
-[100/254] qa/e2e.spec.js:136:9 › age-1 › mountain/initial completes all 6 rounds
-[101/254] qa/e2e.spec.js:136:9 › age-1 › mountain/logic completes all 6 rounds
-[102/254] qa/e2e.spec.js:136:9 › age-1 › mountain/sequence completes all 6 rounds
-[103/254] qa/e2e.spec.js:136:9 › age-1 › mountain/odd completes all 6 rounds
-[104/254] qa/e2e.spec.js:148:5 › age-1 › free/music works for age 1
-[105/254] qa/e2e.spec.js:136:9 › age-3 › forest/animals completes all 6 rounds
-[106/254] qa/e2e.spec.js:136:9 › age-3 › forest/sounds completes all 6 rounds
-[107/254] qa/e2e.spec.js:136:9 › age-3 › forest/memory completes all 6 rounds
-  1) qa/e2e.spec.js:136:9 › age-3 › forest/memory completes all 6 rounds ───────────────────────────
+[80/254] qa/e2e.spec.js:146:9 › age-1 › forest/animals completes all 6 rounds
+[81/254] qa/e2e.spec.js:146:9 › age-1 › forest/sounds completes all 6 rounds
+[82/254] qa/e2e.spec.js:146:9 › age-1 › forest/memory completes all 6 rounds
+[83/254] qa/e2e.spec.js:146:9 › age-1 › forest/habitat completes all 6 rounds
+[84/254] qa/e2e.spec.js:146:9 › age-1 › forest/size completes all 6 rounds
+[85/254] qa/e2e.spec.js:146:9 › age-1 › forest/tracks completes all 6 rounds
+[86/254] qa/e2e.spec.js:146:9 › age-1 › lagoon/count completes all 6 rounds
+[87/254] qa/e2e.spec.js:146:9 › age-1 › lagoon/more completes all 6 rounds
+[88/254] qa/e2e.spec.js:146:9 › age-1 › lagoon/colors completes all 6 rounds
+[89/254] qa/e2e.spec.js:146:9 › age-1 › lagoon/shapes completes all 6 rounds
+[90/254] qa/e2e.spec.js:146:9 › age-1 › lagoon/patterns completes all 6 rounds
+[91/254] qa/e2e.spec.js:146:9 › age-1 › lagoon/sort completes all 6 rounds
+[92/254] qa/e2e.spec.js:146:9 › age-1 › village/emotions completes all 6 rounds
+[93/254] qa/e2e.spec.js:146:9 › age-1 › village/stories completes all 6 rounds
+[94/254] qa/e2e.spec.js:146:9 › age-1 › village/paint completes all 6 rounds
+[95/254] qa/e2e.spec.js:146:9 › age-1 › village/routines completes all 6 rounds
+[96/254] qa/e2e.spec.js:146:9 › age-1 › village/match completes all 6 rounds
+[97/254] qa/e2e.spec.js:146:9 › age-1 › village/discover completes all 6 rounds
+[98/254] qa/e2e.spec.js:146:9 › age-1 › mountain/letters completes all 6 rounds
+[99/254] qa/e2e.spec.js:146:9 › age-1 › mountain/trace completes all 6 rounds
+[100/254] qa/e2e.spec.js:146:9 › age-1 › mountain/initial completes all 6 rounds
+[101/254] qa/e2e.spec.js:146:9 › age-1 › mountain/logic completes all 6 rounds
+[102/254] qa/e2e.spec.js:146:9 › age-1 › mountain/sequence completes all 6 rounds
+[103/254] qa/e2e.spec.js:146:9 › age-1 › mountain/odd completes all 6 rounds
+[104/254] qa/e2e.spec.js:158:5 › age-1 › free/music works for age 1
+[105/254] qa/e2e.spec.js:146:9 › age-3 › forest/animals completes all 6 rounds
+[106/254] qa/e2e.spec.js:146:9 › age-3 › forest/sounds completes all 6 rounds
+[107/254] qa/e2e.spec.js:146:9 › age-3 › forest/memory completes all 6 rounds
+  1) qa/e2e.spec.js:146:9 › age-3 › forest/memory completes all 6 rounds ───────────────────────────
 
     Test timeout of 20000ms exceeded.
 
-    Error: expect(locator).toHaveClass(expected) failed
+    Error: page.waitForFunction: Test timeout of 20000ms exceeded.
 
-    Locator: locator('[data-memory]').first()
-    Expected pattern: /done/
-    Received string:  "open"
-
-    Call log:
-      - Expect "toHaveClass" with timeout 2000ms
-      - waiting for locator('[data-memory]').first()
-        4 × locator resolved to <button class="open" data-memory="cat" aria-label="Carta de memoria">…</button>
-          - unexpected value "open"
-      - Test timeout of 20000ms exceeded.
-
-
-      58 |     await first.click();
-      59 |     await second.click();
-    > 60 |     await expect(first).toHaveClass(/done/, {timeout:2000});
-         |                         ^
-      61 |     await expect(second).toHaveClass(/done/, {timeout:2000});
-      62 |     await expect(page.locator('#guide')).toHaveAttribute('class','guide',{timeout:1800});
-      63 |   }
-        at solveMemory (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:60:25)
-        at completeSixRounds (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:118:5)
-        at /home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:143:11
+      62 |     const isLast = pairIndex === pairs.length - 1;
+      63 |     if (!isLast) {
+    > 64 |       await page.waitForFunction(expected => document.querySelectorAll('[data-memory].done').length >= expected, doneBefore + 2, {timeout:3500});
+         |                  ^
+      65 |       await expect(page.locator(`[data-memory="${id}"].done`)).toHaveCount(2);
+      66 |     } else {
+      67 |       await page.waitForFunction(before => {
+        at solveMemory (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:64:18)
+        at completeSixRounds (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:128:5)
+        at /home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:153:11
 
     Error Context: test-results/e2e-age-3-forest-memory-completes-all-6-rounds/error-context.md
 
 
-[108/254] qa/e2e.spec.js:136:9 › age-3 › forest/habitat completes all 6 rounds
-[109/254] qa/e2e.spec.js:136:9 › age-3 › forest/size completes all 6 rounds
-[110/254] qa/e2e.spec.js:136:9 › age-3 › forest/tracks completes all 6 rounds
-[111/254] qa/e2e.spec.js:136:9 › age-3 › lagoon/count completes all 6 rounds
-[112/254] qa/e2e.spec.js:136:9 › age-3 › lagoon/more completes all 6 rounds
-[113/254] qa/e2e.spec.js:136:9 › age-3 › lagoon/colors completes all 6 rounds
-[114/254] qa/e2e.spec.js:136:9 › age-3 › lagoon/shapes completes all 6 rounds
-[115/254] qa/e2e.spec.js:136:9 › age-3 › lagoon/patterns completes all 6 rounds
-[116/254] qa/e2e.spec.js:136:9 › age-3 › lagoon/sort completes all 6 rounds
-[117/254] qa/e2e.spec.js:136:9 › age-3 › village/emotions completes all 6 rounds
-[118/254] qa/e2e.spec.js:136:9 › age-3 › village/stories completes all 6 rounds
-[119/254] qa/e2e.spec.js:136:9 › age-3 › village/paint completes all 6 rounds
-[120/254] qa/e2e.spec.js:136:9 › age-3 › village/routines completes all 6 rounds
-[121/254] qa/e2e.spec.js:136:9 › age-3 › village/match completes all 6 rounds
-[122/254] qa/e2e.spec.js:136:9 › age-3 › village/discover completes all 6 rounds
-[123/254] qa/e2e.spec.js:136:9 › age-3 › mountain/letters completes all 6 rounds
-[124/254] qa/e2e.spec.js:136:9 › age-3 › mountain/trace completes all 6 rounds
-[125/254] qa/e2e.spec.js:136:9 › age-3 › mountain/initial completes all 6 rounds
-[126/254] qa/e2e.spec.js:136:9 › age-3 › mountain/logic completes all 6 rounds
-[127/254] qa/e2e.spec.js:136:9 › age-3 › mountain/sequence completes all 6 rounds
-[128/254] qa/e2e.spec.js:136:9 › age-3 › mountain/odd completes all 6 rounds
-[129/254] qa/e2e.spec.js:148:5 › age-3 › free/music works for age 3
-[130/254] qa/e2e.spec.js:136:9 › age-5 › forest/animals completes all 6 rounds
-[131/254] qa/e2e.spec.js:136:9 › age-5 › forest/sounds completes all 6 rounds
-[132/254] qa/e2e.spec.js:136:9 › age-5 › forest/memory completes all 6 rounds
-  2) qa/e2e.spec.js:136:9 › age-5 › forest/memory completes all 6 rounds ───────────────────────────
+[108/254] qa/e2e.spec.js:146:9 › age-3 › forest/habitat completes all 6 rounds
+[109/254] qa/e2e.spec.js:146:9 › age-3 › forest/size completes all 6 rounds
+[110/254] qa/e2e.spec.js:146:9 › age-3 › forest/tracks completes all 6 rounds
+[111/254] qa/e2e.spec.js:146:9 › age-3 › lagoon/count completes all 6 rounds
+[112/254] qa/e2e.spec.js:146:9 › age-3 › lagoon/more completes all 6 rounds
+[113/254] qa/e2e.spec.js:146:9 › age-3 › lagoon/colors completes all 6 rounds
+[114/254] qa/e2e.spec.js:146:9 › age-3 › lagoon/shapes completes all 6 rounds
+[115/254] qa/e2e.spec.js:146:9 › age-3 › lagoon/patterns completes all 6 rounds
+[116/254] qa/e2e.spec.js:146:9 › age-3 › lagoon/sort completes all 6 rounds
+[117/254] qa/e2e.spec.js:146:9 › age-3 › village/emotions completes all 6 rounds
+[118/254] qa/e2e.spec.js:146:9 › age-3 › village/stories completes all 6 rounds
+[119/254] qa/e2e.spec.js:146:9 › age-3 › village/paint completes all 6 rounds
+[120/254] qa/e2e.spec.js:146:9 › age-3 › village/routines completes all 6 rounds
+[121/254] qa/e2e.spec.js:146:9 › age-3 › village/match completes all 6 rounds
+[122/254] qa/e2e.spec.js:146:9 › age-3 › village/discover completes all 6 rounds
+[123/254] qa/e2e.spec.js:146:9 › age-3 › mountain/letters completes all 6 rounds
+[124/254] qa/e2e.spec.js:146:9 › age-3 › mountain/trace completes all 6 rounds
+[125/254] qa/e2e.spec.js:146:9 › age-3 › mountain/initial completes all 6 rounds
+[126/254] qa/e2e.spec.js:146:9 › age-3 › mountain/logic completes all 6 rounds
+[127/254] qa/e2e.spec.js:146:9 › age-3 › mountain/sequence completes all 6 rounds
+[128/254] qa/e2e.spec.js:146:9 › age-3 › mountain/odd completes all 6 rounds
+[129/254] qa/e2e.spec.js:158:5 › age-3 › free/music works for age 3
+[130/254] qa/e2e.spec.js:146:9 › age-5 › forest/animals completes all 6 rounds
+[131/254] qa/e2e.spec.js:146:9 › age-5 › forest/sounds completes all 6 rounds
+[132/254] qa/e2e.spec.js:146:9 › age-5 › forest/memory completes all 6 rounds
+  2) qa/e2e.spec.js:146:9 › age-5 › forest/memory completes all 6 rounds ───────────────────────────
 
     Test timeout of 20000ms exceeded.
 
-    Error: expect(locator).toHaveAttribute(expected) failed
+    Error: page.waitForFunction: Test timeout of 20000ms exceeded.
 
-    Locator:  locator('#guide')
-    Expected: "guide"
-    Received: "guide cheer"
-
-    Call log:
-      - Expect "toHaveAttribute" with timeout 1800ms
-      - waiting for locator('#guide')
-        8 × locator resolved to <div id="guide" class="guide cheer">…</div>
-          - unexpected value "guide cheer"
-      - 
-
-
-      60 |     await expect(first).toHaveClass(/done/, {timeout:2000});
-      61 |     await expect(second).toHaveClass(/done/, {timeout:2000});
-    > 62 |     await expect(page.locator('#guide')).toHaveAttribute('class','guide',{timeout:1800});
-         |                                          ^
-      63 |   }
-      64 | }
-      65 |
-        at solveMemory (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:62:42)
-        at completeSixRounds (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:118:5)
-        at /home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:143:11
+      62 |     const isLast = pairIndex === pairs.length - 1;
+      63 |     if (!isLast) {
+    > 64 |       await page.waitForFunction(expected => document.querySelectorAll('[data-memory].done').length >= expected, doneBefore + 2, {timeout:3500});
+         |                  ^
+      65 |       await expect(page.locator(`[data-memory="${id}"].done`)).toHaveCount(2);
+      66 |     } else {
+      67 |       await page.waitForFunction(before => {
+        at solveMemory (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:64:18)
+        at completeSixRounds (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:128:5)
+        at /home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:153:11
 
     Error Context: test-results/e2e-age-5-forest-memory-completes-all-6-rounds/error-context.md
 
 
-[133/254] qa/e2e.spec.js:136:9 › age-5 › forest/habitat completes all 6 rounds
-[134/254] qa/e2e.spec.js:136:9 › age-5 › forest/size completes all 6 rounds
-[135/254] qa/e2e.spec.js:136:9 › age-5 › forest/tracks completes all 6 rounds
-[136/254] qa/e2e.spec.js:136:9 › age-5 › lagoon/count completes all 6 rounds
-[137/254] qa/e2e.spec.js:136:9 › age-5 › lagoon/more completes all 6 rounds
-[138/254] qa/e2e.spec.js:136:9 › age-5 › lagoon/colors completes all 6 rounds
-[139/254] qa/e2e.spec.js:136:9 › age-5 › lagoon/shapes completes all 6 rounds
-[140/254] qa/e2e.spec.js:136:9 › age-5 › lagoon/patterns completes all 6 rounds
-[141/254] qa/e2e.spec.js:136:9 › age-5 › lagoon/sort completes all 6 rounds
-[142/254] qa/e2e.spec.js:136:9 › age-5 › village/emotions completes all 6 rounds
-[143/254] qa/e2e.spec.js:136:9 › age-5 › village/stories completes all 6 rounds
-[144/254] qa/e2e.spec.js:136:9 › age-5 › village/paint completes all 6 rounds
-[145/254] qa/e2e.spec.js:136:9 › age-5 › village/routines completes all 6 rounds
-[146/254] qa/e2e.spec.js:136:9 › age-5 › village/match completes all 6 rounds
-[147/254] qa/e2e.spec.js:136:9 › age-5 › village/discover completes all 6 rounds
-[148/254] qa/e2e.spec.js:136:9 › age-5 › mountain/letters completes all 6 rounds
-[149/254] qa/e2e.spec.js:136:9 › age-5 › mountain/trace completes all 6 rounds
-[150/254] qa/e2e.spec.js:136:9 › age-5 › mountain/initial completes all 6 rounds
-[151/254] qa/e2e.spec.js:136:9 › age-5 › mountain/logic completes all 6 rounds
-[152/254] qa/e2e.spec.js:136:9 › age-5 › mountain/sequence completes all 6 rounds
-[153/254] qa/e2e.spec.js:136:9 › age-5 › mountain/odd completes all 6 rounds
-[154/254] qa/e2e.spec.js:148:5 › age-5 › free/music works for age 5
-[155/254] qa/e2e.spec.js:159:1 › daily path advances only after completing its full session
-[156/254] qa/e2e.spec.js:168:1 › parent gate blocks child and opens only with correct answer
-[157/254] qa/e2e.spec.js:182:1 › privacy, audio and synthetic-voice release checks
-[158/254] qa/e2e.spec.js:196:1 › small-phone layout has no horizontal overflow
-[159/254] qa/e2e.spec.js:207:3 › iPhone landscape keeps Mundo Mimo home and gameplay inside the viewport
-[160/254] qa/e2e.spec.js:207:3 › iPad portrait keeps Mundo Mimo home and gameplay inside the viewport
-[161/254] qa/e2e.spec.js:207:3 › iPad landscape keeps Mundo Mimo home and gameplay inside the viewport
+[133/254] qa/e2e.spec.js:146:9 › age-5 › forest/habitat completes all 6 rounds
+[134/254] qa/e2e.spec.js:146:9 › age-5 › forest/size completes all 6 rounds
+[135/254] qa/e2e.spec.js:146:9 › age-5 › forest/tracks completes all 6 rounds
+[136/254] qa/e2e.spec.js:146:9 › age-5 › lagoon/count completes all 6 rounds
+[137/254] qa/e2e.spec.js:146:9 › age-5 › lagoon/more completes all 6 rounds
+[138/254] qa/e2e.spec.js:146:9 › age-5 › lagoon/colors completes all 6 rounds
+[139/254] qa/e2e.spec.js:146:9 › age-5 › lagoon/shapes completes all 6 rounds
+[140/254] qa/e2e.spec.js:146:9 › age-5 › lagoon/patterns completes all 6 rounds
+[141/254] qa/e2e.spec.js:146:9 › age-5 › lagoon/sort completes all 6 rounds
+[142/254] qa/e2e.spec.js:146:9 › age-5 › village/emotions completes all 6 rounds
+[143/254] qa/e2e.spec.js:146:9 › age-5 › village/stories completes all 6 rounds
+[144/254] qa/e2e.spec.js:146:9 › age-5 › village/paint completes all 6 rounds
+[145/254] qa/e2e.spec.js:146:9 › age-5 › village/routines completes all 6 rounds
+[146/254] qa/e2e.spec.js:146:9 › age-5 › village/match completes all 6 rounds
+[147/254] qa/e2e.spec.js:146:9 › age-5 › village/discover completes all 6 rounds
+[148/254] qa/e2e.spec.js:146:9 › age-5 › mountain/letters completes all 6 rounds
+[149/254] qa/e2e.spec.js:146:9 › age-5 › mountain/trace completes all 6 rounds
+[150/254] qa/e2e.spec.js:146:9 › age-5 › mountain/initial completes all 6 rounds
+[151/254] qa/e2e.spec.js:146:9 › age-5 › mountain/logic completes all 6 rounds
+[152/254] qa/e2e.spec.js:146:9 › age-5 › mountain/sequence completes all 6 rounds
+[153/254] qa/e2e.spec.js:146:9 › age-5 › mountain/odd completes all 6 rounds
+[154/254] qa/e2e.spec.js:158:5 › age-5 › free/music works for age 5
+[155/254] qa/e2e.spec.js:169:1 › daily path advances only after completing its full session
+[156/254] qa/e2e.spec.js:178:1 › parent gate blocks child and opens only with correct answer
+[157/254] qa/e2e.spec.js:192:1 › privacy, audio and synthetic-voice release checks
+[158/254] qa/e2e.spec.js:206:1 › small-phone layout has no horizontal overflow
+[159/254] qa/e2e.spec.js:217:3 › iPhone landscape keeps Mundo Mimo home and gameplay inside the viewport
+[160/254] qa/e2e.spec.js:217:3 › iPad portrait keeps Mundo Mimo home and gameplay inside the viewport
+[161/254] qa/e2e.spec.js:217:3 › iPad landscape keeps Mundo Mimo home and gameplay inside the viewport
 [162/254] qa/premium-offline-v72.spec.js:3:1 › premium experience is part of the offline core cache
 [163/254] qa/premium-offline-v72.spec.js:10:1 › service worker refreshes scripts and styles before falling back to cache
 [164/254] qa/premium-offline-v72.spec.js:18:1 › parent progress labels distinguish evidence depth
@@ -327,6 +303,6 @@ Running 254 tests using 1 worker
 [253/254] qa/visual-system-v110.spec.js:69:1 › celebration added outside app root is converted to branded vectors
 [254/254] qa/visual-system-v110.spec.js:79:1 › visual system is included in offline core
   2 failed
-    qa/e2e.spec.js:136:9 › age-3 › forest/memory completes all 6 rounds ────────────────────────────
-    qa/e2e.spec.js:136:9 › age-5 › forest/memory completes all 6 rounds ────────────────────────────
+    qa/e2e.spec.js:146:9 › age-3 › forest/memory completes all 6 rounds ────────────────────────────
+    qa/e2e.spec.js:146:9 › age-5 › forest/memory completes all 6 rounds ────────────────────────────
   252 passed (14.8m)
