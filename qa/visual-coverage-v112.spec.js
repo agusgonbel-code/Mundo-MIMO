@@ -54,13 +54,9 @@ for(const age of [1,3,5]){
 }
 
 test('free activities have branded visuals without OS emoji',async({page})=>{
-  await setAge(page,5);
+  test.setTimeout(45000);
   for(const game of ['paint','music','discover']){
-    await page.locator('#game [data-action="back-world"]').click().catch(()=>{});
-    await page.locator('#world [data-action="home"]').click().catch(()=>{});
-    if(!(await page.locator('#home').evaluate(el=>el.classList.contains('on')))){
-      await page.evaluate(()=>document.querySelectorAll('.screen').forEach(s=>s.id==='home'?s.classList.add('on'):s.classList.remove('on')));
-    }
+    await setAge(page,5);
     await page.locator(`.freeGrid [data-game="${game}"]`).click();
     await expect(page.locator('#game')).toHaveClass(/on/);
     await assertProfessionalVisuals(page,`free/${game}`);
