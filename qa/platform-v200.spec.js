@@ -1,9 +1,13 @@
 const { test, expect } = require('@playwright/test');
 
-async function loadPlatform(page){
+async function loadPlatform(page,withSeed=false){
   await page.goto('/app-v70.html');
   await page.addScriptTag({url:'/v2/core/platform-v200.js'});
   await page.waitForFunction(()=>Boolean(window.MundoMimoV2));
+  if(withSeed){
+    await page.addScriptTag({url:'/v2/catalog/seed-games-v200.js'});
+    await page.waitForFunction(()=>Boolean(window.MundoMimoV2Seed));
+  }
 }
 
 test('Mundo Mimo 2 defines six distinct developmental age bands',async({page})=>{
@@ -50,4 +54,22 @@ test('metrics keep games levels challenges and variants separate',async({page})=
   expect(m.challenges).toBe(900);
   expect(m.variants).toBe(3000);
   expect(m.ageBands).toBe(6);
+});
+
+test('seed portfolio contains 36 differentiated game designs without schema errors or clone signatures',async({page})=>{
+  await loadPlatform(page,true);
+  const audit=await page.evaluate(()=>({
+    games:window.MundoMimoV2Seed.games.length,
+    errors:window.MundoMimoV2Seed.errors,
+    cloneGroups:window.MundoMimoV2Seed.cloneGroups,
+    mechanics:new Set(window.MundoMimoV2Seed.games.map(g=>g.mechanic)).size,
+    areas:new Set(window.MundoMimoV2Seed.games.map(g=>g.area)).size,
+    ageCoverage:Object.fromEntries(window.MundoMimoV2.ageBands.map(b=>[b.id,window.MundoMimoV2Seed.games.filter(g=>g.ages.includes(b.id)).length]))
+  }));
+  expect(audit.games).toBe(36);
+  expect(audit.errors).toEqual([]);
+  expect(audit.cloneGroups).toEqual([]);
+  expect(audit.mechanics).toBeGreaterThanOrEqual(30);
+  expect(audit.areas).toBeGreaterThanOrEqual(12);
+  expect(Object.values(audit.ageCoverage).every(n=>n>0)).toBeTruthy();
 });
