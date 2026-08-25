@@ -49,14 +49,14 @@ jobs:
           curl -fL --retry 3 -o assets/audio/voice-triste.wav 'https://commons.wikimedia.org/wiki/Special:Redirect/file/LL-Q1321_(spa)-Knites-triste.wav'
       - name: Start local server
         run: python3 -m http.server 4173 >/tmp/mimo-http.log 2>&1 &
-      - name: Run product, curriculum, V2 architecture, accessibility, rotation/state and user-behavior gates
+      - name: Run product, curriculum, V2 architecture/runtime, accessibility, rotation/state and user-behavior gates
         id: test
         env:
           PLAYWRIGHT_BASE_URL: http://127.0.0.1:4173
         shell: bash
         run: |
           set +e
-          npx playwright test qa/e2e.spec.js qa/premium-v71.spec.js qa/premium-offline-v72.spec.js qa/challenge-v100.spec.js qa/learning-model-v130.spec.js qa/platform-v200.spec.js qa/visual-system-v110.spec.js qa/visual-coverage-v112.spec.js qa/accessibility-v113.spec.js qa/orientation-state.spec.js qa/user-100-sim.spec.js --config=qa/playwright.config.js --reporter=line > /tmp/mimo-qa.log 2>&1
+          npx playwright test qa/e2e.spec.js qa/premium-v71.spec.js qa/premium-offline-v72.spec.js qa/challenge-v100.spec.js qa/learning-model-v130.spec.js qa/platform-v200.spec.js qa/runtime-v200.spec.js qa/visual-system-v110.spec.js qa/visual-coverage-v112.spec.js qa/accessibility-v113.spec.js qa/orientation-state.spec.js qa/user-100-sim.spec.js --config=qa/playwright.config.js --reporter=line > /tmp/mimo-qa.log 2>&1
           CODE=$?
           set -e
           mkdir -p qa
@@ -67,10 +67,10 @@ jobs:
             if [ "$CODE" -eq 0 ]; then echo "RESULT: PASS"; else echo "RESULT: FAIL"; fi
             echo "EXIT_CODE: $CODE"
             echo "LEGACY PRODUCT: 24 guided activities x 3 selectable UI age groups x 6 rounds; 2400 challenge variants are reported as variants, not games."
-            echo "CURRICULUM/V2: honest metrics gate + six developmental bands + >=40 mechanics registry + clone detection."
+            echo "CURRICULUM/V2: honest metrics gate + six developmental bands + >=40 mechanics registry + clone detection + first six independently playable mechanics."
             echo "OTHER COVERAGE: per-game visual/accessibility + persistence/offline + adaptive/audio/privacy + iPhone/iPad rotation-state retention + 30 user-behavior scenarios."
             echo "--- TEST OUTPUT (tail) ---"
-            tail -n 680 /tmp/mimo-qa.log
+            tail -n 720 /tmp/mimo-qa.log
           } > qa/latest-result.txt
           echo "code=$CODE" >> "$GITHUB_OUTPUT"
       - name: Persist QA evidence
