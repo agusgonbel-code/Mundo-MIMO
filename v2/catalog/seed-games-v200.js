@@ -1,5 +1,6 @@
 (()=>{'use strict';
 const P=globalThis.MundoMimoV2;if(!P)throw new Error('MundoMimoV2 platform must load first');
+const VERSION=200;
 const G=(id,name,ages,area,skill,subskill,mechanic,objective,interaction,win,progression)=>Object.freeze({id,name,ages,area,skill,subskill,mechanic,objective,rules:Object.freeze({interaction,win,progression}),levels:12,feedback:Object.freeze({correct:'descriptivo-breve',incorrect:'pista-gradual'}),hints:Object.freeze(['modelado','reduccion-distractores','repeticion-posterior']),accessibility:Object.freeze(['visual','audio','touch','reduced-motion'])});
 const GAMES=Object.freeze([
 G('luces-y-sonidos','Luces y sonidos',['0-1'],'mundo-cotidiano','causa-efecto','respuesta-a-accion','cause-effect','Descubrir que una acción produce un efecto.','tocar objetos grandes para activar respuesta audiovisual','activar el elemento indicado','aumentar de uno a tres elementos y variar demora'),
