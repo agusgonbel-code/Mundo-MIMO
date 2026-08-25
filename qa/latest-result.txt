@@ -1,335 +1,320 @@
 MUNDO MIMO LAUNCH QA
-UTC: 2026-08-25T22:45:56Z
-COMMIT: b0ed950cd94f4728179ce8714b2d235cfb95a1d0
-RESULT: FAIL
-EXIT_CODE: 1
+UTC: 2026-08-25T23:54:07Z
+COMMIT: 5a5d69afd8cbf5de69a8470319419bb93a2e2f93
+RESULT: PASS
+EXIT_CODE: 0
 LEGACY PRODUCT: 24 guided activities x 3 selectable UI age groups x 6 rounds; 2400 challenge variants are reported as variants, not games.
-CURRICULUM/V2: honest metrics gate + six developmental bands + >=40 mechanics registry + clone detection.
+CURRICULUM/V2: honest metrics gate + six developmental bands + >=40 mechanics registry + clone detection + first six independently playable mechanics.
 OTHER COVERAGE: per-game visual/accessibility + persistence/offline + adaptive/audio/privacy + iPhone/iPad rotation-state retention + 30 user-behavior scenarios.
 --- TEST OUTPUT (tail) ---
 
-Running 299 tests using 1 worker
+Running 305 tests using 1 worker
 
-[1/299] qa/accessibility-v113.spec.js:15:1 › home and parent gate meet child touch and labelling baseline
-[2/299] qa/accessibility-v113.spec.js:17:100 › age-1 forest/animals has accessible artwork and controls
-[3/299] qa/accessibility-v113.spec.js:17:100 › age-1 forest/sounds has accessible artwork and controls
-[4/299] qa/accessibility-v113.spec.js:17:100 › age-1 forest/memory has accessible artwork and controls
-[5/299] qa/accessibility-v113.spec.js:17:100 › age-1 forest/habitat has accessible artwork and controls
-[6/299] qa/accessibility-v113.spec.js:17:100 › age-1 forest/size has accessible artwork and controls
-[7/299] qa/accessibility-v113.spec.js:17:100 › age-1 forest/tracks has accessible artwork and controls
-[8/299] qa/accessibility-v113.spec.js:17:100 › age-1 lagoon/count has accessible artwork and controls
-[9/299] qa/accessibility-v113.spec.js:17:100 › age-1 lagoon/more has accessible artwork and controls
-[10/299] qa/accessibility-v113.spec.js:17:100 › age-1 lagoon/colors has accessible artwork and controls
-[11/299] qa/accessibility-v113.spec.js:17:100 › age-1 lagoon/shapes has accessible artwork and controls
-[12/299] qa/accessibility-v113.spec.js:17:100 › age-1 lagoon/patterns has accessible artwork and controls
-[13/299] qa/accessibility-v113.spec.js:17:100 › age-1 lagoon/sort has accessible artwork and controls
-[14/299] qa/accessibility-v113.spec.js:17:100 › age-1 village/emotions has accessible artwork and controls
-[15/299] qa/accessibility-v113.spec.js:17:100 › age-1 village/stories has accessible artwork and controls
-[16/299] qa/accessibility-v113.spec.js:17:100 › age-1 village/paint has accessible artwork and controls
-[17/299] qa/accessibility-v113.spec.js:17:100 › age-1 village/routines has accessible artwork and controls
-[18/299] qa/accessibility-v113.spec.js:17:100 › age-1 village/match has accessible artwork and controls
-[19/299] qa/accessibility-v113.spec.js:17:100 › age-1 village/discover has accessible artwork and controls
-[20/299] qa/accessibility-v113.spec.js:17:100 › age-1 mountain/letters has accessible artwork and controls
-[21/299] qa/accessibility-v113.spec.js:17:100 › age-1 mountain/trace has accessible artwork and controls
-[22/299] qa/accessibility-v113.spec.js:17:100 › age-1 mountain/initial has accessible artwork and controls
-[23/299] qa/accessibility-v113.spec.js:17:100 › age-1 mountain/logic has accessible artwork and controls
-[24/299] qa/accessibility-v113.spec.js:17:100 › age-1 mountain/sequence has accessible artwork and controls
-[25/299] qa/accessibility-v113.spec.js:17:100 › age-1 mountain/odd has accessible artwork and controls
-[26/299] qa/accessibility-v113.spec.js:17:100 › age-3 forest/animals has accessible artwork and controls
-[27/299] qa/accessibility-v113.spec.js:17:100 › age-3 forest/sounds has accessible artwork and controls
-[28/299] qa/accessibility-v113.spec.js:17:100 › age-3 forest/memory has accessible artwork and controls
-[29/299] qa/accessibility-v113.spec.js:17:100 › age-3 forest/habitat has accessible artwork and controls
-[30/299] qa/accessibility-v113.spec.js:17:100 › age-3 forest/size has accessible artwork and controls
-[31/299] qa/accessibility-v113.spec.js:17:100 › age-3 forest/tracks has accessible artwork and controls
-[32/299] qa/accessibility-v113.spec.js:17:100 › age-3 lagoon/count has accessible artwork and controls
-[33/299] qa/accessibility-v113.spec.js:17:100 › age-3 lagoon/more has accessible artwork and controls
-[34/299] qa/accessibility-v113.spec.js:17:100 › age-3 lagoon/colors has accessible artwork and controls
-[35/299] qa/accessibility-v113.spec.js:17:100 › age-3 lagoon/shapes has accessible artwork and controls
-[36/299] qa/accessibility-v113.spec.js:17:100 › age-3 lagoon/patterns has accessible artwork and controls
-[37/299] qa/accessibility-v113.spec.js:17:100 › age-3 lagoon/sort has accessible artwork and controls
-[38/299] qa/accessibility-v113.spec.js:17:100 › age-3 village/emotions has accessible artwork and controls
-[39/299] qa/accessibility-v113.spec.js:17:100 › age-3 village/stories has accessible artwork and controls
-[40/299] qa/accessibility-v113.spec.js:17:100 › age-3 village/paint has accessible artwork and controls
-[41/299] qa/accessibility-v113.spec.js:17:100 › age-3 village/routines has accessible artwork and controls
-[42/299] qa/accessibility-v113.spec.js:17:100 › age-3 village/match has accessible artwork and controls
-[43/299] qa/accessibility-v113.spec.js:17:100 › age-3 village/discover has accessible artwork and controls
-[44/299] qa/accessibility-v113.spec.js:17:100 › age-3 mountain/letters has accessible artwork and controls
-[45/299] qa/accessibility-v113.spec.js:17:100 › age-3 mountain/trace has accessible artwork and controls
-[46/299] qa/accessibility-v113.spec.js:17:100 › age-3 mountain/initial has accessible artwork and controls
-[47/299] qa/accessibility-v113.spec.js:17:100 › age-3 mountain/logic has accessible artwork and controls
-[48/299] qa/accessibility-v113.spec.js:17:100 › age-3 mountain/sequence has accessible artwork and controls
-[49/299] qa/accessibility-v113.spec.js:17:100 › age-3 mountain/odd has accessible artwork and controls
-[50/299] qa/accessibility-v113.spec.js:17:100 › age-5 forest/animals has accessible artwork and controls
-[51/299] qa/accessibility-v113.spec.js:17:100 › age-5 forest/sounds has accessible artwork and controls
-[52/299] qa/accessibility-v113.spec.js:17:100 › age-5 forest/memory has accessible artwork and controls
-[53/299] qa/accessibility-v113.spec.js:17:100 › age-5 forest/habitat has accessible artwork and controls
-[54/299] qa/accessibility-v113.spec.js:17:100 › age-5 forest/size has accessible artwork and controls
-[55/299] qa/accessibility-v113.spec.js:17:100 › age-5 forest/tracks has accessible artwork and controls
-[56/299] qa/accessibility-v113.spec.js:17:100 › age-5 lagoon/count has accessible artwork and controls
-[57/299] qa/accessibility-v113.spec.js:17:100 › age-5 lagoon/more has accessible artwork and controls
-[58/299] qa/accessibility-v113.spec.js:17:100 › age-5 lagoon/colors has accessible artwork and controls
-[59/299] qa/accessibility-v113.spec.js:17:100 › age-5 lagoon/shapes has accessible artwork and controls
-[60/299] qa/accessibility-v113.spec.js:17:100 › age-5 lagoon/patterns has accessible artwork and controls
-[61/299] qa/accessibility-v113.spec.js:17:100 › age-5 lagoon/sort has accessible artwork and controls
-[62/299] qa/accessibility-v113.spec.js:17:100 › age-5 village/emotions has accessible artwork and controls
-[63/299] qa/accessibility-v113.spec.js:17:100 › age-5 village/stories has accessible artwork and controls
-[64/299] qa/accessibility-v113.spec.js:17:100 › age-5 village/paint has accessible artwork and controls
-[65/299] qa/accessibility-v113.spec.js:17:100 › age-5 village/routines has accessible artwork and controls
-[66/299] qa/accessibility-v113.spec.js:17:100 › age-5 village/match has accessible artwork and controls
-[67/299] qa/accessibility-v113.spec.js:17:100 › age-5 village/discover has accessible artwork and controls
-[68/299] qa/accessibility-v113.spec.js:17:100 › age-5 mountain/letters has accessible artwork and controls
-[69/299] qa/accessibility-v113.spec.js:17:100 › age-5 mountain/trace has accessible artwork and controls
-[70/299] qa/accessibility-v113.spec.js:17:100 › age-5 mountain/initial has accessible artwork and controls
-[71/299] qa/accessibility-v113.spec.js:17:100 › age-5 mountain/logic has accessible artwork and controls
-[72/299] qa/accessibility-v113.spec.js:17:100 › age-5 mountain/sequence has accessible artwork and controls
-[73/299] qa/accessibility-v113.spec.js:17:100 › age-5 mountain/odd has accessible artwork and controls
-[74/299] qa/accessibility-v113.spec.js:19:1 › Mundo Mimo supports reduced motion for animated UI
-[75/299] qa/challenge-v100.spec.js:14:1 › v100 exposes 100 challenges for every one of the 24 guided games
-[76/299] qa/challenge-v100.spec.js:35:1 › each game cycles through all 100 challenges before repeating
-[77/299] qa/challenge-v100.spec.js:50:1 › challenge cursor persists across reload and age copy is adapted
-[78/299] qa/challenge-v100.spec.js:63:1 › live rounds receive a challenge id and advance without breaking answers
-[79/299] qa/challenge-v100.spec.js:80:1 › v100 engine is part of the offline core and reset clears its state
-[80/299] qa/e2e.spec.js:109:142 › age-1 › forest/animals completes all 6 rounds
-[81/299] qa/e2e.spec.js:109:142 › age-1 › forest/sounds completes all 6 rounds
-[82/299] qa/e2e.spec.js:109:142 › age-1 › forest/memory completes all 6 rounds
-[83/299] qa/e2e.spec.js:109:142 › age-1 › forest/habitat completes all 6 rounds
-[84/299] qa/e2e.spec.js:109:142 › age-1 › forest/size completes all 6 rounds
-[85/299] qa/e2e.spec.js:109:142 › age-1 › forest/tracks completes all 6 rounds
-[86/299] qa/e2e.spec.js:109:142 › age-1 › lagoon/count completes all 6 rounds
-[87/299] qa/e2e.spec.js:109:142 › age-1 › lagoon/more completes all 6 rounds
-[88/299] qa/e2e.spec.js:109:142 › age-1 › lagoon/colors completes all 6 rounds
-[89/299] qa/e2e.spec.js:109:142 › age-1 › lagoon/shapes completes all 6 rounds
-[90/299] qa/e2e.spec.js:109:142 › age-1 › lagoon/patterns completes all 6 rounds
-[91/299] qa/e2e.spec.js:109:142 › age-1 › lagoon/sort completes all 6 rounds
-[92/299] qa/e2e.spec.js:109:142 › age-1 › village/emotions completes all 6 rounds
-[93/299] qa/e2e.spec.js:109:142 › age-1 › village/stories completes all 6 rounds
-[94/299] qa/e2e.spec.js:109:142 › age-1 › village/paint completes all 6 rounds
-[95/299] qa/e2e.spec.js:109:142 › age-1 › village/routines completes all 6 rounds
-[96/299] qa/e2e.spec.js:109:142 › age-1 › village/match completes all 6 rounds
-[97/299] qa/e2e.spec.js:109:142 › age-1 › village/discover completes all 6 rounds
-[98/299] qa/e2e.spec.js:109:142 › age-1 › mountain/letters completes all 6 rounds
-[99/299] qa/e2e.spec.js:109:142 › age-1 › mountain/trace completes all 6 rounds
-[100/299] qa/e2e.spec.js:109:142 › age-1 › mountain/initial completes all 6 rounds
-[101/299] qa/e2e.spec.js:109:142 › age-1 › mountain/logic completes all 6 rounds
-[102/299] qa/e2e.spec.js:109:142 › age-1 › mountain/sequence completes all 6 rounds
-[103/299] qa/e2e.spec.js:109:142 › age-1 › mountain/odd completes all 6 rounds
-[104/299] qa/e2e.spec.js:109:313 › age-1 › free/music works for age 1
-[105/299] qa/e2e.spec.js:109:142 › age-3 › forest/animals completes all 6 rounds
-[106/299] qa/e2e.spec.js:109:142 › age-3 › forest/sounds completes all 6 rounds
-[107/299] qa/e2e.spec.js:109:142 › age-3 › forest/memory completes all 6 rounds
-[108/299] qa/e2e.spec.js:109:142 › age-3 › forest/habitat completes all 6 rounds
-[109/299] qa/e2e.spec.js:109:142 › age-3 › forest/size completes all 6 rounds
-[110/299] qa/e2e.spec.js:109:142 › age-3 › forest/tracks completes all 6 rounds
-[111/299] qa/e2e.spec.js:109:142 › age-3 › lagoon/count completes all 6 rounds
-[112/299] qa/e2e.spec.js:109:142 › age-3 › lagoon/more completes all 6 rounds
-[113/299] qa/e2e.spec.js:109:142 › age-3 › lagoon/colors completes all 6 rounds
-[114/299] qa/e2e.spec.js:109:142 › age-3 › lagoon/shapes completes all 6 rounds
-[115/299] qa/e2e.spec.js:109:142 › age-3 › lagoon/patterns completes all 6 rounds
-[116/299] qa/e2e.spec.js:109:142 › age-3 › lagoon/sort completes all 6 rounds
-[117/299] qa/e2e.spec.js:109:142 › age-3 › village/emotions completes all 6 rounds
-[118/299] qa/e2e.spec.js:109:142 › age-3 › village/stories completes all 6 rounds
-[119/299] qa/e2e.spec.js:109:142 › age-3 › village/paint completes all 6 rounds
-[120/299] qa/e2e.spec.js:109:142 › age-3 › village/routines completes all 6 rounds
-[121/299] qa/e2e.spec.js:109:142 › age-3 › village/match completes all 6 rounds
-[122/299] qa/e2e.spec.js:109:142 › age-3 › village/discover completes all 6 rounds
-[123/299] qa/e2e.spec.js:109:142 › age-3 › mountain/letters completes all 6 rounds
-[124/299] qa/e2e.spec.js:109:142 › age-3 › mountain/trace completes all 6 rounds
-[125/299] qa/e2e.spec.js:109:142 › age-3 › mountain/initial completes all 6 rounds
-[126/299] qa/e2e.spec.js:109:142 › age-3 › mountain/logic completes all 6 rounds
-[127/299] qa/e2e.spec.js:109:142 › age-3 › mountain/sequence completes all 6 rounds
-[128/299] qa/e2e.spec.js:109:142 › age-3 › mountain/odd completes all 6 rounds
-[129/299] qa/e2e.spec.js:109:313 › age-3 › free/music works for age 3
-[130/299] qa/e2e.spec.js:109:142 › age-5 › forest/animals completes all 6 rounds
-[131/299] qa/e2e.spec.js:109:142 › age-5 › forest/sounds completes all 6 rounds
-[132/299] qa/e2e.spec.js:109:142 › age-5 › forest/memory completes all 6 rounds
-[133/299] qa/e2e.spec.js:109:142 › age-5 › forest/habitat completes all 6 rounds
-[134/299] qa/e2e.spec.js:109:142 › age-5 › forest/size completes all 6 rounds
-[135/299] qa/e2e.spec.js:109:142 › age-5 › forest/tracks completes all 6 rounds
-[136/299] qa/e2e.spec.js:109:142 › age-5 › lagoon/count completes all 6 rounds
-[137/299] qa/e2e.spec.js:109:142 › age-5 › lagoon/more completes all 6 rounds
-[138/299] qa/e2e.spec.js:109:142 › age-5 › lagoon/colors completes all 6 rounds
-[139/299] qa/e2e.spec.js:109:142 › age-5 › lagoon/shapes completes all 6 rounds
-[140/299] qa/e2e.spec.js:109:142 › age-5 › lagoon/patterns completes all 6 rounds
-[141/299] qa/e2e.spec.js:109:142 › age-5 › lagoon/sort completes all 6 rounds
-[142/299] qa/e2e.spec.js:109:142 › age-5 › village/emotions completes all 6 rounds
-[143/299] qa/e2e.spec.js:109:142 › age-5 › village/stories completes all 6 rounds
-[144/299] qa/e2e.spec.js:109:142 › age-5 › village/paint completes all 6 rounds
-[145/299] qa/e2e.spec.js:109:142 › age-5 › village/routines completes all 6 rounds
-[146/299] qa/e2e.spec.js:109:142 › age-5 › village/match completes all 6 rounds
-[147/299] qa/e2e.spec.js:109:142 › age-5 › village/discover completes all 6 rounds
-[148/299] qa/e2e.spec.js:109:142 › age-5 › mountain/letters completes all 6 rounds
-[149/299] qa/e2e.spec.js:109:142 › age-5 › mountain/trace completes all 6 rounds
-[150/299] qa/e2e.spec.js:109:142 › age-5 › mountain/initial completes all 6 rounds
-[151/299] qa/e2e.spec.js:109:142 › age-5 › mountain/logic completes all 6 rounds
-[152/299] qa/e2e.spec.js:109:142 › age-5 › mountain/sequence completes all 6 rounds
-[153/299] qa/e2e.spec.js:109:142 › age-5 › mountain/odd completes all 6 rounds
-[154/299] qa/e2e.spec.js:109:313 › age-5 › free/music works for age 5
-[155/299] qa/e2e.spec.js:111:1 › daily path advances only after completing its full session
-[156/299] qa/e2e.spec.js:113:1 › parent gate blocks child and opens only with correct answer
-[157/299] qa/e2e.spec.js:115:1 › privacy and packaged-audio release checks
-[158/299] qa/e2e.spec.js:128:1 › small-phone layout has no horizontal overflow
-[159/299] qa/e2e.spec.js:129:162 › iPhone landscape stays usable on home and in game
-[160/299] qa/e2e.spec.js:129:162 › iPad portrait stays usable on home and in game
-[161/299] qa/e2e.spec.js:129:162 › iPad landscape stays usable on home and in game
-[162/299] qa/learning-model-v130.spec.js:13:1 › v130 exposes five curricular age bands and valid activity metadata
-[163/299] qa/learning-model-v130.spec.js:32:1 › catalog metrics distinguish mechanics activities progression levels and prompt variants
-[164/299] qa/learning-model-v130.spec.js:45:1 › activity buttons receive pedagogical traceability and current adaptive level
-[165/299] qa/learning-model-v130.spec.js:55:1 › adaptive level rises only after enough demonstrated performance
-[166/299] qa/learning-model-v130.spec.js:67:1 › parent zone shows honest product depth instead of calling variants separate games
-[167/299] qa/learning-model-v130.spec.js:80:1 › learning model is included in offline core
-[168/299] qa/orientation-state.spec.js:15:1 › rotar iPhone en Inicio conserva estado, edad y layout usable
-[169/299] qa/orientation-state.spec.js:29:1 › rotar iPhone durante una actividad no expulsa al niño ni rompe el juego
-[170/299] qa/orientation-state.spec.js:48:1 › cambio de tamaño tipo iPad mantiene navegación y targets accesibles
-[171/299] qa/platform-v200.spec.js:13:1 › Mundo Mimo 2 defines six distinct developmental age bands
-[172/299] qa/platform-v200.spec.js:19:1 › Mundo Mimo 2 exposes at least forty genuinely named interaction mechanics
-[173/299] qa/platform-v200.spec.js:27:1 › catalog validator rejects duplicate ids invalid ages and fake mechanics
-[174/299] qa/platform-v200.spec.js:38:1 › clone detector prevents content variants being counted as different games
-[175/299] qa/platform-v200.spec.js:48:1 › metrics keep games levels challenges and variants separate
-[176/299] qa/platform-v200.spec.js:59:1 › seed portfolio contains 36 differentiated game designs without schema errors or clone signatures
-  1) qa/platform-v200.spec.js:59:1 › seed portfolio contains 36 differentiated game designs without schema errors or clone signatures 
-
-    Test timeout of 30000ms exceeded.
-
-    Error: page.waitForFunction: Test timeout of 30000ms exceeded.
-
-       7 |   if(withSeed){
-       8 |     await page.addScriptTag({url:'/v2/catalog/seed-games-v200.js'});
-    >  9 |     await page.waitForFunction(()=>Boolean(window.MundoMimoV2Seed));
-         |                ^
-      10 |   }
-      11 | }
-      12 |
-        at loadPlatform (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/platform-v200.spec.js:9:16)
-        at /home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/platform-v200.spec.js:60:3
-
-    Error Context: test-results/platform-v200-seed-portfol-9b2d6--errors-or-clone-signatures/error-context.md
-
-
-[177/299] qa/premium-offline-v72.spec.js:3:1 › premium experience is part of the offline core cache
-[178/299] qa/premium-offline-v72.spec.js:10:1 › service worker refreshes scripts and styles before falling back to cache
-[179/299] qa/premium-offline-v72.spec.js:18:1 › parent progress labels distinguish evidence depth
-[180/299] qa/premium-offline-v72.spec.js:29:1 › music premium layer exposes reusable tone player
-[181/299] qa/premium-v71.spec.js:19:1 › v71 adds family co-play and adaptive parent intelligence
-[182/299] qa/premium-v71.spec.js:35:1 › premium script initializes exactly once
-[183/299] qa/premium-v71.spec.js:40:1 › premium runtime remains idempotent if script is injected again
-[184/299] qa/premium-v71.spec.js:48:1 › background time does not count toward the healthy screen-time break
-[185/299] qa/premium-v71.spec.js:56:1 › rapid double tap on a correct choice counts only one adaptive attempt
-[186/299] qa/premium-v71.spec.js:69:3 › v71 has no horizontal overflow at 320px
-[187/299] qa/premium-v71.spec.js:69:3 › v71 has no horizontal overflow at 375px
-[188/299] qa/premium-v71.spec.js:69:3 › v71 has no horizontal overflow at 390px
-[189/299] qa/premium-v71.spec.js:69:3 › v71 has no horizontal overflow at 430px
-[190/299] qa/premium-v71.spec.js:82:1 › reduced motion preference is supported by premium stylesheet
-[191/299] qa/user-100-sim.spec.js:6:32 › familia puede elegir franja 1
-[192/299] qa/user-100-sim.spec.js:6:32 › familia puede elegir franja 3
-[193/299] qa/user-100-sim.spec.js:6:32 › familia puede elegir franja 5
-[194/299] qa/user-100-sim.spec.js:7:1 › familia ve promesa sin anuncios ni compras infantiles
-[195/299] qa/user-100-sim.spec.js:8:1 › niño inicia aventura de hoy
-[196/299] qa/user-100-sim.spec.js:9:1 › zona familiar queda detrás de control parental
-[197/299] qa/user-100-sim.spec.js:10:61 › niño abre mundo forest
-[198/299] qa/user-100-sim.spec.js:10:61 › niño abre mundo lagoon
-[199/299] qa/user-100-sim.spec.js:10:61 › niño abre mundo village
-[200/299] qa/user-100-sim.spec.js:10:61 › niño abre mundo mountain
-[201/299] qa/user-100-sim.spec.js:11:196 › niño abre forest/animals
-[202/299] qa/user-100-sim.spec.js:11:196 › niño abre forest/memory
-[203/299] qa/user-100-sim.spec.js:11:196 › niño abre lagoon/count
-[204/299] qa/user-100-sim.spec.js:11:196 › niño abre lagoon/shapes
-[205/299] qa/user-100-sim.spec.js:11:196 › niño abre village/emotions
-[206/299] qa/user-100-sim.spec.js:11:196 › niño abre village/paint
-[207/299] qa/user-100-sim.spec.js:11:196 › niño abre mountain/letters
-[208/299] qa/user-100-sim.spec.js:11:196 › niño abre mountain/logic
-[209/299] qa/user-100-sim.spec.js:12:38 › Mundo Mimo cabe a 320px
-[210/299] qa/user-100-sim.spec.js:12:38 › Mundo Mimo cabe a 375px
-[211/299] qa/user-100-sim.spec.js:12:38 › Mundo Mimo cabe a 390px
-[212/299] qa/user-100-sim.spec.js:12:38 › Mundo Mimo cabe a 430px
-[213/299] qa/user-100-sim.spec.js:13:1 › niño puede volver del mundo al inicio
-[214/299] qa/user-100-sim.spec.js:14:1 › niño puede explorar dibujo libre
-[215/299] qa/user-100-sim.spec.js:15:1 › niño puede explorar música libre
-[216/299] qa/user-100-sim.spec.js:16:1 › navegación inferior ofrece cuatro destinos
-[217/299] qa/user-100-sim.spec.js:17:1 › targets principales son de al menos 44px
-[218/299] qa/user-100-sim.spec.js:18:1 › reduced motion conserva experiencia
-[219/299] qa/user-100-sim.spec.js:19:1 › recarga conserva edad elegida
-[220/299] qa/user-100-sim.spec.js:20:1 › recorrido infantil básico no lanza pageerror
-[221/299] qa/visual-coverage-v112.spec.js:45:7 › age-1 forest/animals has complete branded visual coverage
-[222/299] qa/visual-coverage-v112.spec.js:45:7 › age-1 forest/sounds has complete branded visual coverage
-[223/299] qa/visual-coverage-v112.spec.js:45:7 › age-1 forest/memory has complete branded visual coverage
-[224/299] qa/visual-coverage-v112.spec.js:45:7 › age-1 forest/habitat has complete branded visual coverage
-[225/299] qa/visual-coverage-v112.spec.js:45:7 › age-1 forest/size has complete branded visual coverage
-[226/299] qa/visual-coverage-v112.spec.js:45:7 › age-1 forest/tracks has complete branded visual coverage
-[227/299] qa/visual-coverage-v112.spec.js:45:7 › age-1 lagoon/count has complete branded visual coverage
-[228/299] qa/visual-coverage-v112.spec.js:45:7 › age-1 lagoon/more has complete branded visual coverage
-[229/299] qa/visual-coverage-v112.spec.js:45:7 › age-1 lagoon/colors has complete branded visual coverage
-[230/299] qa/visual-coverage-v112.spec.js:45:7 › age-1 lagoon/shapes has complete branded visual coverage
-[231/299] qa/visual-coverage-v112.spec.js:45:7 › age-1 lagoon/patterns has complete branded visual coverage
-[232/299] qa/visual-coverage-v112.spec.js:45:7 › age-1 lagoon/sort has complete branded visual coverage
-[233/299] qa/visual-coverage-v112.spec.js:45:7 › age-1 village/emotions has complete branded visual coverage
-[234/299] qa/visual-coverage-v112.spec.js:45:7 › age-1 village/stories has complete branded visual coverage
-[235/299] qa/visual-coverage-v112.spec.js:45:7 › age-1 village/paint has complete branded visual coverage
-[236/299] qa/visual-coverage-v112.spec.js:45:7 › age-1 village/routines has complete branded visual coverage
-[237/299] qa/visual-coverage-v112.spec.js:45:7 › age-1 village/match has complete branded visual coverage
-[238/299] qa/visual-coverage-v112.spec.js:45:7 › age-1 village/discover has complete branded visual coverage
-[239/299] qa/visual-coverage-v112.spec.js:45:7 › age-1 mountain/letters has complete branded visual coverage
-[240/299] qa/visual-coverage-v112.spec.js:45:7 › age-1 mountain/trace has complete branded visual coverage
-[241/299] qa/visual-coverage-v112.spec.js:45:7 › age-1 mountain/initial has complete branded visual coverage
-[242/299] qa/visual-coverage-v112.spec.js:45:7 › age-1 mountain/logic has complete branded visual coverage
-[243/299] qa/visual-coverage-v112.spec.js:45:7 › age-1 mountain/sequence has complete branded visual coverage
-[244/299] qa/visual-coverage-v112.spec.js:45:7 › age-1 mountain/odd has complete branded visual coverage
-[245/299] qa/visual-coverage-v112.spec.js:45:7 › age-3 forest/animals has complete branded visual coverage
-[246/299] qa/visual-coverage-v112.spec.js:45:7 › age-3 forest/sounds has complete branded visual coverage
-[247/299] qa/visual-coverage-v112.spec.js:45:7 › age-3 forest/memory has complete branded visual coverage
-[248/299] qa/visual-coverage-v112.spec.js:45:7 › age-3 forest/habitat has complete branded visual coverage
-[249/299] qa/visual-coverage-v112.spec.js:45:7 › age-3 forest/size has complete branded visual coverage
-[250/299] qa/visual-coverage-v112.spec.js:45:7 › age-3 forest/tracks has complete branded visual coverage
-[251/299] qa/visual-coverage-v112.spec.js:45:7 › age-3 lagoon/count has complete branded visual coverage
-[252/299] qa/visual-coverage-v112.spec.js:45:7 › age-3 lagoon/more has complete branded visual coverage
-[253/299] qa/visual-coverage-v112.spec.js:45:7 › age-3 lagoon/colors has complete branded visual coverage
-[254/299] qa/visual-coverage-v112.spec.js:45:7 › age-3 lagoon/shapes has complete branded visual coverage
-[255/299] qa/visual-coverage-v112.spec.js:45:7 › age-3 lagoon/patterns has complete branded visual coverage
-[256/299] qa/visual-coverage-v112.spec.js:45:7 › age-3 lagoon/sort has complete branded visual coverage
-[257/299] qa/visual-coverage-v112.spec.js:45:7 › age-3 village/emotions has complete branded visual coverage
-[258/299] qa/visual-coverage-v112.spec.js:45:7 › age-3 village/stories has complete branded visual coverage
-[259/299] qa/visual-coverage-v112.spec.js:45:7 › age-3 village/paint has complete branded visual coverage
-[260/299] qa/visual-coverage-v112.spec.js:45:7 › age-3 village/routines has complete branded visual coverage
-[261/299] qa/visual-coverage-v112.spec.js:45:7 › age-3 village/match has complete branded visual coverage
-[262/299] qa/visual-coverage-v112.spec.js:45:7 › age-3 village/discover has complete branded visual coverage
-[263/299] qa/visual-coverage-v112.spec.js:45:7 › age-3 mountain/letters has complete branded visual coverage
-[264/299] qa/visual-coverage-v112.spec.js:45:7 › age-3 mountain/trace has complete branded visual coverage
-[265/299] qa/visual-coverage-v112.spec.js:45:7 › age-3 mountain/initial has complete branded visual coverage
-[266/299] qa/visual-coverage-v112.spec.js:45:7 › age-3 mountain/logic has complete branded visual coverage
-[267/299] qa/visual-coverage-v112.spec.js:45:7 › age-3 mountain/sequence has complete branded visual coverage
-[268/299] qa/visual-coverage-v112.spec.js:45:7 › age-3 mountain/odd has complete branded visual coverage
-[269/299] qa/visual-coverage-v112.spec.js:45:7 › age-5 forest/animals has complete branded visual coverage
-[270/299] qa/visual-coverage-v112.spec.js:45:7 › age-5 forest/sounds has complete branded visual coverage
-[271/299] qa/visual-coverage-v112.spec.js:45:7 › age-5 forest/memory has complete branded visual coverage
-[272/299] qa/visual-coverage-v112.spec.js:45:7 › age-5 forest/habitat has complete branded visual coverage
-[273/299] qa/visual-coverage-v112.spec.js:45:7 › age-5 forest/size has complete branded visual coverage
-[274/299] qa/visual-coverage-v112.spec.js:45:7 › age-5 forest/tracks has complete branded visual coverage
-[275/299] qa/visual-coverage-v112.spec.js:45:7 › age-5 lagoon/count has complete branded visual coverage
-[276/299] qa/visual-coverage-v112.spec.js:45:7 › age-5 lagoon/more has complete branded visual coverage
-[277/299] qa/visual-coverage-v112.spec.js:45:7 › age-5 lagoon/colors has complete branded visual coverage
-[278/299] qa/visual-coverage-v112.spec.js:45:7 › age-5 lagoon/shapes has complete branded visual coverage
-[279/299] qa/visual-coverage-v112.spec.js:45:7 › age-5 lagoon/patterns has complete branded visual coverage
-[280/299] qa/visual-coverage-v112.spec.js:45:7 › age-5 lagoon/sort has complete branded visual coverage
-[281/299] qa/visual-coverage-v112.spec.js:45:7 › age-5 village/emotions has complete branded visual coverage
-[282/299] qa/visual-coverage-v112.spec.js:45:7 › age-5 village/stories has complete branded visual coverage
-[283/299] qa/visual-coverage-v112.spec.js:45:7 › age-5 village/paint has complete branded visual coverage
-[284/299] qa/visual-coverage-v112.spec.js:45:7 › age-5 village/routines has complete branded visual coverage
-[285/299] qa/visual-coverage-v112.spec.js:45:7 › age-5 village/match has complete branded visual coverage
-[286/299] qa/visual-coverage-v112.spec.js:45:7 › age-5 village/discover has complete branded visual coverage
-[287/299] qa/visual-coverage-v112.spec.js:45:7 › age-5 mountain/letters has complete branded visual coverage
-[288/299] qa/visual-coverage-v112.spec.js:45:7 › age-5 mountain/trace has complete branded visual coverage
-[289/299] qa/visual-coverage-v112.spec.js:45:7 › age-5 mountain/initial has complete branded visual coverage
-[290/299] qa/visual-coverage-v112.spec.js:45:7 › age-5 mountain/logic has complete branded visual coverage
-[291/299] qa/visual-coverage-v112.spec.js:45:7 › age-5 mountain/sequence has complete branded visual coverage
-[292/299] qa/visual-coverage-v112.spec.js:45:7 › age-5 mountain/odd has complete branded visual coverage
-[293/299] qa/visual-coverage-v112.spec.js:56:1 › free activities have branded visuals without OS emoji
-[294/299] qa/visual-system-v110.spec.js:25:1 › home uses branded vectors instead of OS emoji
-[295/299] qa/visual-system-v110.spec.js:31:1 › count game replaces fish emoji with vector fish without breaking answers
-[296/299] qa/visual-system-v110.spec.js:44:1 › classification choices remain semantically distinct after vector conversion
-[297/299] qa/visual-system-v110.spec.js:57:1 › habitat farm uses branded tractor artwork instead of generic fallback
-[298/299] qa/visual-system-v110.spec.js:69:1 › celebration added outside app root is converted to branded vectors
-[299/299] qa/visual-system-v110.spec.js:79:1 › visual system is included in offline core
-  Slow test file: qa/e2e.spec.js (9.2m)
+[1/305] qa/accessibility-v113.spec.js:15:1 › home and parent gate meet child touch and labelling baseline
+[2/305] qa/accessibility-v113.spec.js:17:100 › age-1 forest/animals has accessible artwork and controls
+[3/305] qa/accessibility-v113.spec.js:17:100 › age-1 forest/sounds has accessible artwork and controls
+[4/305] qa/accessibility-v113.spec.js:17:100 › age-1 forest/memory has accessible artwork and controls
+[5/305] qa/accessibility-v113.spec.js:17:100 › age-1 forest/habitat has accessible artwork and controls
+[6/305] qa/accessibility-v113.spec.js:17:100 › age-1 forest/size has accessible artwork and controls
+[7/305] qa/accessibility-v113.spec.js:17:100 › age-1 forest/tracks has accessible artwork and controls
+[8/305] qa/accessibility-v113.spec.js:17:100 › age-1 lagoon/count has accessible artwork and controls
+[9/305] qa/accessibility-v113.spec.js:17:100 › age-1 lagoon/more has accessible artwork and controls
+[10/305] qa/accessibility-v113.spec.js:17:100 › age-1 lagoon/colors has accessible artwork and controls
+[11/305] qa/accessibility-v113.spec.js:17:100 › age-1 lagoon/shapes has accessible artwork and controls
+[12/305] qa/accessibility-v113.spec.js:17:100 › age-1 lagoon/patterns has accessible artwork and controls
+[13/305] qa/accessibility-v113.spec.js:17:100 › age-1 lagoon/sort has accessible artwork and controls
+[14/305] qa/accessibility-v113.spec.js:17:100 › age-1 village/emotions has accessible artwork and controls
+[15/305] qa/accessibility-v113.spec.js:17:100 › age-1 village/stories has accessible artwork and controls
+[16/305] qa/accessibility-v113.spec.js:17:100 › age-1 village/paint has accessible artwork and controls
+[17/305] qa/accessibility-v113.spec.js:17:100 › age-1 village/routines has accessible artwork and controls
+[18/305] qa/accessibility-v113.spec.js:17:100 › age-1 village/match has accessible artwork and controls
+[19/305] qa/accessibility-v113.spec.js:17:100 › age-1 village/discover has accessible artwork and controls
+[20/305] qa/accessibility-v113.spec.js:17:100 › age-1 mountain/letters has accessible artwork and controls
+[21/305] qa/accessibility-v113.spec.js:17:100 › age-1 mountain/trace has accessible artwork and controls
+[22/305] qa/accessibility-v113.spec.js:17:100 › age-1 mountain/initial has accessible artwork and controls
+[23/305] qa/accessibility-v113.spec.js:17:100 › age-1 mountain/logic has accessible artwork and controls
+[24/305] qa/accessibility-v113.spec.js:17:100 › age-1 mountain/sequence has accessible artwork and controls
+[25/305] qa/accessibility-v113.spec.js:17:100 › age-1 mountain/odd has accessible artwork and controls
+[26/305] qa/accessibility-v113.spec.js:17:100 › age-3 forest/animals has accessible artwork and controls
+[27/305] qa/accessibility-v113.spec.js:17:100 › age-3 forest/sounds has accessible artwork and controls
+[28/305] qa/accessibility-v113.spec.js:17:100 › age-3 forest/memory has accessible artwork and controls
+[29/305] qa/accessibility-v113.spec.js:17:100 › age-3 forest/habitat has accessible artwork and controls
+[30/305] qa/accessibility-v113.spec.js:17:100 › age-3 forest/size has accessible artwork and controls
+[31/305] qa/accessibility-v113.spec.js:17:100 › age-3 forest/tracks has accessible artwork and controls
+[32/305] qa/accessibility-v113.spec.js:17:100 › age-3 lagoon/count has accessible artwork and controls
+[33/305] qa/accessibility-v113.spec.js:17:100 › age-3 lagoon/more has accessible artwork and controls
+[34/305] qa/accessibility-v113.spec.js:17:100 › age-3 lagoon/colors has accessible artwork and controls
+[35/305] qa/accessibility-v113.spec.js:17:100 › age-3 lagoon/shapes has accessible artwork and controls
+[36/305] qa/accessibility-v113.spec.js:17:100 › age-3 lagoon/patterns has accessible artwork and controls
+[37/305] qa/accessibility-v113.spec.js:17:100 › age-3 lagoon/sort has accessible artwork and controls
+[38/305] qa/accessibility-v113.spec.js:17:100 › age-3 village/emotions has accessible artwork and controls
+[39/305] qa/accessibility-v113.spec.js:17:100 › age-3 village/stories has accessible artwork and controls
+[40/305] qa/accessibility-v113.spec.js:17:100 › age-3 village/paint has accessible artwork and controls
+[41/305] qa/accessibility-v113.spec.js:17:100 › age-3 village/routines has accessible artwork and controls
+[42/305] qa/accessibility-v113.spec.js:17:100 › age-3 village/match has accessible artwork and controls
+[43/305] qa/accessibility-v113.spec.js:17:100 › age-3 village/discover has accessible artwork and controls
+[44/305] qa/accessibility-v113.spec.js:17:100 › age-3 mountain/letters has accessible artwork and controls
+[45/305] qa/accessibility-v113.spec.js:17:100 › age-3 mountain/trace has accessible artwork and controls
+[46/305] qa/accessibility-v113.spec.js:17:100 › age-3 mountain/initial has accessible artwork and controls
+[47/305] qa/accessibility-v113.spec.js:17:100 › age-3 mountain/logic has accessible artwork and controls
+[48/305] qa/accessibility-v113.spec.js:17:100 › age-3 mountain/sequence has accessible artwork and controls
+[49/305] qa/accessibility-v113.spec.js:17:100 › age-3 mountain/odd has accessible artwork and controls
+[50/305] qa/accessibility-v113.spec.js:17:100 › age-5 forest/animals has accessible artwork and controls
+[51/305] qa/accessibility-v113.spec.js:17:100 › age-5 forest/sounds has accessible artwork and controls
+[52/305] qa/accessibility-v113.spec.js:17:100 › age-5 forest/memory has accessible artwork and controls
+[53/305] qa/accessibility-v113.spec.js:17:100 › age-5 forest/habitat has accessible artwork and controls
+[54/305] qa/accessibility-v113.spec.js:17:100 › age-5 forest/size has accessible artwork and controls
+[55/305] qa/accessibility-v113.spec.js:17:100 › age-5 forest/tracks has accessible artwork and controls
+[56/305] qa/accessibility-v113.spec.js:17:100 › age-5 lagoon/count has accessible artwork and controls
+[57/305] qa/accessibility-v113.spec.js:17:100 › age-5 lagoon/more has accessible artwork and controls
+[58/305] qa/accessibility-v113.spec.js:17:100 › age-5 lagoon/colors has accessible artwork and controls
+[59/305] qa/accessibility-v113.spec.js:17:100 › age-5 lagoon/shapes has accessible artwork and controls
+[60/305] qa/accessibility-v113.spec.js:17:100 › age-5 lagoon/patterns has accessible artwork and controls
+[61/305] qa/accessibility-v113.spec.js:17:100 › age-5 lagoon/sort has accessible artwork and controls
+[62/305] qa/accessibility-v113.spec.js:17:100 › age-5 village/emotions has accessible artwork and controls
+[63/305] qa/accessibility-v113.spec.js:17:100 › age-5 village/stories has accessible artwork and controls
+[64/305] qa/accessibility-v113.spec.js:17:100 › age-5 village/paint has accessible artwork and controls
+[65/305] qa/accessibility-v113.spec.js:17:100 › age-5 village/routines has accessible artwork and controls
+[66/305] qa/accessibility-v113.spec.js:17:100 › age-5 village/match has accessible artwork and controls
+[67/305] qa/accessibility-v113.spec.js:17:100 › age-5 village/discover has accessible artwork and controls
+[68/305] qa/accessibility-v113.spec.js:17:100 › age-5 mountain/letters has accessible artwork and controls
+[69/305] qa/accessibility-v113.spec.js:17:100 › age-5 mountain/trace has accessible artwork and controls
+[70/305] qa/accessibility-v113.spec.js:17:100 › age-5 mountain/initial has accessible artwork and controls
+[71/305] qa/accessibility-v113.spec.js:17:100 › age-5 mountain/logic has accessible artwork and controls
+[72/305] qa/accessibility-v113.spec.js:17:100 › age-5 mountain/sequence has accessible artwork and controls
+[73/305] qa/accessibility-v113.spec.js:17:100 › age-5 mountain/odd has accessible artwork and controls
+[74/305] qa/accessibility-v113.spec.js:19:1 › Mundo Mimo supports reduced motion for animated UI
+[75/305] qa/challenge-v100.spec.js:14:1 › v100 exposes 100 challenges for every one of the 24 guided games
+[76/305] qa/challenge-v100.spec.js:35:1 › each game cycles through all 100 challenges before repeating
+[77/305] qa/challenge-v100.spec.js:50:1 › challenge cursor persists across reload and age copy is adapted
+[78/305] qa/challenge-v100.spec.js:63:1 › live rounds receive a challenge id and advance without breaking answers
+[79/305] qa/challenge-v100.spec.js:80:1 › v100 engine is part of the offline core and reset clears its state
+[80/305] qa/e2e.spec.js:109:142 › age-1 › forest/animals completes all 6 rounds
+[81/305] qa/e2e.spec.js:109:142 › age-1 › forest/sounds completes all 6 rounds
+[82/305] qa/e2e.spec.js:109:142 › age-1 › forest/memory completes all 6 rounds
+[83/305] qa/e2e.spec.js:109:142 › age-1 › forest/habitat completes all 6 rounds
+[84/305] qa/e2e.spec.js:109:142 › age-1 › forest/size completes all 6 rounds
+[85/305] qa/e2e.spec.js:109:142 › age-1 › forest/tracks completes all 6 rounds
+[86/305] qa/e2e.spec.js:109:142 › age-1 › lagoon/count completes all 6 rounds
+[87/305] qa/e2e.spec.js:109:142 › age-1 › lagoon/more completes all 6 rounds
+[88/305] qa/e2e.spec.js:109:142 › age-1 › lagoon/colors completes all 6 rounds
+[89/305] qa/e2e.spec.js:109:142 › age-1 › lagoon/shapes completes all 6 rounds
+[90/305] qa/e2e.spec.js:109:142 › age-1 › lagoon/patterns completes all 6 rounds
+[91/305] qa/e2e.spec.js:109:142 › age-1 › lagoon/sort completes all 6 rounds
+[92/305] qa/e2e.spec.js:109:142 › age-1 › village/emotions completes all 6 rounds
+[93/305] qa/e2e.spec.js:109:142 › age-1 › village/stories completes all 6 rounds
+[94/305] qa/e2e.spec.js:109:142 › age-1 › village/paint completes all 6 rounds
+[95/305] qa/e2e.spec.js:109:142 › age-1 › village/routines completes all 6 rounds
+[96/305] qa/e2e.spec.js:109:142 › age-1 › village/match completes all 6 rounds
+[97/305] qa/e2e.spec.js:109:142 › age-1 › village/discover completes all 6 rounds
+[98/305] qa/e2e.spec.js:109:142 › age-1 › mountain/letters completes all 6 rounds
+[99/305] qa/e2e.spec.js:109:142 › age-1 › mountain/trace completes all 6 rounds
+[100/305] qa/e2e.spec.js:109:142 › age-1 › mountain/initial completes all 6 rounds
+[101/305] qa/e2e.spec.js:109:142 › age-1 › mountain/logic completes all 6 rounds
+[102/305] qa/e2e.spec.js:109:142 › age-1 › mountain/sequence completes all 6 rounds
+[103/305] qa/e2e.spec.js:109:142 › age-1 › mountain/odd completes all 6 rounds
+[104/305] qa/e2e.spec.js:109:313 › age-1 › free/music works for age 1
+[105/305] qa/e2e.spec.js:109:142 › age-3 › forest/animals completes all 6 rounds
+[106/305] qa/e2e.spec.js:109:142 › age-3 › forest/sounds completes all 6 rounds
+[107/305] qa/e2e.spec.js:109:142 › age-3 › forest/memory completes all 6 rounds
+[108/305] qa/e2e.spec.js:109:142 › age-3 › forest/habitat completes all 6 rounds
+[109/305] qa/e2e.spec.js:109:142 › age-3 › forest/size completes all 6 rounds
+[110/305] qa/e2e.spec.js:109:142 › age-3 › forest/tracks completes all 6 rounds
+[111/305] qa/e2e.spec.js:109:142 › age-3 › lagoon/count completes all 6 rounds
+[112/305] qa/e2e.spec.js:109:142 › age-3 › lagoon/more completes all 6 rounds
+[113/305] qa/e2e.spec.js:109:142 › age-3 › lagoon/colors completes all 6 rounds
+[114/305] qa/e2e.spec.js:109:142 › age-3 › lagoon/shapes completes all 6 rounds
+[115/305] qa/e2e.spec.js:109:142 › age-3 › lagoon/patterns completes all 6 rounds
+[116/305] qa/e2e.spec.js:109:142 › age-3 › lagoon/sort completes all 6 rounds
+[117/305] qa/e2e.spec.js:109:142 › age-3 › village/emotions completes all 6 rounds
+[118/305] qa/e2e.spec.js:109:142 › age-3 › village/stories completes all 6 rounds
+[119/305] qa/e2e.spec.js:109:142 › age-3 › village/paint completes all 6 rounds
+[120/305] qa/e2e.spec.js:109:142 › age-3 › village/routines completes all 6 rounds
+[121/305] qa/e2e.spec.js:109:142 › age-3 › village/match completes all 6 rounds
+[122/305] qa/e2e.spec.js:109:142 › age-3 › village/discover completes all 6 rounds
+[123/305] qa/e2e.spec.js:109:142 › age-3 › mountain/letters completes all 6 rounds
+[124/305] qa/e2e.spec.js:109:142 › age-3 › mountain/trace completes all 6 rounds
+[125/305] qa/e2e.spec.js:109:142 › age-3 › mountain/initial completes all 6 rounds
+[126/305] qa/e2e.spec.js:109:142 › age-3 › mountain/logic completes all 6 rounds
+[127/305] qa/e2e.spec.js:109:142 › age-3 › mountain/sequence completes all 6 rounds
+[128/305] qa/e2e.spec.js:109:142 › age-3 › mountain/odd completes all 6 rounds
+[129/305] qa/e2e.spec.js:109:313 › age-3 › free/music works for age 3
+[130/305] qa/e2e.spec.js:109:142 › age-5 › forest/animals completes all 6 rounds
+[131/305] qa/e2e.spec.js:109:142 › age-5 › forest/sounds completes all 6 rounds
+[132/305] qa/e2e.spec.js:109:142 › age-5 › forest/memory completes all 6 rounds
+[133/305] qa/e2e.spec.js:109:142 › age-5 › forest/habitat completes all 6 rounds
+[134/305] qa/e2e.spec.js:109:142 › age-5 › forest/size completes all 6 rounds
+[135/305] qa/e2e.spec.js:109:142 › age-5 › forest/tracks completes all 6 rounds
+[136/305] qa/e2e.spec.js:109:142 › age-5 › lagoon/count completes all 6 rounds
+[137/305] qa/e2e.spec.js:109:142 › age-5 › lagoon/more completes all 6 rounds
+[138/305] qa/e2e.spec.js:109:142 › age-5 › lagoon/colors completes all 6 rounds
+[139/305] qa/e2e.spec.js:109:142 › age-5 › lagoon/shapes completes all 6 rounds
+[140/305] qa/e2e.spec.js:109:142 › age-5 › lagoon/patterns completes all 6 rounds
+[141/305] qa/e2e.spec.js:109:142 › age-5 › lagoon/sort completes all 6 rounds
+[142/305] qa/e2e.spec.js:109:142 › age-5 › village/emotions completes all 6 rounds
+[143/305] qa/e2e.spec.js:109:142 › age-5 › village/stories completes all 6 rounds
+[144/305] qa/e2e.spec.js:109:142 › age-5 › village/paint completes all 6 rounds
+[145/305] qa/e2e.spec.js:109:142 › age-5 › village/routines completes all 6 rounds
+[146/305] qa/e2e.spec.js:109:142 › age-5 › village/match completes all 6 rounds
+[147/305] qa/e2e.spec.js:109:142 › age-5 › village/discover completes all 6 rounds
+[148/305] qa/e2e.spec.js:109:142 › age-5 › mountain/letters completes all 6 rounds
+[149/305] qa/e2e.spec.js:109:142 › age-5 › mountain/trace completes all 6 rounds
+[150/305] qa/e2e.spec.js:109:142 › age-5 › mountain/initial completes all 6 rounds
+[151/305] qa/e2e.spec.js:109:142 › age-5 › mountain/logic completes all 6 rounds
+[152/305] qa/e2e.spec.js:109:142 › age-5 › mountain/sequence completes all 6 rounds
+[153/305] qa/e2e.spec.js:109:142 › age-5 › mountain/odd completes all 6 rounds
+[154/305] qa/e2e.spec.js:109:313 › age-5 › free/music works for age 5
+[155/305] qa/e2e.spec.js:111:1 › daily path advances only after completing its full session
+[156/305] qa/e2e.spec.js:113:1 › parent gate blocks child and opens only with correct answer
+[157/305] qa/e2e.spec.js:115:1 › privacy and packaged-audio release checks
+[158/305] qa/e2e.spec.js:128:1 › small-phone layout has no horizontal overflow
+[159/305] qa/e2e.spec.js:129:162 › iPhone landscape stays usable on home and in game
+[160/305] qa/e2e.spec.js:129:162 › iPad portrait stays usable on home and in game
+[161/305] qa/e2e.spec.js:129:162 › iPad landscape stays usable on home and in game
+[162/305] qa/learning-model-v130.spec.js:13:1 › v130 exposes five curricular age bands and valid activity metadata
+[163/305] qa/learning-model-v130.spec.js:32:1 › catalog metrics distinguish mechanics activities progression levels and prompt variants
+[164/305] qa/learning-model-v130.spec.js:45:1 › activity buttons receive pedagogical traceability and current adaptive level
+[165/305] qa/learning-model-v130.spec.js:55:1 › adaptive level rises only after enough demonstrated performance
+[166/305] qa/learning-model-v130.spec.js:67:1 › parent zone shows honest product depth instead of calling variants separate games
+[167/305] qa/learning-model-v130.spec.js:80:1 › learning model is included in offline core
+[168/305] qa/orientation-state.spec.js:15:1 › rotar iPhone en Inicio conserva estado, edad y layout usable
+[169/305] qa/orientation-state.spec.js:29:1 › rotar iPhone durante una actividad no expulsa al niño ni rompe el juego
+[170/305] qa/orientation-state.spec.js:48:1 › cambio de tamaño tipo iPad mantiene navegación y targets accesibles
+[171/305] qa/platform-v200.spec.js:13:1 › Mundo Mimo 2 defines six distinct developmental age bands
+[172/305] qa/platform-v200.spec.js:19:1 › Mundo Mimo 2 exposes at least forty genuinely named interaction mechanics
+[173/305] qa/platform-v200.spec.js:27:1 › catalog validator rejects duplicate ids invalid ages and fake mechanics
+[174/305] qa/platform-v200.spec.js:38:1 › clone detector prevents content variants being counted as different games
+[175/305] qa/platform-v200.spec.js:48:1 › metrics keep games levels challenges and variants separate
+[176/305] qa/platform-v200.spec.js:59:1 › seed portfolio contains 36 differentiated game designs without schema errors or clone signatures
+[177/305] qa/premium-offline-v72.spec.js:3:1 › premium experience is part of the offline core cache
+[178/305] qa/premium-offline-v72.spec.js:10:1 › service worker refreshes scripts and styles before falling back to cache
+[179/305] qa/premium-offline-v72.spec.js:18:1 › parent progress labels distinguish evidence depth
+[180/305] qa/premium-offline-v72.spec.js:29:1 › music premium layer exposes reusable tone player
+[181/305] qa/premium-v71.spec.js:19:1 › v71 adds family co-play and adaptive parent intelligence
+[182/305] qa/premium-v71.spec.js:35:1 › premium script initializes exactly once
+[183/305] qa/premium-v71.spec.js:40:1 › premium runtime remains idempotent if script is injected again
+[184/305] qa/premium-v71.spec.js:48:1 › background time does not count toward the healthy screen-time break
+[185/305] qa/premium-v71.spec.js:56:1 › rapid double tap on a correct choice counts only one adaptive attempt
+[186/305] qa/premium-v71.spec.js:69:3 › v71 has no horizontal overflow at 320px
+[187/305] qa/premium-v71.spec.js:69:3 › v71 has no horizontal overflow at 375px
+[188/305] qa/premium-v71.spec.js:69:3 › v71 has no horizontal overflow at 390px
+[189/305] qa/premium-v71.spec.js:69:3 › v71 has no horizontal overflow at 430px
+[190/305] qa/premium-v71.spec.js:82:1 › reduced motion preference is supported by premium stylesheet
+[191/305] qa/runtime-v200.spec.js:8:1 › v2 runtime exposes six implemented games across distinct mechanics
+[192/305] qa/runtime-v200.spec.js:17:1 › age navigation filters playable portfolio instead of showing unsuitable games
+[193/305] qa/runtime-v200.spec.js:27:1 › cause effect game is truly interactive and completes a three-round session
+[194/305] qa/runtime-v200.spec.js:42:1 › fit-shape provides touch-friendly fallback and records progress
+[195/305] qa/runtime-v200.spec.js:53:1 › memory mechanic requires matching pairs and exposes labelled controls
+[196/305] qa/runtime-v200.spec.js:63:1 › v2 shell remains usable at small iPhone and iPad landscape sizes
+[197/305] qa/user-100-sim.spec.js:6:32 › familia puede elegir franja 1
+[198/305] qa/user-100-sim.spec.js:6:32 › familia puede elegir franja 3
+[199/305] qa/user-100-sim.spec.js:6:32 › familia puede elegir franja 5
+[200/305] qa/user-100-sim.spec.js:7:1 › familia ve promesa sin anuncios ni compras infantiles
+[201/305] qa/user-100-sim.spec.js:8:1 › niño inicia aventura de hoy
+[202/305] qa/user-100-sim.spec.js:9:1 › zona familiar queda detrás de control parental
+[203/305] qa/user-100-sim.spec.js:10:61 › niño abre mundo forest
+[204/305] qa/user-100-sim.spec.js:10:61 › niño abre mundo lagoon
+[205/305] qa/user-100-sim.spec.js:10:61 › niño abre mundo village
+[206/305] qa/user-100-sim.spec.js:10:61 › niño abre mundo mountain
+[207/305] qa/user-100-sim.spec.js:11:196 › niño abre forest/animals
+[208/305] qa/user-100-sim.spec.js:11:196 › niño abre forest/memory
+[209/305] qa/user-100-sim.spec.js:11:196 › niño abre lagoon/count
+[210/305] qa/user-100-sim.spec.js:11:196 › niño abre lagoon/shapes
+[211/305] qa/user-100-sim.spec.js:11:196 › niño abre village/emotions
+[212/305] qa/user-100-sim.spec.js:11:196 › niño abre village/paint
+[213/305] qa/user-100-sim.spec.js:11:196 › niño abre mountain/letters
+[214/305] qa/user-100-sim.spec.js:11:196 › niño abre mountain/logic
+[215/305] qa/user-100-sim.spec.js:12:38 › Mundo Mimo cabe a 320px
+[216/305] qa/user-100-sim.spec.js:12:38 › Mundo Mimo cabe a 375px
+[217/305] qa/user-100-sim.spec.js:12:38 › Mundo Mimo cabe a 390px
+[218/305] qa/user-100-sim.spec.js:12:38 › Mundo Mimo cabe a 430px
+[219/305] qa/user-100-sim.spec.js:13:1 › niño puede volver del mundo al inicio
+[220/305] qa/user-100-sim.spec.js:14:1 › niño puede explorar dibujo libre
+[221/305] qa/user-100-sim.spec.js:15:1 › niño puede explorar música libre
+[222/305] qa/user-100-sim.spec.js:16:1 › navegación inferior ofrece cuatro destinos
+[223/305] qa/user-100-sim.spec.js:17:1 › targets principales son de al menos 44px
+[224/305] qa/user-100-sim.spec.js:18:1 › reduced motion conserva experiencia
+[225/305] qa/user-100-sim.spec.js:19:1 › recarga conserva edad elegida
+[226/305] qa/user-100-sim.spec.js:20:1 › recorrido infantil básico no lanza pageerror
+[227/305] qa/visual-coverage-v112.spec.js:45:7 › age-1 forest/animals has complete branded visual coverage
+[228/305] qa/visual-coverage-v112.spec.js:45:7 › age-1 forest/sounds has complete branded visual coverage
+[229/305] qa/visual-coverage-v112.spec.js:45:7 › age-1 forest/memory has complete branded visual coverage
+[230/305] qa/visual-coverage-v112.spec.js:45:7 › age-1 forest/habitat has complete branded visual coverage
+[231/305] qa/visual-coverage-v112.spec.js:45:7 › age-1 forest/size has complete branded visual coverage
+[232/305] qa/visual-coverage-v112.spec.js:45:7 › age-1 forest/tracks has complete branded visual coverage
+[233/305] qa/visual-coverage-v112.spec.js:45:7 › age-1 lagoon/count has complete branded visual coverage
+[234/305] qa/visual-coverage-v112.spec.js:45:7 › age-1 lagoon/more has complete branded visual coverage
+[235/305] qa/visual-coverage-v112.spec.js:45:7 › age-1 lagoon/colors has complete branded visual coverage
+[236/305] qa/visual-coverage-v112.spec.js:45:7 › age-1 lagoon/shapes has complete branded visual coverage
+[237/305] qa/visual-coverage-v112.spec.js:45:7 › age-1 lagoon/patterns has complete branded visual coverage
+[238/305] qa/visual-coverage-v112.spec.js:45:7 › age-1 lagoon/sort has complete branded visual coverage
+[239/305] qa/visual-coverage-v112.spec.js:45:7 › age-1 village/emotions has complete branded visual coverage
+[240/305] qa/visual-coverage-v112.spec.js:45:7 › age-1 village/stories has complete branded visual coverage
+[241/305] qa/visual-coverage-v112.spec.js:45:7 › age-1 village/paint has complete branded visual coverage
+[242/305] qa/visual-coverage-v112.spec.js:45:7 › age-1 village/routines has complete branded visual coverage
+[243/305] qa/visual-coverage-v112.spec.js:45:7 › age-1 village/match has complete branded visual coverage
+[244/305] qa/visual-coverage-v112.spec.js:45:7 › age-1 village/discover has complete branded visual coverage
+[245/305] qa/visual-coverage-v112.spec.js:45:7 › age-1 mountain/letters has complete branded visual coverage
+[246/305] qa/visual-coverage-v112.spec.js:45:7 › age-1 mountain/trace has complete branded visual coverage
+[247/305] qa/visual-coverage-v112.spec.js:45:7 › age-1 mountain/initial has complete branded visual coverage
+[248/305] qa/visual-coverage-v112.spec.js:45:7 › age-1 mountain/logic has complete branded visual coverage
+[249/305] qa/visual-coverage-v112.spec.js:45:7 › age-1 mountain/sequence has complete branded visual coverage
+[250/305] qa/visual-coverage-v112.spec.js:45:7 › age-1 mountain/odd has complete branded visual coverage
+[251/305] qa/visual-coverage-v112.spec.js:45:7 › age-3 forest/animals has complete branded visual coverage
+[252/305] qa/visual-coverage-v112.spec.js:45:7 › age-3 forest/sounds has complete branded visual coverage
+[253/305] qa/visual-coverage-v112.spec.js:45:7 › age-3 forest/memory has complete branded visual coverage
+[254/305] qa/visual-coverage-v112.spec.js:45:7 › age-3 forest/habitat has complete branded visual coverage
+[255/305] qa/visual-coverage-v112.spec.js:45:7 › age-3 forest/size has complete branded visual coverage
+[256/305] qa/visual-coverage-v112.spec.js:45:7 › age-3 forest/tracks has complete branded visual coverage
+[257/305] qa/visual-coverage-v112.spec.js:45:7 › age-3 lagoon/count has complete branded visual coverage
+[258/305] qa/visual-coverage-v112.spec.js:45:7 › age-3 lagoon/more has complete branded visual coverage
+[259/305] qa/visual-coverage-v112.spec.js:45:7 › age-3 lagoon/colors has complete branded visual coverage
+[260/305] qa/visual-coverage-v112.spec.js:45:7 › age-3 lagoon/shapes has complete branded visual coverage
+[261/305] qa/visual-coverage-v112.spec.js:45:7 › age-3 lagoon/patterns has complete branded visual coverage
+[262/305] qa/visual-coverage-v112.spec.js:45:7 › age-3 lagoon/sort has complete branded visual coverage
+[263/305] qa/visual-coverage-v112.spec.js:45:7 › age-3 village/emotions has complete branded visual coverage
+[264/305] qa/visual-coverage-v112.spec.js:45:7 › age-3 village/stories has complete branded visual coverage
+[265/305] qa/visual-coverage-v112.spec.js:45:7 › age-3 village/paint has complete branded visual coverage
+[266/305] qa/visual-coverage-v112.spec.js:45:7 › age-3 village/routines has complete branded visual coverage
+[267/305] qa/visual-coverage-v112.spec.js:45:7 › age-3 village/match has complete branded visual coverage
+[268/305] qa/visual-coverage-v112.spec.js:45:7 › age-3 village/discover has complete branded visual coverage
+[269/305] qa/visual-coverage-v112.spec.js:45:7 › age-3 mountain/letters has complete branded visual coverage
+[270/305] qa/visual-coverage-v112.spec.js:45:7 › age-3 mountain/trace has complete branded visual coverage
+[271/305] qa/visual-coverage-v112.spec.js:45:7 › age-3 mountain/initial has complete branded visual coverage
+[272/305] qa/visual-coverage-v112.spec.js:45:7 › age-3 mountain/logic has complete branded visual coverage
+[273/305] qa/visual-coverage-v112.spec.js:45:7 › age-3 mountain/sequence has complete branded visual coverage
+[274/305] qa/visual-coverage-v112.spec.js:45:7 › age-3 mountain/odd has complete branded visual coverage
+[275/305] qa/visual-coverage-v112.spec.js:45:7 › age-5 forest/animals has complete branded visual coverage
+[276/305] qa/visual-coverage-v112.spec.js:45:7 › age-5 forest/sounds has complete branded visual coverage
+[277/305] qa/visual-coverage-v112.spec.js:45:7 › age-5 forest/memory has complete branded visual coverage
+[278/305] qa/visual-coverage-v112.spec.js:45:7 › age-5 forest/habitat has complete branded visual coverage
+[279/305] qa/visual-coverage-v112.spec.js:45:7 › age-5 forest/size has complete branded visual coverage
+[280/305] qa/visual-coverage-v112.spec.js:45:7 › age-5 forest/tracks has complete branded visual coverage
+[281/305] qa/visual-coverage-v112.spec.js:45:7 › age-5 lagoon/count has complete branded visual coverage
+[282/305] qa/visual-coverage-v112.spec.js:45:7 › age-5 lagoon/more has complete branded visual coverage
+[283/305] qa/visual-coverage-v112.spec.js:45:7 › age-5 lagoon/colors has complete branded visual coverage
+[284/305] qa/visual-coverage-v112.spec.js:45:7 › age-5 lagoon/shapes has complete branded visual coverage
+[285/305] qa/visual-coverage-v112.spec.js:45:7 › age-5 lagoon/patterns has complete branded visual coverage
+[286/305] qa/visual-coverage-v112.spec.js:45:7 › age-5 lagoon/sort has complete branded visual coverage
+[287/305] qa/visual-coverage-v112.spec.js:45:7 › age-5 village/emotions has complete branded visual coverage
+[288/305] qa/visual-coverage-v112.spec.js:45:7 › age-5 village/stories has complete branded visual coverage
+[289/305] qa/visual-coverage-v112.spec.js:45:7 › age-5 village/paint has complete branded visual coverage
+[290/305] qa/visual-coverage-v112.spec.js:45:7 › age-5 village/routines has complete branded visual coverage
+[291/305] qa/visual-coverage-v112.spec.js:45:7 › age-5 village/match has complete branded visual coverage
+[292/305] qa/visual-coverage-v112.spec.js:45:7 › age-5 village/discover has complete branded visual coverage
+[293/305] qa/visual-coverage-v112.spec.js:45:7 › age-5 mountain/letters has complete branded visual coverage
+[294/305] qa/visual-coverage-v112.spec.js:45:7 › age-5 mountain/trace has complete branded visual coverage
+[295/305] qa/visual-coverage-v112.spec.js:45:7 › age-5 mountain/initial has complete branded visual coverage
+[296/305] qa/visual-coverage-v112.spec.js:45:7 › age-5 mountain/logic has complete branded visual coverage
+[297/305] qa/visual-coverage-v112.spec.js:45:7 › age-5 mountain/sequence has complete branded visual coverage
+[298/305] qa/visual-coverage-v112.spec.js:45:7 › age-5 mountain/odd has complete branded visual coverage
+[299/305] qa/visual-coverage-v112.spec.js:56:1 › free activities have branded visuals without OS emoji
+[300/305] qa/visual-system-v110.spec.js:25:1 › home uses branded vectors instead of OS emoji
+[301/305] qa/visual-system-v110.spec.js:31:1 › count game replaces fish emoji with vector fish without breaking answers
+[302/305] qa/visual-system-v110.spec.js:44:1 › classification choices remain semantically distinct after vector conversion
+[303/305] qa/visual-system-v110.spec.js:57:1 › habitat farm uses branded tractor artwork instead of generic fallback
+[304/305] qa/visual-system-v110.spec.js:69:1 › celebration added outside app root is converted to branded vectors
+[305/305] qa/visual-system-v110.spec.js:79:1 › visual system is included in offline core
+  Slow test file: qa/e2e.spec.js (9.3m)
   Consider running tests from slow files in parallel. See: https://playwright.dev/docs/test-parallel
-  1 failed
-    qa/platform-v200.spec.js:59:1 › seed portfolio contains 36 differentiated game designs without schema errors or clone signatures 
-  298 passed (15.6m)
+  305 passed (15.3m)
