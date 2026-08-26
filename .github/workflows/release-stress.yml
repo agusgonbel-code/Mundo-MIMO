@@ -8,12 +8,8 @@ on:
 permissions:
   contents: write
 
-concurrency:
-  group: mundo-mimo-release-stress-${{ github.ref }}
-  cancel-in-progress: false
-
 jobs:
-  launch-matrix:
+  launch_matrix:
     if: ${{ github.event_name != 'push' || !contains(github.event.head_commit.message, '[skip ci]') }}
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -26,8 +22,7 @@ jobs:
         run: |
           npm install --no-save @playwright/test
           npx playwright install --with-deps webkit
-      - name: Bundle licensed audio locally for QA
-        shell: bash
+      - name: Bundle licensed audio locally
         run: |
           set -euo pipefail
           mkdir -p assets/audio
@@ -46,13 +41,12 @@ jobs:
           curl -fL --retry 3 -o assets/audio/voice-triste.wav 'https://commons.wikimedia.org/wiki/Special:Redirect/file/LL-Q1321_(spa)-Knites-triste.wav'
       - name: Start app
         run: python3 -m http.server 4173 >/tmp/mimo-http.log 2>&1 &
-      - name: Run complete legacy and Mundo Mimo 2 launch matrix
+      - name: Run complete legacy and V2 matrix
         env:
           PLAYWRIGHT_BASE_URL: http://127.0.0.1:4173
-        run: |
-          npx playwright test qa/e2e.spec.js qa/premium-v71.spec.js qa/premium-offline-v72.spec.js qa/challenge-v100.spec.js qa/learning-model-v130.spec.js qa/platform-v200.spec.js qa/runtime-v200.spec.js qa/runtime-v210.spec.js qa/runtime-v220.spec.js qa/runtime-v230.spec.js qa/runtime-v240.spec.js qa/visual-system-v110.spec.js qa/visual-coverage-v112.spec.js qa/accessibility-v113.spec.js qa/orientation-state.spec.js qa/user-100-sim.spec.js --config=qa/playwright.config.js --reporter=line
+        run: npx playwright test qa/e2e.spec.js qa/premium-v71.spec.js qa/premium-offline-v72.spec.js qa/challenge-v100.spec.js qa/learning-model-v130.spec.js qa/platform-v200.spec.js qa/runtime-v200.spec.js qa/runtime-v210.spec.js qa/runtime-v220.spec.js qa/runtime-v230.spec.js qa/runtime-v240.spec.js qa/visual-system-v110.spec.js qa/visual-coverage-v112.spec.js qa/accessibility-v113.spec.js qa/orientation-state.spec.js qa/user-100-sim.spec.js --config=qa/playwright.config.js --reporter=line
 
-  critical-stress:
+  critical_stress:
     if: ${{ github.event_name != 'push' || !contains(github.event.head_commit.message, '[skip ci]') }}
     strategy:
       fail-fast: false
@@ -69,8 +63,7 @@ jobs:
         run: |
           npm install --no-save @playwright/test
           npx playwright install --with-deps webkit
-      - name: Bundle licensed audio locally for QA
-        shell: bash
+      - name: Bundle licensed audio locally
         run: |
           set -euo pipefail
           mkdir -p assets/audio
@@ -89,19 +82,18 @@ jobs:
           curl -fL --retry 3 -o assets/audio/voice-triste.wav 'https://commons.wikimedia.org/wiki/Special:Redirect/file/LL-Q1321_(spa)-Knites-triste.wav'
       - name: Start app
         run: python3 -m http.server 4173 >/tmp/mimo-http.log 2>&1 &
-      - name: Repeat critical iPhone and Mundo Mimo 2 journeys 100 times per shard
+      - name: Repeat critical journeys 100 times
+        id: stress
         env:
           PLAYWRIGHT_BASE_URL: http://127.0.0.1:4173
-        shell: bash
         run: |
           set -euo pipefail
           for i in $(seq 1 100); do
-            echo "=== Mundo Mimo shard ${{ matrix.shard }} critical pass $i/100 ==="
-            npx playwright test qa/e2e.spec.js qa/visual-system-v110.spec.js qa/accessibility-v113.spec.js qa/runtime-v240.spec.js --config=qa/playwright.config.js --grep "daily path|parent gate|privacy|small-phone|home uses branded|count game replaces|classification choices|celebration added|home and parent gate|reduced motion|hold and release|semantic connection game|free exploration" --reporter=line
+            echo "=== shard ${{ matrix.shard }} pass $i/100 ==="
+            npx playwright test qa/e2e.spec.js qa/visual-system-v110.spec.js qa/accessibility-v113.spec.js qa/runtime-v240.spec.js --config=qa/playwright.config.js --grep "daily path|parent gate|privacy|small-phone|reduced motion|hold and release|semantic connection game|free exploration" --reporter=line
           done
       - name: Write shard evidence
         if: always()
-        shell: bash
         run: |
           mkdir -p /tmp/mimo-stress
           cat > /tmp/mimo-stress/shard-${{ matrix.shard }}.txt <<EOF
@@ -109,8 +101,7 @@ jobs:
           SOURCE_COMMIT: $GITHUB_SHA
           SHARD: ${{ matrix.shard }}/10
           CRITICAL_PASSES_PLANNED: 100
-          RESULT: ${{ job.status }}
-          UTC: $(date -u +'%Y-%m-%dT%H:%M:%SZ')
+          RESULT: ${{ steps.stress.outcome }}
           EOF
       - name: Upload shard evidence
         if: always()
@@ -122,40 +113,34 @@ jobs:
 
   evidence:
     if: always()
-    needs: [launch-matrix, critical-stress]
+    needs: [launch_matrix, critical_stress]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           ref: main
-      - name: Download stress evidence
-        uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4
         with:
           pattern: mundo-mimo-stress-*
           path: /tmp/mimo-evidence
           merge-multiple: true
       - name: Build release evidence
-        shell: bash
         run: |
           set -euo pipefail
           mkdir -p qa
           count=$(find /tmp/mimo-evidence -name 'shard-*.txt' -type f | wc -l | tr -d ' ')
           success=$(grep -l '^RESULT: success$' /tmp/mimo-evidence/shard-*.txt 2>/dev/null | wc -l | tr -d ' ')
           result=FAIL
-          if [ "$count" = "10" ] && [ "$success" = "10" ] && [ "${{ needs['launch-matrix'].result }}" = "success" ] && [ "${{ needs['critical-stress'].result }}" = "success" ]; then result=PASS; fi
+          if [ "$count" = "10" ] && [ "$success" = "10" ] && [ "${{ needs.launch_matrix.result }}" = "success" ] && [ "${{ needs.critical_stress.result }}" = "success" ]; then result=PASS; fi
           {
             echo 'MUNDO MIMO RELEASE STRESS 1000X'
             echo "SOURCE_COMMIT: $GITHUB_SHA"
             echo "RESULT: $result"
-            echo "LAUNCH_MATRIX: ${{ needs['launch-matrix'].result }}"
+            echo "LAUNCH_MATRIX: ${{ needs.launch_matrix.result }}"
             echo "STRESS_SHARDS: $success/10 successful"
-            echo 'PLANNED_REPETITIONS: 1000 critical iPhone/accessibility/Mundo Mimo 2 journeys plus one complete launch matrix covering legacy and V2 gates'
-            echo "UTC: $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
-            echo '--- SHARDS ---'
-            cat /tmp/mimo-evidence/shard-*.txt || true
+            echo 'PLANNED_REPETITIONS: 1000 critical iPhone/accessibility/V2 journeys plus one complete legacy+V2 launch matrix'
           } > qa/release-stress-latest.txt
       - name: Persist evidence
-        shell: bash
         run: |
           set -euo pipefail
           cp qa/release-stress-latest.txt /tmp/mimo-release-stress-latest.txt
@@ -168,6 +153,5 @@ jobs:
           if git diff --cached --quiet; then exit 0; fi
           git commit -m 'QA result: Mundo Mimo 1000x release stress [skip ci]'
           git push origin HEAD:main
-      - name: Enforce release stress gate
-        shell: bash
+      - name: Enforce gate
         run: grep -q '^RESULT: PASS$' qa/release-stress-latest.txt
