@@ -68,6 +68,7 @@ jobs:
             echo "--- TEST OUTPUT (tail) ---"
             tail -n 1500 /tmp/mimo-qa.log
           } > qa/latest-result.txt
+          cat qa/latest-result.txt
           echo "code=$CODE" >> "$GITHUB_OUTPUT"
       - name: Persist QA evidence
         if: ${{ always() && github.event_name == 'push' && github.ref == 'refs/heads/main' }}
