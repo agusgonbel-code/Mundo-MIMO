@@ -1,8 +1,8 @@
 MUNDO MIMO LAUNCH QA
-UTC: 2026-08-26T07:46:17Z
-COMMIT: 05683f4979a2fbd902b48525df89ae884f648b41
-RESULT: FAIL
-EXIT_CODE: 1
+UTC: 2026-08-26T08:28:47Z
+COMMIT: 141bb54b73cab1601e93ab56602cc4692a57ae31
+RESULT: PASS
+EXIT_CODE: 0
 LEGACY PRODUCT: 24 guided activities x 3 selectable UI age groups x 6 rounds; 2400 challenge variants are reported as variants, not games.
 CURRICULUM/V2: honest metrics gate + six developmental bands + >=40 mechanics registry + clone detection + first forty-two independently playable mechanics.
 OTHER COVERAGE: per-game visual/accessibility + persistence/offline + adaptive/audio/privacy + iPhone/iPad rotation-state retention + 30 user-behavior scenarios.
@@ -248,34 +248,6 @@ Running 350 tests using 1 worker
 [236/350] qa/runtime-v250.spec.js:18:1 › follow-light requires tracking three successive positions
 [237/350] qa/runtime-v250.spec.js:23:1 › home sorting supports actual drag-and-drop and rejects the wrong destination
 [238/350] qa/runtime-v250.spec.js:29:1 › missing-object game uses a memory phase before answering
-  1) qa/runtime-v250.spec.js:29:1 › missing-object game uses a memory phase before answering ───────
-
-    Error: expect(locator).toBeHidden() failed
-
-    Locator:  locator('[data-answers]')
-    Expected: hidden
-    Received: visible
-    Timeout:  5000ms
-
-    Call log:
-      - Expect "toBeHidden" with timeout 5000ms
-      - waiting for locator('[data-answers]')
-        14 × locator resolved to <div hidden="" class="choices" data-answers="">…</div>
-           - unexpected value "visible"
-
-
-      28 |
-      29 | test('missing-object game uses a memory phase before answering',async({page})=>{
-    > 30 |   await boot(page);await page.locator('[data-age="3-4"]').click();await page.locator('[data-game="que-falta"]').click();await expect(page.locator('[data-answers]')).toBeHidden();await page.locator('[data-hide]').click();await expect(page.locator('[data-answers]')).toBeVisible();
-         |                                                                                                                                                                      ^
-      31 |   await page.locator('[data-missing="1"]').click();await expect(page.locator('#feedback')).toContainText('sigue en la escena');await page.locator('[data-missing="0"]').click();await expect(page.locator('#feedback')).toContainText('Recordaste');
-      32 | });
-      33 |
-        at /home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/runtime-v250.spec.js:30:166
-
-    Error Context: test-results/runtime-v250-missing-objec-83660-mory-phase-before-answering/error-context.md
-
-
 [239/350] qa/runtime-v250.spec.js:34:1 › emotion-context game interprets a situation instead of matching a decorative face
 [240/350] qa/runtime-v250.spec.js:38:1 › sound recognition provides replay and distinguishes instrument identities
 [241/350] qa/runtime-v250.spec.js:42:1 › logic grid rejects a clue violation and accepts the unique valid combination
@@ -388,8 +360,6 @@ Running 350 tests using 1 worker
 [348/350] qa/visual-system-v110.spec.js:57:1 › habitat farm uses branded tractor artwork instead of generic fallback
 [349/350] qa/visual-system-v110.spec.js:69:1 › celebration added outside app root is converted to branded vectors
 [350/350] qa/visual-system-v110.spec.js:79:1 › visual system is included in offline core
-  Slow test file: qa/e2e.spec.js (9.4m)
+  Slow test file: qa/e2e.spec.js (9.2m)
   Consider running tests from slow files in parallel. See: https://playwright.dev/docs/test-parallel
-  1 failed
-    qa/runtime-v250.spec.js:29:1 › missing-object game uses a memory phase before answering ────────
-  349 passed (16.5m)
+  350 passed (16.1m)
