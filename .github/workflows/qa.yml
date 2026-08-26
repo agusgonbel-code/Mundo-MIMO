@@ -70,6 +70,13 @@ jobs:
           } > qa/latest-result.txt
           cat qa/latest-result.txt
           echo "code=$CODE" >> "$GITHUB_OUTPUT"
+      - name: Upload QA diagnostic evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mundo-mimo-launch-diagnostic
+          path: qa/latest-result.txt
+          retention-days: 7
       - name: Persist QA evidence
         if: ${{ always() && github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         shell: bash
