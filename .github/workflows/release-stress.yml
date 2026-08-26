@@ -50,34 +50,34 @@ jobs:
           curl -fL --retry 3 -o assets/audio/voice-triste.wav 'https://commons.wikimedia.org/wiki/Special:Redirect/file/LL-Q1321_(spa)-Knites-triste.wav'
       - name: Start app
         run: python3 -m http.server 4173 >/tmp/mimo-http.log 2>&1 &
-      - name: Run full matrix on shard one and critical journeys 100 times
-        id: stressrun
+      - name: Run complete matrix on shard one
+        if: ${{ matrix.shard == 1 }}
         env:
           PLAYWRIGHT_BASE_URL: http://127.0.0.1:4173
         shell: bash
         run: |
           set -euo pipefail
-          if [ "${{ matrix.shard }}" = "1" ]; then
-            npx playwright test qa/e2e.spec.js qa/premium-v71.spec.js qa/premium-offline-v72.spec.js qa/challenge-v100.spec.js qa/learning-model-v130.spec.js qa/platform-v200.spec.js qa/runtime-v200.spec.js qa/runtime-v210.spec.js qa/runtime-v220.spec.js qa/runtime-v230.spec.js qa/runtime-v240.spec.js qa/runtime-v250.spec.js qa/runtime-v260.spec.js qa/runtime-v270.spec.js qa/runtime-v280.spec.js qa/runtime-v290.spec.js qa/runtime-v300.spec.js qa/runtime-v310.spec.js qa/runtime-v320.spec.js qa/runtime-v330.spec.js qa/runtime-v340.spec.js qa/visual-system-v110.spec.js qa/visual-coverage-v112.spec.js qa/accessibility-v113.spec.js qa/orientation-state.spec.js qa/user-100-sim.spec.js --config=qa/playwright.config.js --reporter=line
-          fi
+          npx playwright test qa/e2e.spec.js qa/premium-v71.spec.js qa/premium-offline-v72.spec.js qa/challenge-v100.spec.js qa/learning-model-v130.spec.js qa/platform-v200.spec.js qa/runtime-v200.spec.js qa/runtime-v210.spec.js qa/runtime-v220.spec.js qa/runtime-v230.spec.js qa/runtime-v240.spec.js qa/runtime-v250.spec.js qa/runtime-v260.spec.js qa/runtime-v270.spec.js qa/runtime-v280.spec.js qa/runtime-v290.spec.js qa/runtime-v300.spec.js qa/runtime-v310.spec.js qa/runtime-v320.spec.js qa/runtime-v330.spec.js qa/runtime-v340.spec.js qa/runtime-v350.spec.js qa/runtime-v360.spec.js qa/visual-system-v110.spec.js qa/visual-coverage-v112.spec.js qa/accessibility-v113.spec.js qa/orientation-state.spec.js qa/user-100-sim.spec.js --config=qa/playwright.config.js --reporter=line
+      - name: Run critical journeys 100 times per shard
+        env:
+          PLAYWRIGHT_BASE_URL: http://127.0.0.1:4173
+        shell: bash
+        run: |
+          set -euo pipefail
           for i in $(seq 1 100); do
             echo "=== Mundo Mimo shard ${{ matrix.shard }} critical pass $i/100 ==="
-            npx playwright test qa/e2e.spec.js qa/visual-system-v110.spec.js qa/accessibility-v113.spec.js qa/runtime-v300.spec.js qa/runtime-v310.spec.js qa/runtime-v320.spec.js qa/runtime-v330.spec.js qa/runtime-v340.spec.js --config=qa/playwright.config.js --grep "daily path|parent gate|privacy|small-phone|reduced motion|faces links|one-to-one distribution|phoneme odd-one-out|spatial relation|story event|mini market|guided breathing|recycling game|silhouette matching|garden sums|auditory memory|profession association|face imitation|spatial language|movement mission|same-initial game|make ten|color mixing|plant sequence|routine clock|syllable builder|rotated figures|social turn|receptive language" --reporter=line
+            npx playwright test qa/runtime-v350.spec.js qa/runtime-v360.spec.js qa/accessibility-v113.spec.js qa/orientation-state.spec.js --config=qa/playwright.config.js --reporter=line
           done
       - name: Write shard evidence
         if: always()
         shell: bash
         run: |
-          set -euo pipefail
           mkdir -p /tmp/mimo-stress
-          full=not-required
-          if [ "${{ matrix.shard }}" = "1" ]; then full=included; fi
           cat > /tmp/mimo-stress/shard-${{ matrix.shard }}.txt <<EOF
           APP: Mundo Mimo
           SOURCE_COMMIT: $GITHUB_SHA
           SHARD: ${{ matrix.shard }}/10
           CRITICAL_PASSES_PLANNED: 100
-          FULL_MATRIX: $full
           RESULT: ${{ job.status }}
           UTC: $(date -u +'%Y-%m-%dT%H:%M:%SZ')
           EOF
@@ -107,36 +107,33 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          mkdir -p qa
           count=$(find /tmp/mimo-evidence -name 'shard-*.txt' -type f | wc -l | tr -d ' ')
           success=$(grep -l '^RESULT: success$' /tmp/mimo-evidence/shard-*.txt 2>/dev/null | wc -l | tr -d ' ')
-          full=$(grep -l '^FULL_MATRIX: included$' /tmp/mimo-evidence/shard-*.txt 2>/dev/null | wc -l | tr -d ' ')
           result=FAIL
-          if [ "$count" = "10" ] && [ "$success" = "10" ] && [ "$full" = "1" ] && [ "${{ needs.stress.result }}" = "success" ]; then result=PASS; fi
+          if [ "$count" = "10" ] && [ "$success" = "10" ] && [ "${{ needs.stress.result }}" = "success" ]; then result=PASS; fi
           {
             echo 'MUNDO MIMO RELEASE STRESS 1000X'
             echo "SOURCE_COMMIT: $GITHUB_SHA"
             echo "RESULT: $result"
             echo "SHARDS: $success/10 successful"
-            echo "FULL_MATRIX_EVIDENCE: $full/1"
-            echo 'PLANNED_REPETITIONS: 1000 critical iPhone/accessibility/V2 journeys plus one complete legacy+V2 launch matrix, including v340 ninety-six-game coverage'
+            echo 'PLANNED_REPETITIONS: 1000 critical accessibility/orientation/V2 journeys plus one complete legacy+V2 launch matrix, including v360 108-game coverage'
             echo "UTC: $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
             echo '--- SHARDS ---'
             cat /tmp/mimo-evidence/shard-*.txt || true
-          } > /tmp/mimo-release-stress-latest.txt
-      - name: Persist evidence safely on latest main
+          } > qa/release-stress-latest.txt
+      - name: Persist evidence
         shell: bash
         run: |
           set -euo pipefail
           git config user.name 'Mundo Mimo QA Bot'
           git config user.email 'actions@users.noreply.github.com'
-          git fetch origin main
-          git reset --hard origin/main
-          mkdir -p qa
-          cp /tmp/mimo-release-stress-latest.txt qa/release-stress-latest.txt
           git add qa/release-stress-latest.txt
           if git diff --cached --quiet; then exit 0; fi
           git commit -m 'QA result: Mundo Mimo 1000x release stress [skip ci]'
+          git pull --rebase origin main
           git push origin HEAD:main
       - name: Enforce release stress gate
         shell: bash
-        run: grep -q '^RESULT: PASS$' /tmp/mimo-release-stress-latest.txt
+        run: |
+          grep -q '^RESULT: PASS$' qa/release-stress-latest.txt
