@@ -1,8 +1,8 @@
 MUNDO MIMO LAUNCH QA
-UTC: 2026-08-26T18:52:41Z
-COMMIT: 097dac1c5c65d4e5f8e934ca080af649484e89ce
-RESULT: FAIL
-EXIT_CODE: 1
+UTC: 2026-08-26T19:32:16Z
+COMMIT: 6f749e2a1390faf8e28c724a2ce61eafd2a3bddc
+RESULT: PASS
+EXIT_CODE: 0
 LEGACY PRODUCT: 24 guided activities x 3 selectable UI age groups x 6 rounds; 2400 challenge variants are reported as variants, not games.
 CURRICULUM/V2: honest metrics gate + six developmental bands + >=40 mechanics registry + clone detection + first one hundred two independently playable games.
 OTHER COVERAGE: per-game visual/accessibility + persistence/offline + adaptive/audio/privacy + iPhone/iPad rotation-state retention + 30 user-behavior scenarios.
@@ -324,33 +324,6 @@ Running 430 tests using 1 worker
 [312/430] qa/runtime-v340.spec.js:9:1 › receptive language combines category and attribute
 [313/430] qa/runtime-v340.spec.js:10:1 › advanced syllable and mental rotation games stay out of toddler bands
 [314/430] qa/runtime-v350.spec.js:3:1 › v350 exposes 102 implemented games with unique handlers and no clones
-  1) qa/runtime-v350.spec.js:3:1 › v350 exposes 102 implemented games with unique handlers and no clones 
-
-    Error: expect(received).toEqual(expected) // deep equality
-
-    - Expected  - 1
-    + Received  + 6
-
-    - Array []
-    + Array [
-    +   "quien-hace-ese-sonido:invalid:mechanic",
-    +   "carrera-de-longitudes:invalid:mechanic",
-    +   "mi-cuerpo-me-avisa:invalid:area",
-    +   "reparte-el-camino:invalid:mechanic",
-    + ]
-
-      1 | const {test,expect}=require('@playwright/test');
-      2 | async function boot(page){await page.goto('/v2/app-v200.html');await page.waitForFunction(()=>Boolean(window.MundoMimoV2RuntimeV350));}
-    > 3 | test('v350 exposes 102 implemented games with unique handlers and no clones',async({page})=>{await boot(page);const r=await page.evaluate(()=>{const x=window.MundoMimoV2RuntimeV350,E=window.MundoMimoV2ExpansionV350;return{implemented:x.implemented,handlers:x.handlers,errors:E.errors,clones:E.cloneGroups}});expect(r.errors).toEqual([]);expect(r.clones).toEqual([]);expect(r.implemented).toHaveLength(102);expect(new Set(r.implemented).size).toBe(102);expect(new Set(r.handlers).size).toBe(102);});
-        |                                                                                                                                                                                                                                                                                                                                      ^
-      4 | test('sound source rejects unrelated source then accepts correct source',async({page})=>{await boot(page);await page.locator('[data-age="1-2"]').click();await page.locator('[data-game="quien-hace-ese-sonido"]').click();await page.locator('[data-source="coche"]').click();await expect(page.locator('#feedback')).toContainText('produce');await page.locator('[data-source="gato"]').click();await expect(page.locator('#feedback')).toContainText('sonido');});
-      5 | test('length race requires strict shortest-to-longest order',async({page})=>{await boot(page);await page.locator('[data-age="3-4"]').click();await page.locator('[data-game="carrera-de-longitudes"]').click();await page.locator('[data-length="3"]').click();await page.locator('[data-length="1"]').click();await page.locator('[data-length="2"]').click();await page.locator('[data-check-length]').click();await expect(page.locator('#feedback')).toContainText('corto');await page.locator('[data-length="1"]').click();await page.locator('[data-length="2"]').click();await page.locator('[data-length="3"]').click();await page.locator('[data-check-length]').click();await expect(page.locator('#feedback')).toContainText('largo');});
-      6 | test('tracks game uses visual clue rather than category guessing',async({page})=>{await boot(page);await page.locator('[data-age="2-3"]').click();await page.locator('[data-game="huellas-y-animales"]').click();await page.locator('[data-track="pez"]').click();await expect(page.locator('#feedback')).toContainText('huella');await page.locator('[data-track="perro"]').click();await expect(page.locator('#feedback')).toContainText('encaja');});
-        at /home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/runtime-v350.spec.js:3:326
-
-    Error Context: test-results/runtime-v350-v350-exposes--fb214-ique-handlers-and-no-clones/error-context.md
-
-
 [315/430] qa/runtime-v350.spec.js:4:1 › sound source rejects unrelated source then accepts correct source
 [316/430] qa/runtime-v350.spec.js:5:1 › length race requires strict shortest-to-longest order
 [317/430] qa/runtime-v350.spec.js:6:1 › tracks game uses visual clue rather than category guessing
@@ -467,8 +440,6 @@ Running 430 tests using 1 worker
 [428/430] qa/visual-system-v110.spec.js:57:1 › habitat farm uses branded tractor artwork instead of generic fallback
 [429/430] qa/visual-system-v110.spec.js:69:1 › celebration added outside app root is converted to branded vectors
 [430/430] qa/visual-system-v110.spec.js:79:1 › visual system is included in offline core
-  Slow test file: qa/e2e.spec.js (9.2m)
+  Slow test file: qa/e2e.spec.js (9.6m)
   Consider running tests from slow files in parallel. See: https://playwright.dev/docs/test-parallel
-  1 failed
-    qa/runtime-v350.spec.js:3:1 › v350 exposes 102 implemented games with unique handlers and no clones 
-  429 passed (17.6m)
+  430 passed (18.3m)
