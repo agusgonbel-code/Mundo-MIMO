@@ -52,7 +52,7 @@ jobs:
         shell: bash
         run: |
           set +e
-          npx playwright test qa/e2e.spec.js qa/premium-v71.spec.js qa/premium-offline-v72.spec.js qa/challenge-v100.spec.js qa/learning-model-v130.spec.js qa/platform-v200.spec.js qa/runtime-v200.spec.js qa/runtime-v210.spec.js qa/runtime-v220.spec.js qa/runtime-v230.spec.js qa/runtime-v240.spec.js qa/runtime-v250.spec.js qa/runtime-v260.spec.js qa/runtime-v270.spec.js qa/runtime-v280.spec.js qa/runtime-v290.spec.js qa/runtime-v300.spec.js qa/runtime-v310.spec.js qa/visual-system-v110.spec.js qa/visual-coverage-v112.spec.js qa/accessibility-v113.spec.js qa/orientation-state.spec.js qa/user-100-sim.spec.js --config=qa/playwright.config.js --reporter=line > /tmp/mimo-qa.log 2>&1
+          npx playwright test qa/e2e.spec.js qa/premium-v71.spec.js qa/premium-offline-v72.spec.js qa/challenge-v100.spec.js qa/learning-model-v130.spec.js qa/platform-v200.spec.js qa/runtime-v200.spec.js qa/runtime-v210.spec.js qa/runtime-v220.spec.js qa/runtime-v230.spec.js qa/runtime-v240.spec.js qa/runtime-v250.spec.js qa/runtime-v260.spec.js qa/runtime-v270.spec.js qa/runtime-v280.spec.js qa/runtime-v290.spec.js qa/runtime-v300.spec.js qa/runtime-v310.spec.js qa/runtime-v320.spec.js qa/visual-system-v110.spec.js qa/visual-coverage-v112.spec.js qa/accessibility-v113.spec.js qa/orientation-state.spec.js qa/user-100-sim.spec.js --config=qa/playwright.config.js --reporter=line > /tmp/mimo-qa.log 2>&1
           CODE=$?
           set -e
           mkdir -p qa
@@ -63,10 +63,10 @@ jobs:
             if [ "$CODE" -eq 0 ]; then echo "RESULT: PASS"; else echo "RESULT: FAIL"; fi
             echo "EXIT_CODE: $CODE"
             echo "LEGACY PRODUCT: 24 guided activities x 3 selectable UI age groups x 6 rounds; 2400 challenge variants are reported as variants, not games."
-            echo "CURRICULUM/V2: honest metrics gate + six developmental bands + >=40 mechanics registry + clone detection + first seventy-eight independently playable games."
+            echo "CURRICULUM/V2: honest metrics gate + six developmental bands + >=40 mechanics registry + clone detection + first eighty-four independently playable games."
             echo "OTHER COVERAGE: per-game visual/accessibility + persistence/offline + adaptive/audio/privacy + iPhone/iPad rotation-state retention + 30 user-behavior scenarios."
             echo "--- TEST OUTPUT (tail) ---"
-            tail -n 1400 /tmp/mimo-qa.log
+            tail -n 1450 /tmp/mimo-qa.log
           } > qa/latest-result.txt
           echo "code=$CODE" >> "$GITHUB_OUTPUT"
       - name: Persist QA evidence
