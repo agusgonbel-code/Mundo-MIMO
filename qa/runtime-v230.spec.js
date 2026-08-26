@@ -25,7 +25,7 @@ test('shadow laboratory requires manipulating the light before success',async({p
 test('float or sink records a prediction and then reveals the experiment result',async({page})=>{
   await boot(page);await page.locator('[data-age="5-6"]').click();await page.locator('[data-game="flota-o-se-hunde"]').click();
   await expect(page.locator('[data-test-water]')).toBeDisabled();await page.locator('[data-predict="true"]').click();await expect(page.locator('[data-test-water]')).toBeEnabled();
-  await page.locator('[data-test-water]').click();await expect(page.locator('[data-water]')).not.toHaveText('');await expect(page.locator('#feedback')).toMatchAriaSnapshot(`- text: /predicción|descubierto/i`);
+  await page.locator('[data-test-water]').click();await expect(page.locator('[data-water]')).not.toHaveText('');await expect(page.locator('#feedback')).toContainText(/predicción|descubierto/i);
 });
 
 test('treasure map rejects an out-of-order move and accepts the exact route',async({page})=>{
