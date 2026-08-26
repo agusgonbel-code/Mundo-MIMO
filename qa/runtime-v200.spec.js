@@ -5,13 +5,14 @@ async function boot(page){
   await page.waitForFunction(()=>Boolean(window.MundoMimoV2Runtime));
 }
 
-test('v2 runtime exposes six implemented games across distinct mechanics',async({page})=>{
+test('v2 runtime exposes twelve implemented games across twelve distinct mechanics',async({page})=>{
   await boot(page);
   const result=await page.evaluate(()=>({implemented:window.MundoMimoV2Runtime.implemented,handlers:window.MundoMimoV2Runtime.handlers,games:window.MundoMimoV2Seed.games.map(g=>({id:g.id,mechanic:g.mechanic}))}));
-  expect(result.implemented).toHaveLength(6);
-  expect(new Set(result.handlers).size).toBe(6);
+  expect(result.implemented).toHaveLength(12);
+  expect(new Set(result.handlers).size).toBe(12);
+  expect(new Set(result.implemented).size).toBe(12);
   const mechanics=result.implemented.map(id=>result.games.find(g=>g.id===id).mechanic);
-  expect(new Set(mechanics).size).toBe(6);
+  expect(new Set(mechanics).size).toBe(12);
 });
 
 test('age navigation filters playable portfolio instead of showing unsuitable games',async({page})=>{
@@ -21,6 +22,7 @@ test('age navigation filters playable portfolio instead of showing unsuitable ga
   await expect(page.locator('[data-game="ritmo-de-pipa"]')).toHaveCount(0);
   await page.locator('[data-age="3-4"]').click();
   await expect(page.locator('[data-game="ritmo-de-pipa"]')).toHaveCount(1);
+  await expect(page.locator('[data-game="laberinto-de-lio"]')).toHaveCount(1);
   await expect(page.locator('[data-game="luces-y-sonidos"]')).toHaveCount(0);
 });
 
@@ -58,6 +60,56 @@ test('memory mechanic requires matching pairs and exposes labelled controls',asy
   await expect(cards).toHaveCount(6);
   const labels=await cards.evaluateAll(xs=>xs.map(x=>x.getAttribute('aria-label')));
   expect(labels.every(Boolean)).toBeTruthy();
+});
+
+test('follow-path requires ordered checkpoints and rejects skipping ahead',async({page})=>{
+  await boot(page);
+  await page.locator('[data-age="2-3"]').click();
+  await page.locator('[data-game="camino-del-conejo"]').click();
+  await page.locator('[data-step="2"]').click();
+  await expect(page.locator('#feedback')).toContainText('último punto');
+  for(const i of [0,1,2,3]) await page.locator(`[data-step="${i}"]`).click();
+  await expect(page.locator('#feedback')).toContainText('Llegaste');
+});
+
+test('classification mechanic requires selecting an item before its matching bin',async({page})=>{
+  await boot(page);
+  await page.locator('[data-age="2-3"]').click();
+  await page.locator('[data-game="cajas-de-colores"]').click();
+  await page.locator('[data-bin="rojo"]').click();
+  await expect(page.locator('#feedback')).toContainText('Elige primero');
+  const red=page.locator('[data-item][data-color="rojo"]').first();
+  await red.click();
+  await page.locator('[data-bin="rojo"]').click();
+  await expect(red).toBeDisabled();
+});
+
+test('maze mechanic enforces obstacles and allows a valid route to goal',async({page})=>{
+  await boot(page);
+  await page.locator('[data-age="3-4"]').click();
+  await page.locator('[data-game="laberinto-de-lio"]').click();
+  await page.locator('[data-move="1"]').click();
+  await expect(page.locator('#feedback')).toContainText('bloqueado');
+  for(const move of [3,1,3,1]) await page.locator(`[data-move="${move}"]`).click();
+  await expect(page.locator('#feedback')).toContainText('salida');
+});
+
+test('step-order mechanic rejects a later routine step before the first one',async({page})=>{
+  await boot(page);
+  await page.locator('[data-age="3-4"]').click();
+  await page.locator('[data-game="ordenamos-el-dia"]').click();
+  await page.locator('[data-order="2"]').click();
+  await expect(page.locator('#feedback')).toContainText('antes');
+  for(const i of [0,1,2,3]) await page.locator(`[data-order="${i}"]`).click();
+  await expect(page.locator('#feedback')).toContainText('Rutina ordenada');
+});
+
+test('spot-difference mechanic is available only at appropriate older ages',async({page})=>{
+  await boot(page);
+  await page.locator('[data-age="2-3"]').click();
+  await expect(page.locator('[data-game="detectives-de-diferencias"]')).toHaveCount(0);
+  await page.locator('[data-age="4-5"]').click();
+  await expect(page.locator('[data-game="detectives-de-diferencias"]')).toHaveCount(1);
 });
 
 test('v2 shell remains usable at small iPhone and iPad landscape sizes',async({page})=>{
