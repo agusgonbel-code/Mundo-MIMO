@@ -1,9 +1,9 @@
 MUNDO MIMO USER SIMULATION
-SOURCE_COMMIT: 1248ea8eea8d276fd175ea31e89a1a57e7d84731
+SOURCE_COMMIT: f4707b1eacefce02176389cb24f5a7de293c1f84
 RESULT: PASS
 EXIT_CODE: 0
 SCENARIOS: 30
-UTC: 2026-08-26T12:32:21Z
+UTC: 2026-08-26T13:16:35Z
 
 Running 30 tests using 1 worker
 
@@ -37,4 +37,4 @@ Running 30 tests using 1 worker
 [28/30] qa/user-100-sim.spec.js:18:1 › reduced motion conserva experiencia
 [29/30] qa/user-100-sim.spec.js:19:1 › recarga conserva edad elegida
 [30/30] qa/user-100-sim.spec.js:20:1 › recorrido infantil básico no lanza pageerror
-  30 passed (47.8s)
+  30 passed (47.7s)
