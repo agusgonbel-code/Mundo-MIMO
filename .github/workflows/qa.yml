@@ -78,6 +78,15 @@ jobs:
           git config user.name 'Mundo Mimo QA Bot'
           git config user.email 'actions@users.noreply.github.com'
           git fetch origin main
+          CURRENT="$(git rev-parse origin/main)"
+          if [ "$CURRENT" != "$GITHUB_SHA" ]; then
+            MATERIAL_CHANGES="$(git diff --name-only "$GITHUB_SHA"..origin/main | grep -Ev '^qa/(latest-result|latest-user-sim)\.txt$' || true)"
+            if [ -n "$MATERIAL_CHANGES" ]; then
+              echo "Skipping stale QA evidence because newer product/workflow commits exist on main:"
+              echo "$MATERIAL_CHANGES"
+              exit 0
+            fi
+          fi
           git reset --hard origin/main
           cp /tmp/mimo-latest-result.txt qa/latest-result.txt
           git add qa/latest-result.txt
