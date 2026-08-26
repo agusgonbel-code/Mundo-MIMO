@@ -78,12 +78,15 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          cp qa/latest-result.txt /tmp/mimo-latest-result.txt
           git config user.name 'Mundo Mimo QA Bot'
           git config user.email 'actions@users.noreply.github.com'
+          git fetch origin main
+          git reset --hard origin/main
+          cp /tmp/mimo-latest-result.txt qa/latest-result.txt
           git add qa/latest-result.txt
           if git diff --cached --quiet; then exit 0; fi
           git commit -m 'QA result: automated launch matrix [skip ci]'
-          git pull --rebase origin main
           git push origin HEAD:main
       - name: Enforce QA gate
         if: always()
