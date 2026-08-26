@@ -1,8 +1,8 @@
 MUNDO MIMO LAUNCH QA
-UTC: 2026-08-26T05:35:44Z
-COMMIT: b60ec880fbc6569bdf5fb25f935e35e9a241672e
-RESULT: FAIL
-EXIT_CODE: 1
+UTC: 2026-08-26T06:52:30Z
+COMMIT: f84d8beac49176835fcbccad64958a110dfde69d
+RESULT: PASS
+EXIT_CODE: 0
 LEGACY PRODUCT: 24 guided activities x 3 selectable UI age groups x 6 rounds; 2400 challenge variants are reported as variants, not games.
 CURRICULUM/V2: honest metrics gate + six developmental bands + >=40 mechanics registry + clone detection + first thirty-six independently playable mechanics.
 OTHER COVERAGE: per-game visual/accessibility + persistence/offline + adaptive/audio/privacy + iPhone/iPad rotation-state retention + 30 user-behavior scenarios.
@@ -137,25 +137,6 @@ Running 342 tests using 1 worker
 [125/342] qa/e2e.spec.js:109:142 › age-3 › mountain/initial completes all 6 rounds
 [126/342] qa/e2e.spec.js:109:142 › age-3 › mountain/logic completes all 6 rounds
 [127/342] qa/e2e.spec.js:109:142 › age-3 › mountain/sequence completes all 6 rounds
-  1) qa/e2e.spec.js:109:142 › age-3 › mountain/sequence completes all 6 rounds ─────────────────────
-
-    Test timeout of 30000ms exceeded.
-
-    TimeoutError: page.waitForFunction: Timeout 10000ms exceeded.
-
-      101 |     await solveRound(page, game);
-      102 |     await page.waitForFunction(before => (JSON.parse(localStorage.getItem('mimo70')||'{}').rounds || 0) > before, roundsBefore, { timeout: 10000 });
-    > 103 |     if (round < 6) await page.waitForFunction(r => document.querySelector('#roundText')?.textContent?.startsWith(String(r)), round+1, { timeout: 10000 });
-          |                               ^
-      104 |     else { await expect(page.locator('#sessionProgress')).toHaveAttribute('style', /100%/); await expect(page.locator('#nextBtn')).toHaveClass(/on/); const state=await page.evaluate(()=>JSON.parse(localStorage.getItem('mimo70'))); expect(state.sessions).toBeGreaterThanOrEqual(1); expect(state.rounds).toBeGreaterThanOrEqual(6); }
-      105 |     await assertNoOverflow(page);
-      106 |   }
-        at completeSixRounds (/home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:103:31)
-        at /home/runner/work/Mundo-MIMO/Mundo-MIMO/qa/e2e.spec.js:109:272
-
-    Error Context: test-results/e2e-age-3-mountain-sequence-completes-all-6-rounds/error-context.md
-
-
 [128/342] qa/e2e.spec.js:109:142 › age-3 › mountain/odd completes all 6 rounds
 [129/342] qa/e2e.spec.js:109:313 › age-3 › free/music works for age 3
 [130/342] qa/e2e.spec.js:109:142 › age-5 › forest/animals completes all 6 rounds
@@ -371,6 +352,6 @@ Running 342 tests using 1 worker
 [340/342] qa/visual-system-v110.spec.js:57:1 › habitat farm uses branded tractor artwork instead of generic fallback
 [341/342] qa/visual-system-v110.spec.js:69:1 › celebration added outside app root is converted to branded vectors
 [342/342] qa/visual-system-v110.spec.js:79:1 › visual system is included in offline core
-  1 failed
-    qa/e2e.spec.js:109:142 › age-3 › mountain/sequence completes all 6 rounds ──────────────────────
-  341 passed (14.3m)
+  Slow test file: qa/e2e.spec.js (9.3m)
+  Consider running tests from slow files in parallel. See: https://playwright.dev/docs/test-parallel
+  342 passed (16.2m)
