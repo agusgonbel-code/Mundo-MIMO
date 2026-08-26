@@ -50,20 +50,16 @@ jobs:
           curl -fL --retry 3 -o assets/audio/voice-triste.wav 'https://commons.wikimedia.org/wiki/Special:Redirect/file/LL-Q1321_(spa)-Knites-triste.wav'
       - name: Start app
         run: python3 -m http.server 4173 >/tmp/mimo-http.log 2>&1 &
-      - name: Run complete launch matrix once
-        if: ${{ matrix.shard == 1 }}
-        env:
-          PLAYWRIGHT_BASE_URL: http://127.0.0.1:4173
-        shell: bash
-        run: |
-          npx playwright test qa/e2e.spec.js qa/premium-v71.spec.js qa/premium-offline-v72.spec.js qa/challenge-v100.spec.js qa/learning-model-v130.spec.js qa/platform-v200.spec.js qa/runtime-v200.spec.js qa/runtime-v210.spec.js qa/runtime-v220.spec.js qa/runtime-v230.spec.js qa/runtime-v240.spec.js qa/runtime-v250.spec.js qa/runtime-v260.spec.js qa/runtime-v270.spec.js qa/runtime-v280.spec.js qa/runtime-v290.spec.js qa/runtime-v300.spec.js qa/visual-system-v110.spec.js qa/visual-coverage-v112.spec.js qa/accessibility-v113.spec.js qa/orientation-state.spec.js qa/user-100-sim.spec.js --config=qa/playwright.config.js --reporter=line
-      - name: Repeat critical journeys 100 times per shard
-        id: critical
+      - name: Run full matrix on shard one and critical journeys 100 times
+        id: stressrun
         env:
           PLAYWRIGHT_BASE_URL: http://127.0.0.1:4173
         shell: bash
         run: |
           set -euo pipefail
+          if [ "${{ matrix.shard }}" = "1" ]; then
+            npx playwright test qa/e2e.spec.js qa/premium-v71.spec.js qa/premium-offline-v72.spec.js qa/challenge-v100.spec.js qa/learning-model-v130.spec.js qa/platform-v200.spec.js qa/runtime-v200.spec.js qa/runtime-v210.spec.js qa/runtime-v220.spec.js qa/runtime-v230.spec.js qa/runtime-v240.spec.js qa/runtime-v250.spec.js qa/runtime-v260.spec.js qa/runtime-v270.spec.js qa/runtime-v280.spec.js qa/runtime-v290.spec.js qa/runtime-v300.spec.js qa/visual-system-v110.spec.js qa/visual-coverage-v112.spec.js qa/accessibility-v113.spec.js qa/orientation-state.spec.js qa/user-100-sim.spec.js --config=qa/playwright.config.js --reporter=line
+          fi
           for i in $(seq 1 100); do
             echo "=== Mundo Mimo shard ${{ matrix.shard }} critical pass $i/100 ==="
             npx playwright test qa/e2e.spec.js qa/visual-system-v110.spec.js qa/accessibility-v113.spec.js qa/runtime-v240.spec.js qa/runtime-v250.spec.js qa/runtime-v260.spec.js qa/runtime-v270.spec.js qa/runtime-v280.spec.js qa/runtime-v290.spec.js qa/runtime-v300.spec.js --config=qa/playwright.config.js --grep "daily path|parent gate|privacy|small-phone|reduced motion|hold and release|semantic connection game|free exploration|home sorting|logic grid|sound recognition|receptive-language|memory cards|sequence completion|visual recognition|semantic association|multi-select|magnitude ordering|animal families|emotion drawing|instrument recognition|logic houses|autonomy context choice|body-sound|complement pairing|shape route|recipe planning|season garden|syllable detective|wait-and-discover|size staircase|emotion-cause|sentence completion|quantity balance|arrow code|day-night animal|weather clothing|claps-and-silences|hidden-letter|park turns|shape bridge" --reporter=line
@@ -72,13 +68,16 @@ jobs:
         if: always()
         shell: bash
         run: |
+          set -euo pipefail
           mkdir -p /tmp/mimo-stress
+          full=not-required
+          if [ "${{ matrix.shard }}" = "1" ]; then full=included; fi
           cat > /tmp/mimo-stress/shard-${{ matrix.shard }}.txt <<EOF
           APP: Mundo Mimo
           SOURCE_COMMIT: $GITHUB_SHA
           SHARD: ${{ matrix.shard }}/10
           CRITICAL_PASSES_PLANNED: 100
-          FULL_MATRIX: ${{ matrix.shard == 1 && 'included' || 'not-required' }}
+          FULL_MATRIX: $full
           RESULT: ${{ job.status }}
           UTC: $(date -u +'%Y-%m-%dT%H:%M:%SZ')
           EOF
