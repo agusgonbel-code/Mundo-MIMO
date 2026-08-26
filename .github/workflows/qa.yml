@@ -67,7 +67,7 @@ jobs:
             if [ "$CODE" -eq 0 ]; then echo "RESULT: PASS"; else echo "RESULT: FAIL"; fi
             echo "EXIT_CODE: $CODE"
             echo "LEGACY PRODUCT: 24 guided activities x 3 selectable UI age groups x 6 rounds; 2400 challenge variants are reported as variants, not games."
-            echo "CURRICULUM/V2: honest metrics gate + six developmental bands + >=40 mechanics registry + clone detection + first six independently playable mechanics."
+            echo "CURRICULUM/V2: honest metrics gate + six developmental bands + >=40 mechanics registry + clone detection + first twelve independently playable mechanics."
             echo "OTHER COVERAGE: per-game visual/accessibility + persistence/offline + adaptive/audio/privacy + iPhone/iPad rotation-state retention + 30 user-behavior scenarios."
             echo "--- TEST OUTPUT (tail) ---"
             tail -n 720 /tmp/mimo-qa.log
