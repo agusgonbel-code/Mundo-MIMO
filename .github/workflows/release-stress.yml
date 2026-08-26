@@ -44,7 +44,7 @@ jobs:
       - name: Run complete legacy and V2 matrix
         env:
           PLAYWRIGHT_BASE_URL: http://127.0.0.1:4173
-        run: npx playwright test qa/e2e.spec.js qa/premium-v71.spec.js qa/premium-offline-v72.spec.js qa/challenge-v100.spec.js qa/learning-model-v130.spec.js qa/platform-v200.spec.js qa/runtime-v200.spec.js qa/runtime-v210.spec.js qa/runtime-v220.spec.js qa/runtime-v230.spec.js qa/runtime-v240.spec.js qa/runtime-v250.spec.js qa/runtime-v260.spec.js qa/runtime-v270.spec.js qa/runtime-v280.spec.js qa/runtime-v290.spec.js qa/visual-system-v110.spec.js qa/visual-coverage-v112.spec.js qa/accessibility-v113.spec.js qa/orientation-state.spec.js qa/user-100-sim.spec.js --config=qa/playwright.config.js --reporter=line
+        run: npx playwright test qa/e2e.spec.js qa/premium-v71.spec.js qa/premium-offline-v72.spec.js qa/challenge-v100.spec.js qa/learning-model-v130.spec.js qa/platform-v200.spec.js qa/runtime-v200.spec.js qa/runtime-v210.spec.js qa/runtime-v220.spec.js qa/runtime-v230.spec.js qa/runtime-v240.spec.js qa/runtime-v250.spec.js qa/runtime-v260.spec.js qa/runtime-v270.spec.js qa/runtime-v280.spec.js qa/runtime-v290.spec.js qa/runtime-v300.spec.js qa/visual-system-v110.spec.js qa/visual-coverage-v112.spec.js qa/accessibility-v113.spec.js qa/orientation-state.spec.js qa/user-100-sim.spec.js --config=qa/playwright.config.js --reporter=line
 
   critical_stress:
     if: ${{ github.event_name != 'push' || !contains(github.event.head_commit.message, '[skip ci]') }}
@@ -90,7 +90,7 @@ jobs:
           set -euo pipefail
           for i in $(seq 1 100); do
             echo "=== shard ${{ matrix.shard }} pass $i/100 ==="
-            npx playwright test qa/e2e.spec.js qa/visual-system-v110.spec.js qa/accessibility-v113.spec.js qa/runtime-v240.spec.js qa/runtime-v250.spec.js qa/runtime-v260.spec.js qa/runtime-v270.spec.js qa/runtime-v280.spec.js qa/runtime-v290.spec.js --config=qa/playwright.config.js --grep "daily path|parent gate|privacy|small-phone|reduced motion|hold and release|semantic connection game|free exploration|home sorting|logic grid|sound recognition|receptive-language|memory cards|sequence completion|visual recognition|semantic association|multi-select|magnitude ordering|animal families|emotion drawing|instrument recognition|logic houses|autonomy context choice|body-sound|complement pairing|shape route|recipe planning|season garden|syllable detective|wait-and-discover|size staircase|emotion-cause|sentence completion|quantity balance|arrow code" --reporter=line
+            npx playwright test qa/e2e.spec.js qa/visual-system-v110.spec.js qa/accessibility-v113.spec.js qa/runtime-v240.spec.js qa/runtime-v250.spec.js qa/runtime-v260.spec.js qa/runtime-v270.spec.js qa/runtime-v280.spec.js qa/runtime-v290.spec.js qa/runtime-v300.spec.js --config=qa/playwright.config.js --grep "daily path|parent gate|privacy|small-phone|reduced motion|hold and release|semantic connection game|free exploration|home sorting|logic grid|sound recognition|receptive-language|memory cards|sequence completion|visual recognition|semantic association|multi-select|magnitude ordering|animal families|emotion drawing|instrument recognition|logic houses|autonomy context choice|body-sound|complement pairing|shape route|recipe planning|season garden|syllable detective|wait-and-discover|size staircase|emotion-cause|sentence completion|quantity balance|arrow code|day-night animal|weather clothing|claps-and-silences|hidden-letter|park turns|shape bridge" --reporter=line
           done
       - name: Write shard evidence
         if: always()
@@ -138,7 +138,7 @@ jobs:
             echo "RESULT: $result"
             echo "LAUNCH_MATRIX: ${{ needs.launch_matrix.result }}"
             echo "STRESS_SHARDS: $success/10 successful"
-            echo 'PLANNED_REPETITIONS: 1000 critical iPhone/accessibility/V2 journeys plus one complete legacy+V2 launch matrix, including v290 sixty-six-game coverage'
+            echo 'PLANNED_REPETITIONS: 1000 critical iPhone/accessibility/V2 journeys plus one complete legacy+V2 launch matrix, including v300 seventy-two-game coverage'
           } > qa/release-stress-latest.txt
       - name: Persist evidence
         run: |
