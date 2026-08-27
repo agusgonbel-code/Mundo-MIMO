@@ -1,9 +1,9 @@
-const CACHE='mundo-mimo-v580-child-privacy';
+const CACHE='mundo-mimo-v590-performance';
 const expansions=Array.from({length:20},(_,i)=>`./v2/catalog/expansion-v${240+i*10}.js`);
 const runtimeExtensions=Array.from({length:23},(_,i)=>`./v2/runtime-v${210+i*10}-extension.js`);
 const CORE=[
   './','./index.html','./v2/app-v200.html','./manifest.webmanifest','./privacy.html','./support.html','./credits.html','./assets/app-icon.svg',
-  './v2/core/privacy-v580.js','./v2/core/platform-v200.js','./v2/catalog/seed-games-v200.js','./v2/runtime-v200.js','./v2/core/content-depth-v500.js','./v2/core/worlds-v510.js','./v2/core/parent-zone-v520.js','./v2/core/recovery-v570.js',
+  './v2/core/privacy-v580.js','./v2/core/platform-v200.js','./v2/catalog/seed-games-v200.js','./v2/runtime-v200.js','./v2/core/performance-v590.js','./v2/core/content-depth-v500.js','./v2/core/worlds-v510.js','./v2/core/parent-zone-v520.js','./v2/core/recovery-v570.js',
   ...expansions,...runtimeExtensions,
   './assets/premium-v71.css','./assets/premium-v71.js',
   './assets/challenge-engine-v100.js','./assets/learning-model-v130.js','./assets/visual-system-v110.css','./assets/visual-system-v110.js','./assets/visual-dynamic-v111.js',
