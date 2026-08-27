@@ -1,0 +1,43 @@
+name: Mundo Mimo V550 Offline PWA QA
+
+on:
+  pull_request:
+    paths:
+      - 'index.html'
+      - 'manifest.webmanifest'
+      - 'sw.js'
+      - 'v2/**'
+      - 'qa/offline-v550.spec.js'
+      - 'qa/playwright-offline.config.js'
+      - '.github/workflows/v550-offline-diagnostic.yml'
+  workflow_dispatch:
+
+jobs:
+  offline-v2:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Playwright Chromium
+        run: |
+          npm install --no-save @playwright/test
+          npx playwright install --with-deps chromium
+      - name: Create local audio fixtures required by the offline core
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p assets/audio
+          for f in dog.ogg cat.ogg cow.ogg frog.oga voice-perro.wav voice-vamos.wav voice-uno.wav voice-dos.wav voice-tres.wav voice-estrella.wav voice-pez.wav voice-pequeno.wav voice-triste.wav; do
+            printf 'mundo-mimo-v550-offline-fixture' > "assets/audio/$f"
+          done
+      - name: Start local server
+        run: python3 -m http.server 4173 >/tmp/mimo-v550-http.log 2>&1 &
+      - name: Certify V2 web entry and true offline reload
+        env:
+          PLAYWRIGHT_BASE_URL: http://127.0.0.1:4173
+        run: npx playwright test qa/offline-v550.spec.js --config=qa/playwright-offline.config.js --reporter=line
