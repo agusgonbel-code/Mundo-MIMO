@@ -5,8 +5,19 @@ on:
   push:
     branches: [main]
     paths:
-      - 'index.html'
-      - 'app-v70.html'
+      - 'v2/**'
+      - 'privacy.html'
+      - 'support.html'
+      - 'credits.html'
+      - 'PrivacyInfo.xcprivacy'
+      - 'assets/**'
+      - 'scripts/**'
+      - 'package.json'
+      - 'capacitor.config.json'
+      - '.github/workflows/ios-native-ci.yml'
+  pull_request:
+    paths:
+      - 'v2/**'
       - 'privacy.html'
       - 'support.html'
       - 'credits.html'
@@ -43,28 +54,32 @@ jobs:
           test "${SDK_VERSION%%.*}" -ge 26
       - name: Install dependencies
         run: npm install --no-audit --no-fund
-      - name: Build validated web product for native bundle
+      - name: Build validated Mundo Mimo 2 product for native bundle
         run: npm run build:mobile
-      - name: Verify packaged product is complete
+      - name: Verify packaged V2 product is complete
         shell: bash
         run: |
           set -euo pipefail
           test -f www/index.html
-          test -f www/app-v70.html
+          grep -q 'v2/app-v200.html' www/index.html
+          test -f www/v2/app-v200.html
+          test -f www/v2/runtime-v200.js
+          test -f www/v2/runtime-v430-extension.js
+          test -f www/v2/core/content-depth-v500.js
+          test -f www/v2/core/worlds-v510.js
+          test -f www/v2/core/parent-zone-v520.js
           test -f www/privacy.html
           test -f www/support.html
           test -f www/credits.html
-          test -f www/assets/app-v70.js
-          test -f www/assets/app-v70-audit.js
-          test -f www/assets/premium-v71.js
-          test -f www/assets/premium-v71.css
+          grep -q 'expansion-v430.js' www/v2/app-v200.html
+          grep -q 'content-depth-v500.js' www/v2/app-v200.html
+          grep -q 'worlds-v510.js' www/v2/app-v200.html
+          grep -q 'parent-zone-v520.js' www/v2/app-v200.html
+          grep -q 'Pradera de Mimo' www/v2/core/worlds-v510.js
+          grep -q 'parent' www/v2/core/parent-zone-v520.js
           for f in dog.ogg cat.ogg cow.ogg frog.oga voice-perro.wav voice-vamos.wav voice-uno.wav voice-dos.wav voice-tres.wav voice-estrella.wav voice-pez.wav voice-pequeno.wav voice-triste.wav; do
             test -s "www/assets/audio/$f"
           done
-          grep -q 'Monte Aventura' www/app-v70.html
-          grep -q 'Bosque de Lío' www/app-v70.html
-          grep -q 'Laguna de Pipa' www/app-v70.html
-          grep -q 'Villa Mimo' www/app-v70.html
       - name: Generate native iOS project
         run: npx cap add ios
       - name: Install privacy manifest
@@ -82,7 +97,7 @@ jobs:
             -destination 'generic/platform=iOS Simulator' \
             CODE_SIGNING_ALLOWED=NO \
             build
-      - name: Validate application identity, product and privacy
+      - name: Validate application identity, V2 product and privacy
         id: app
         shell: bash
         run: |
@@ -95,12 +110,16 @@ jobs:
           DISPLAY_NAME="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleDisplayName' "$PLIST" 2>/dev/null || /usr/libexec/PlistBuddy -c 'Print :CFBundleName' "$PLIST")"
           test "$BUNDLE_ID" = 'com.mundomimo.app'
           test "$DISPLAY_NAME" = 'Mundo Mimo'
-          test -f "$APP_PATH/public/app-v70.html"
+          test -f "$APP_PATH/public/index.html"
+          grep -q 'v2/app-v200.html' "$APP_PATH/public/index.html"
+          test -f "$APP_PATH/public/v2/app-v200.html"
+          test -f "$APP_PATH/public/v2/runtime-v430-extension.js"
+          test -f "$APP_PATH/public/v2/core/content-depth-v500.js"
+          test -f "$APP_PATH/public/v2/core/worlds-v510.js"
+          test -f "$APP_PATH/public/v2/core/parent-zone-v520.js"
           test -f "$APP_PATH/public/privacy.html"
           test -f "$APP_PATH/public/support.html"
           test -s "$APP_PATH/public/assets/audio/dog.ogg"
-          test -s "$APP_PATH/public/assets/audio/voice-perro.wav"
-          test -f "$APP_PATH/public/assets/premium-v71.js"
           test -f "$PRIVACY"
           plutil -lint "$PRIVACY"
           test "$(plutil -extract NSPrivacyTracking raw -o - "$PRIVACY")" = 'false'
@@ -114,7 +133,7 @@ jobs:
       - name: Upload simulator application
         uses: actions/upload-artifact@v4
         with:
-          name: Mundo-Mimo-iOS-Simulator-${{ github.sha }}
+          name: Mundo-Mimo-2-iOS-Simulator-${{ github.sha }}
           path: artifact/MundoMimo.app
           if-no-files-found: error
           retention-days: 14
