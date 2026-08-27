@@ -88,29 +88,45 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          mkdir -p /tmp/mimo-stress
+          echo 0 > /tmp/mimo-stress/last-completed-pass-${{ matrix.shard }}.txt
+          : > /tmp/mimo-stress/critical-${{ matrix.shard }}.log
           for i in $(seq 1 100); do
-            echo "=== Mundo Mimo shard ${{ matrix.shard }} critical pass $i/100 ==="
-            npx playwright test qa/runtime-v430.spec.js qa/content-depth-v500.spec.js qa/worlds-v510.spec.js qa/parent-zone-v520.spec.js qa/accessibility-v113.spec.js qa/orientation-state.spec.js --config=qa/playwright.config.js --reporter=line
+            echo "=== Mundo Mimo shard ${{ matrix.shard }} critical pass $i/100 ===" | tee -a /tmp/mimo-stress/critical-${{ matrix.shard }}.log
+            if ! npx playwright test qa/runtime-v430.spec.js qa/content-depth-v500.spec.js qa/worlds-v510.spec.js qa/parent-zone-v520.spec.js qa/accessibility-v113.spec.js qa/orientation-state.spec.js --config=qa/playwright.config.js --reporter=line --trace=retain-on-failure 2>&1 | tee -a /tmp/mimo-stress/critical-${{ matrix.shard }}.log; then
+              echo "$i" > /tmp/mimo-stress/failed-pass-${{ matrix.shard }}.txt
+              echo "Stress shard ${{ matrix.shard }} failed on critical pass $i/100" | tee -a /tmp/mimo-stress/critical-${{ matrix.shard }}.log
+              exit 1
+            fi
+            echo "$i" > /tmp/mimo-stress/last-completed-pass-${{ matrix.shard }}.txt
           done
       - name: Write shard evidence
         if: always()
         shell: bash
         run: |
           mkdir -p /tmp/mimo-stress
+          completed="$(cat /tmp/mimo-stress/last-completed-pass-${{ matrix.shard }}.txt 2>/dev/null || echo 0)"
+          failed="$(cat /tmp/mimo-stress/failed-pass-${{ matrix.shard }}.txt 2>/dev/null || true)"
           cat > /tmp/mimo-stress/shard-${{ matrix.shard }}.txt <<EOF
           APP: Mundo Mimo
           SOURCE_COMMIT: $GITHUB_SHA
           SHARD: ${{ matrix.shard }}/10
           CRITICAL_PASSES_PLANNED: 100
+          CRITICAL_PASSES_COMPLETED: $completed
+          FAILED_PASS: ${failed:-none}
           RESULT: ${{ job.status }}
           UTC: $(date -u +'%Y-%m-%dT%H:%M:%SZ')
           EOF
-      - name: Upload shard evidence
+          cp /tmp/mimo-http.log /tmp/mimo-stress/http-${{ matrix.shard }}.log 2>/dev/null || true
+      - name: Upload shard evidence and failure diagnostics
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: mundo-mimo-stress-${{ matrix.shard }}
-          path: /tmp/mimo-stress/shard-${{ matrix.shard }}.txt
+          path: |
+            /tmp/mimo-stress/
+            test-results/
+          if-no-files-found: warn
           retention-days: 14
 
   evidence:
