@@ -16,11 +16,17 @@ function evidenceDetective(){const sets=[{q:'El suelo está mojado y hay un para
 const handlers={'eco-de-gestos':gestureEcho,'caja-de-sonidos':soundBox,'torres-iguales':equalTowers,'palabra-y-dibujo':wordPicture,'camino-con-reglas':rulePath,'detective-de-evidencias':evidenceDetective};
 function augment(){if(rendering)return;rendering=true;try{const a=age();for(const id of EXTRA){const g=findGame(id);if(!g||!g.ages.includes(a)||gameGrid.querySelector(`[data-game="${id}"]`))continue;const b=document.createElement('button');b.className='gameCard';b.type='button';b.dataset.game=id;b.innerHTML=`<b>${g.name}</b><small>${g.skill} · ${g.mechanic}</small>`;b.onclick=()=>start(id);gameGrid.appendChild(b)}}finally{rendering=false}}
 function runtimeFor(id){if(EXTRA.includes(id))return start;for(let v=420;v>=210;v-=10){const layer=globalThis[`MundoMimoV2RuntimeV${v}`];if(layer?.extra?.includes(id))return layer.start}return globalThis.MundoMimoV2Runtime?.start}
-function renderUnified(a){const games=allGames().filter(g=>g.ages.includes(a));gameGrid.innerHTML=games.map(g=>`<button class="gameCard" type="button" data-game="${g.id}"><b>${g.name}</b><small>${g.skill} · ${g.mechanic}</small></button>`).join('')||'<p>No hay juegos jugables para esta franja.</p>';gameGrid.querySelectorAll('[data-game]').forEach(b=>b.onclick=()=>runtimeFor(b.dataset.game)?.(b.dataset.game))}
+const ageNodes=new Map();
+function buildAgeNodes(a){if(ageNodes.has(a))return ageNodes.get(a);const nodes=allGames().filter(g=>g.ages.includes(a)).map(g=>{const b=document.createElement('button');b.className='gameCard';b.type='button';b.dataset.game=g.id;b.innerHTML=`<b>${g.name}</b><small>${g.skill} · ${g.mechanic}</small>`;return b});ageNodes.set(a,nodes);return nodes}
+function renderUnified(a){const nodes=buildAgeNodes(a);gameGrid.replaceChildren(...nodes);if(!nodes.length){const p=document.createElement('p');p.textContent='No hay juegos jugables para esta franja.';gameGrid.appendChild(p)}}
 augment();
 // V590: detach the final grid from the legacy observer chain. Earlier incremental runtimes
-// keep observing their old node, while the final runtime owns one O(n) render per age change.
-const cleanGrid=gameGrid.cloneNode(false);gameGrid.replaceWith(cleanGrid);gameGrid=cleanGrid;renderUnified(age());
+// keep observing their old node. The final runtime prebuilds each age-band card set once and
+// thereafter swaps cached nodes without reparsing HTML or rebinding per-card listeners.
+const cleanGrid=gameGrid.cloneNode(false);gameGrid.replaceWith(cleanGrid);gameGrid=cleanGrid;
+for(const b of ageBar.querySelectorAll('[data-age]'))buildAgeNodes(b.dataset.age);
+gameGrid.addEventListener('click',e=>{const b=e.target.closest('[data-game]');if(!b||!gameGrid.contains(b))return;runtimeFor(b.dataset.game)?.(b.dataset.game)});
+renderUnified(age());
 ageBar.addEventListener('click',e=>{const b=e.target.closest('[data-age]');if(!b)return;e.preventDefault();e.stopImmediatePropagation();ageBar.querySelectorAll('[data-age]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));const s=read();s.age=b.dataset.age;try{localStorage.setItem(KEY,JSON.stringify(s))}catch{}renderUnified(b.dataset.age)},true);
 globalThis.MundoMimoV2RuntimeV430=Object.freeze({version:430,extra:Object.freeze([...EXTRA]),implemented:Object.freeze([...R.implemented,...EXTRA]),handlers:Object.freeze([...R.handlers,...Object.keys(handlers)]),start,allGames});
 })();
