@@ -8,6 +8,7 @@ on:
       - 'sw.js'
       - 'v2/**'
       - 'qa/offline-v550.spec.js'
+      - 'qa/playwright-offline.config.js'
       - '.github/workflows/v550-offline-diagnostic.yml'
   workflow_dispatch:
 
@@ -22,10 +23,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Install Playwright WebKit
+      - name: Install Playwright Chromium
         run: |
           npm install --no-save @playwright/test
-          npx playwright install --with-deps webkit
+          npx playwright install --with-deps chromium
       - name: Create local audio fixtures required by the offline core
         shell: bash
         run: |
@@ -39,4 +40,4 @@ jobs:
       - name: Certify V2 web entry and true offline reload
         env:
           PLAYWRIGHT_BASE_URL: http://127.0.0.1:4173
-        run: npx playwright test qa/offline-v550.spec.js --config=qa/playwright.config.js --reporter=line
+        run: npx playwright test qa/offline-v550.spec.js --config=qa/playwright-offline.config.js --reporter=line
