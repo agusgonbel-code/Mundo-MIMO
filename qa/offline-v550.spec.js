@@ -21,11 +21,22 @@ test('service worker precaches the complete V2 release core and falls back to V2
 test('installed V2 reloads offline with the 150-game runtime available',async({page,context})=>{
   await page.goto('/v2/app-v200.html');
   await page.waitForFunction(()=>Boolean(window.MundoMimoV2RuntimeV430));
-  await page.waitForFunction(async()=>{
-    if(!('serviceWorker' in navigator))return false;
+  await page.evaluate(async()=>{
+    if(!('serviceWorker' in navigator))throw new Error('Service Worker unavailable');
     await navigator.serviceWorker.ready;
-    return Boolean(navigator.serviceWorker.controller);
   });
+
+  // A newly installed service worker can become active before the current
+  // document is controlled. Perform the same first online navigation an
+  // installed PWA/user would perform, then require controller ownership
+  // before cutting the network. This keeps the offline assertion strict
+  // without depending on an implementation-specific controller timing race.
+  if(!await page.evaluate(()=>Boolean(navigator.serviceWorker.controller))){
+    await page.reload({waitUntil:'domcontentloaded'});
+  }
+  await page.waitForFunction(()=>Boolean(navigator.serviceWorker.controller));
+  await page.waitForFunction(()=>Boolean(window.MundoMimoV2RuntimeV430));
+
   await context.setOffline(true);
   await page.reload({waitUntil:'domcontentloaded'});
   await page.waitForFunction(()=>Boolean(window.MundoMimoV2RuntimeV430));
