@@ -6,6 +6,7 @@ const CORE=[
   './v2/core/platform-v200.js','./v2/catalog/seed-games-v200.js','./v2/runtime-v200.js','./v2/core/content-depth-v500.js','./v2/core/worlds-v510.js','./v2/core/parent-zone-v520.js',
   ...expansions,...runtimeExtensions,
   './assets/premium-v71.css','./assets/premium-v71.js',
+  './assets/challenge-engine-v100.js','./assets/learning-model-v130.js','./assets/visual-system-v110.css','./assets/visual-system-v110.js','./assets/visual-dynamic-v111.js',
   './assets/audio/dog.ogg','./assets/audio/cat.ogg','./assets/audio/cow.ogg','./assets/audio/frog.oga','./assets/audio/voice-perro.wav','./assets/audio/voice-vamos.wav','./assets/audio/voice-uno.wav','./assets/audio/voice-dos.wav','./assets/audio/voice-tres.wav','./assets/audio/voice-estrella.wav','./assets/audio/voice-pez.wav','./assets/audio/voice-pequeno.wav','./assets/audio/voice-triste.wav'
 ];
 const cachePut=(request,response)=>{if(response?.ok&&new URL(request.url).origin===location.origin){const copy=response.clone();caches.open(CACHE).then(c=>c.put(request,copy));}return response;};
