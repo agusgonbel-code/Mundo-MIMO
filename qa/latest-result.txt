@@ -1,6 +1,6 @@
 MUNDO MIMO LAUNCH QA
-UTC: 2026-08-27T06:35:35Z
-COMMIT: 8ee3325947e3206a44d5801a06e59a117afed051
+UTC: 2026-08-27T07:49:46Z
+COMMIT: 5a7519293ef68f1000bbc3f54289e4277562bdfd
 RESULT: PASS
 EXIT_CODE: 0
 LEGACY PRODUCT: 24 guided activities x 3 selectable UI age groups x 6 rounds; 2400 challenge variants are reported as variants, not games.
@@ -509,6 +509,6 @@ Running 499 tests using 1 worker
 [497/499] qa/visual-system-v110.spec.js:57:1 › habitat farm uses branded tractor artwork instead of generic fallback
 [498/499] qa/visual-system-v110.spec.js:69:1 › celebration added outside app root is converted to branded vectors
 [499/499] qa/visual-system-v110.spec.js:79:1 › visual system is included in offline core
-  Slow test file: qa/e2e.spec.js (9.4m)
+  Slow test file: qa/e2e.spec.js (9.2m)
   Consider running tests from slow files in parallel. See: https://playwright.dev/docs/test-parallel
-  499 passed (19.4m)
+  499 passed (19.0m)
