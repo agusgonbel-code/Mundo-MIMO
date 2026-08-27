@@ -1,12 +1,11 @@
 const { test, expect } = require('@playwright/test');
 
 async function setAge(page, age=3) {
-  await page.goto('/app-v70.html');
-  await page.evaluate(a => {
+  await page.addInitScript(a => {
     localStorage.setItem('mimo70', JSON.stringify({age:a,sessions:0,rounds:0,stars:0,daily:0,dailyDate:new Date().toISOString().slice(0,10),skills:{}}));
     localStorage.removeItem('mimo71');
   }, age);
-  await page.reload();
+  await page.goto('/app-v70.html');
   await expect(page.locator('#home')).toHaveClass(/on/);
   await page.waitForFunction(() => Boolean(window.MundoMimoPremiumV71));
 }

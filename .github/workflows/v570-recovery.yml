@@ -1,0 +1,24 @@
+name: Mundo Mimo V570 Recovery QA
+on:
+  pull_request:
+  workflow_dispatch:
+concurrency:
+  group: mundo-mimo-v570-recovery-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  recovery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Playwright WebKit
+        run: |
+          npm install --no-save @playwright/test
+          npx playwright install --with-deps webkit
+      - name: Start app
+        run: python3 -m http.server 4173 >/tmp/mimo-v570-http.log 2>&1 &
+      - name: Run V2 interruption recovery regression
+        run: npx playwright test qa/recovery-v570.spec.js --config=qa/playwright.config.js --reporter=line

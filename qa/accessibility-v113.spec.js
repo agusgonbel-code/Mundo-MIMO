@@ -2,9 +2,8 @@ const { test, expect } = require('@playwright/test');
 test.setTimeout(40000);
 const worlds={forest:['animals','sounds','memory','habitat','size','tracks'],lagoon:['count','more','colors','shapes','patterns','sort'],village:['emotions','stories','paint','routines','match','discover'],mountain:['letters','trace','initial','logic','sequence','odd']};
 async function setAge(page,age=5,{needsVisual=true}={}){
+  await page.addInitScript(a=>localStorage.setItem('mimo70',JSON.stringify({age:a,sessions:0,rounds:0,stars:0,daily:0,dailyDate:new Date().toISOString().slice(0,10),skills:{}})),age);
   await page.goto('/app-v70.html',{waitUntil:'domcontentloaded'});
-  await page.evaluate(a=>localStorage.setItem('mimo70',JSON.stringify({age:a,sessions:0,rounds:0,stars:0,daily:0,dailyDate:new Date().toISOString().slice(0,10),skills:{}})),age);
-  await page.reload({waitUntil:'domcontentloaded'});
   await page.waitForFunction(()=>document.getElementById('home')?.classList.contains('on'),null,{timeout:12000});
   await expect(page.locator('#home')).toHaveClass(/on/);
   if(needsVisual)await page.waitForFunction(()=>Boolean(window.MundoMimoVisualDynamicV111),null,{timeout:25000});
