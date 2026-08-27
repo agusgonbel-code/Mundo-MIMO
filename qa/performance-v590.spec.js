@@ -1,0 +1,110 @@
+const { test, expect } = require('@playwright/test');
+
+const URL = '/v2/app-v200.html';
+const AGES = ['0-1','1-2','2-3','3-4','4-5','5-6'];
+
+async function waitForFullRuntime(page) {
+  await page.waitForFunction(() => {
+    const r = globalThis.MundoMimoV2RuntimeV430;
+    return r && Array.isArray(r.implemented) && r.implemented.length === 150;
+  });
+  await page.waitForSelector('#gameGrid .gameCard');
+}
+
+test('V590: full 150-game runtime becomes interactive inside the iPhone startup budget', async ({ page }) => {
+  const wallStart = Date.now();
+  await page.goto(URL, { waitUntil: 'load' });
+  await waitForFullRuntime(page);
+  const wallMs = Date.now() - wallStart;
+
+  const metrics = await page.evaluate(() => {
+    const nav = performance.getEntriesByType('navigation')[0];
+    const resources = performance.getEntriesByType('resource');
+    const scripts = resources.filter(r => r.initiatorType === 'script');
+    return {
+      domContentLoadedMs: nav ? nav.domContentLoadedEventEnd - nav.startTime : null,
+      loadMs: nav ? nav.loadEventEnd - nav.startTime : null,
+      scriptCount: scripts.length,
+      decodedScriptBytes: scripts.reduce((sum, r) => sum + (r.decodedBodySize || 0), 0),
+      cards: document.querySelectorAll('#gameGrid .gameCard').length,
+      uniqueCards: new Set([...document.querySelectorAll('#gameGrid .gameCard')].map(el => el.dataset.game)).size,
+    };
+  });
+
+  expect(wallMs).toBeLessThan(5000);
+  if (metrics.domContentLoadedMs !== null) expect(metrics.domContentLoadedMs).toBeLessThan(3000);
+  if (metrics.loadMs !== null) expect(metrics.loadMs).toBeLessThan(4000);
+  expect(metrics.scriptCount).toBeLessThanOrEqual(60);
+  expect(metrics.decodedScriptBytes).toBeLessThan(1_500_000);
+  expect(metrics.cards).toBeGreaterThan(0);
+  expect(metrics.uniqueCards).toBe(metrics.cards);
+});
+
+test('V590: repeated age switching settles quickly and never duplicates cards', async ({ page }) => {
+  await page.goto(URL, { waitUntil: 'load' });
+  await waitForFullRuntime(page);
+
+  for (let loop = 0; loop < 5; loop += 1) {
+    for (const age of AGES) {
+      const result = await page.evaluate(async targetAge => {
+        const button = document.querySelector(`[data-age="${targetAge}"]`);
+        const t0 = performance.now();
+        button.click();
+        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        await new Promise(resolve => setTimeout(resolve, 0));
+        const cards = [...document.querySelectorAll('#gameGrid .gameCard')];
+        return {
+          duration: performance.now() - t0,
+          count: cards.length,
+          unique: new Set(cards.map(el => el.dataset.game)).size,
+          pressed: document.querySelector('[data-age][aria-pressed="true"]')?.dataset.age,
+        };
+      }, age);
+      expect(result.duration).toBeLessThan(750);
+      expect(result.count).toBeGreaterThan(0);
+      expect(result.unique).toBe(result.count);
+      expect(result.pressed).toBe(age);
+    }
+  }
+});
+
+test('V590: offscreen cards use rendering containment without breaking interaction', async ({ page }) => {
+  await page.goto(URL, { waitUntil: 'load' });
+  await waitForFullRuntime(page);
+
+  const support = await page.evaluate(() => CSS.supports('content-visibility', 'auto'));
+  if (support) {
+    const styles = await page.locator('#gameGrid .gameCard').first().evaluate(el => {
+      const s = getComputedStyle(el);
+      return { contentVisibility: s.contentVisibility, containIntrinsicSize: s.containIntrinsicSize };
+    });
+    expect(styles.contentVisibility).toBe('auto');
+    expect(styles.containIntrinsicSize).not.toBe('none');
+  }
+
+  await page.locator('#gameGrid .gameCard').first().click();
+  await expect(page.locator('#stage')).toBeVisible();
+  await expect(page.locator('#play')).not.toBeEmpty();
+});
+
+test('V590: iPhone 320 px and iPad viewport remain overflow-free after churn and game launch', async ({ page }) => {
+  for (const viewport of [{ width: 320, height: 568 }, { width: 1024, height: 768 }]) {
+    await page.setViewportSize(viewport);
+    await page.goto(URL, { waitUntil: 'load' });
+    await waitForFullRuntime(page);
+
+    for (const age of AGES) {
+      await page.locator(`[data-age="${age}"]`).click();
+    }
+    const card = page.locator('#gameGrid .gameCard').first();
+    await card.click();
+    await expect(page.locator('#stage')).toBeVisible();
+
+    const overflow = await page.evaluate(() => ({
+      body: document.body.scrollWidth - innerWidth,
+      html: document.documentElement.scrollWidth - innerWidth,
+    }));
+    expect(overflow.body).toBeLessThanOrEqual(1);
+    expect(overflow.html).toBeLessThanOrEqual(1);
+  }
+});
