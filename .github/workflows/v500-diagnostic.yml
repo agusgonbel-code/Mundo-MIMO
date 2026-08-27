@@ -1,0 +1,26 @@
+name: Mundo Mimo V500 Depth Diagnostic
+on:
+  pull_request:
+    paths:
+      - 'v2/**'
+      - 'qa/content-depth-v500.spec.js'
+      - '.github/workflows/v500-diagnostic.yml'
+jobs:
+  v500:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Playwright WebKit
+        run: |
+          npm install --no-save @playwright/test
+          npx playwright install --with-deps webkit
+      - name: Start app
+        run: python3 -m http.server 4173 >/tmp/mimo-v500-http.log 2>&1 &
+      - name: Validate V500 depth engine
+        env:
+          PLAYWRIGHT_BASE_URL: http://127.0.0.1:4173
+        run: npx playwright test qa/content-depth-v500.spec.js --config=qa/playwright.config.js --reporter=line
