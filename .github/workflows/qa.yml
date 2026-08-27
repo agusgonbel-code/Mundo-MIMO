@@ -45,14 +45,14 @@ jobs:
           curl -fL --retry 3 -o assets/audio/voice-triste.wav 'https://commons.wikimedia.org/wiki/Special:Redirect/file/LL-Q1321_(spa)-Knites-triste.wav'
       - name: Start local server
         run: python3 -m http.server 4173 >/tmp/mimo-http.log 2>&1 &
-      - name: Run product, curriculum, V2 architecture/runtime, accessibility, rotation/state and user-behavior gates
+      - name: Run product, curriculum, V2 architecture/runtime, accessibility, worlds, parent-zone, rotation/state and user-behavior gates
         id: test
         env:
           PLAYWRIGHT_BASE_URL: http://127.0.0.1:4173
         shell: bash
         run: |
           set +e
-          npx playwright test qa/e2e.spec.js qa/premium-v71.spec.js qa/premium-offline-v72.spec.js qa/challenge-v100.spec.js qa/learning-model-v130.spec.js qa/platform-v200.spec.js qa/runtime-v200.spec.js qa/runtime-v210.spec.js qa/runtime-v220.spec.js qa/runtime-v230.spec.js qa/runtime-v240.spec.js qa/runtime-v250.spec.js qa/runtime-v260.spec.js qa/runtime-v270.spec.js qa/runtime-v280.spec.js qa/runtime-v290.spec.js qa/runtime-v300.spec.js qa/runtime-v310.spec.js qa/runtime-v320.spec.js qa/runtime-v330.spec.js qa/runtime-v340.spec.js qa/runtime-v350.spec.js qa/runtime-v360.spec.js qa/runtime-v370.spec.js qa/runtime-v380.spec.js qa/runtime-v390.spec.js qa/runtime-v400.spec.js qa/runtime-v410.spec.js qa/runtime-v420.spec.js qa/runtime-v430.spec.js qa/content-depth-v500.spec.js qa/visual-system-v110.spec.js qa/visual-coverage-v112.spec.js qa/accessibility-v113.spec.js qa/orientation-state.spec.js qa/user-100-sim.spec.js --config=qa/playwright.config.js --reporter=line > /tmp/mimo-qa.log 2>&1
+          npx playwright test qa/e2e.spec.js qa/premium-v71.spec.js qa/premium-offline-v72.spec.js qa/challenge-v100.spec.js qa/learning-model-v130.spec.js qa/platform-v200.spec.js qa/runtime-v200.spec.js qa/runtime-v210.spec.js qa/runtime-v220.spec.js qa/runtime-v230.spec.js qa/runtime-v240.spec.js qa/runtime-v250.spec.js qa/runtime-v260.spec.js qa/runtime-v270.spec.js qa/runtime-v280.spec.js qa/runtime-v290.spec.js qa/runtime-v300.spec.js qa/runtime-v310.spec.js qa/runtime-v320.spec.js qa/runtime-v330.spec.js qa/runtime-v340.spec.js qa/runtime-v350.spec.js qa/runtime-v360.spec.js qa/runtime-v370.spec.js qa/runtime-v380.spec.js qa/runtime-v390.spec.js qa/runtime-v400.spec.js qa/runtime-v410.spec.js qa/runtime-v420.spec.js qa/runtime-v430.spec.js qa/content-depth-v500.spec.js qa/worlds-v510.spec.js qa/parent-zone-v520.spec.js qa/visual-system-v110.spec.js qa/visual-coverage-v112.spec.js qa/accessibility-v113.spec.js qa/orientation-state.spec.js qa/user-100-sim.spec.js --config=qa/playwright.config.js --reporter=line > /tmp/mimo-qa.log 2>&1
           CODE=$?
           set -e
           mkdir -p qa
@@ -64,6 +64,7 @@ jobs:
             echo "EXIT_CODE: $CODE"
             echo "LEGACY PRODUCT: 24 guided activities x 3 selectable UI age groups x 6 rounds; 2400 challenge variants are reported as variants, not games."
             echo "CURRICULUM/V2: honest metrics gate + six developmental bands + >=40 mechanics registry + clone detection + 150 independently playable games + V500 depth target of 600 activities, 5400 levels and 27000 structurally validated challenges."
+            echo "EXPERIENCE: V510 six native explorable worlds with progress unlocks + V520 adult-gated local-only parent dashboard with truthful progress summaries and family preferences."
             echo "OTHER COVERAGE: per-game visual/accessibility + persistence/offline + adaptive/audio/privacy + iPhone/iPad rotation-state retention + 30 user-behavior scenarios."
             echo "--- TEST OUTPUT (tail) ---"
             tail -n 1500 /tmp/mimo-qa.log
