@@ -81,7 +81,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          npx playwright test qa/e2e.spec.js qa/premium-v71.spec.js qa/premium-offline-v72.spec.js qa/challenge-v100.spec.js qa/learning-model-v130.spec.js qa/platform-v200.spec.js qa/runtime-v200.spec.js qa/runtime-v210.spec.js qa/runtime-v220.spec.js qa/runtime-v230.spec.js qa/runtime-v240.spec.js qa/runtime-v250.spec.js qa/runtime-v260.spec.js qa/runtime-v270.spec.js qa/runtime-v280.spec.js qa/runtime-v290.spec.js qa/runtime-v300.spec.js qa/runtime-v310.spec.js qa/runtime-v320.spec.js qa/runtime-v330.spec.js qa/runtime-v340.spec.js qa/runtime-v350.spec.js qa/runtime-v360.spec.js qa/runtime-v370.spec.js qa/runtime-v380.spec.js qa/runtime-v390.spec.js qa/runtime-v400.spec.js qa/runtime-v410.spec.js qa/runtime-v420.spec.js qa/runtime-v430.spec.js qa/content-depth-v500.spec.js qa/worlds-v510.spec.js qa/parent-zone-v520.spec.js qa/visual-system-v110.spec.js qa/visual-coverage-v112.spec.js qa/accessibility-v113.spec.js qa/orientation-state.spec.js qa/user-100-sim.spec.js --config=qa/playwright.config.js --reporter=line
+          npx playwright test qa/e2e.spec.js qa/premium-v71.spec.js qa/premium-offline-v72.spec.js qa/challenge-v100.spec.js qa/learning-model-v130.spec.js qa/platform-v200.spec.js qa/runtime-v200.spec.js qa/runtime-v210.spec.js qa/runtime-v220.spec.js qa/runtime-v230.spec.js qa/runtime-v240.spec.js qa/runtime-v250.spec.js qa/runtime-v260.spec.js qa/runtime-v270.spec.js qa/runtime-v280.spec.js qa/runtime-v290.spec.js qa/runtime-v300.spec.js qa/runtime-v310.spec.js qa/runtime-v320.spec.js qa/runtime-v330.spec.js qa/runtime-v340.spec.js qa/runtime-v350.spec.js qa/runtime-v360.spec.js qa/runtime-v370.spec.js qa/runtime-v380.spec.js qa/runtime-v390.spec.js qa/runtime-v400.spec.js qa/runtime-v410.spec.js qa/runtime-v420.spec.js qa/runtime-v430.spec.js qa/content-depth-v500.spec.js qa/worlds-v510.spec.js qa/parent-zone-v520.spec.js qa/recovery-v570.spec.js qa/privacy-v580.spec.js qa/performance-v590.spec.js qa/visual-system-v110.spec.js qa/visual-coverage-v112.spec.js qa/accessibility-v113.spec.js qa/orientation-state.spec.js qa/user-100-sim.spec.js --config=qa/playwright.config.js --reporter=line
       - name: Run critical journeys 100 times per shard
         env:
           PLAYWRIGHT_BASE_URL: http://127.0.0.1:4173
@@ -93,7 +93,7 @@ jobs:
           : > /tmp/mimo-stress/critical-${{ matrix.shard }}.log
           for i in $(seq 1 100); do
             echo "=== Mundo Mimo shard ${{ matrix.shard }} critical pass $i/100 ===" | tee -a /tmp/mimo-stress/critical-${{ matrix.shard }}.log
-            if ! npx playwright test qa/runtime-v430.spec.js qa/content-depth-v500.spec.js qa/worlds-v510.spec.js qa/parent-zone-v520.spec.js qa/accessibility-v113.spec.js qa/orientation-state.spec.js --config=qa/playwright.config.js --reporter=line --trace=retain-on-failure 2>&1 | tee -a /tmp/mimo-stress/critical-${{ matrix.shard }}.log; then
+            if ! npx playwright test qa/runtime-v430.spec.js qa/content-depth-v500.spec.js qa/worlds-v510.spec.js qa/parent-zone-v520.spec.js qa/recovery-v570.spec.js qa/privacy-v580.spec.js qa/accessibility-v113.spec.js qa/orientation-state.spec.js --config=qa/playwright.config.js --reporter=line --trace=retain-on-failure 2>&1 | tee -a /tmp/mimo-stress/critical-${{ matrix.shard }}.log; then
               echo "$i" > /tmp/mimo-stress/failed-pass-${{ matrix.shard }}.txt
               echo "Stress shard ${{ matrix.shard }} failed on critical pass $i/100" | tee -a /tmp/mimo-stress/critical-${{ matrix.shard }}.log
               exit 1
@@ -157,7 +157,7 @@ jobs:
             echo "SOURCE_COMMIT: $GITHUB_SHA"
             echo "RESULT: $result"
             echo "SHARDS: $success/10 successful"
-            echo 'PLANNED_REPETITIONS: 1000 critical accessibility/orientation/V2 journeys plus one complete legacy+V2 launch matrix, including 150-game V430, V500 depth coverage (600 activities, 5400 levels, 27000 challenges), V510 native worlds and V520 protected parent zone'
+            echo 'PLANNED_REPETITIONS: 1000 critical V2 journeys covering 150-game V430, V500 depth (600 activities, 5400 levels, 27000 challenges), V510 worlds, V520 parent zone, V570 interruption recovery, V580 child privacy, accessibility and orientation; shard one also enforces the complete launch matrix including V590 iPhone/iPad performance budgets.'
             echo "UTC: $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
             echo '--- SHARDS ---'
             cat /tmp/mimo-evidence/shard-*.txt || true
