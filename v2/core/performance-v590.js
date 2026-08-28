@@ -14,7 +14,6 @@ const ageBar=oldAgeBar.cloneNode(false);
 oldAgeBar.replaceWith(ageBar);
 const gameGrid=inheritedGrid.cloneNode(false);
 inheritedGrid.replaceWith(gameGrid);
-const canonicalGrid=gameGrid;
 
 const STATE_KEY='mimo-v2-runtime-200';
 const versions=[200,210,220,230,240,250,260,270,280,290,300,310,320,330,340,350,360,370,380,390,400,410,420,430];
@@ -62,16 +61,9 @@ function syncLegacyAge(){
   if(typeof Base.setAge==='function')Base.setAge(age);
 }
 function renderAges(){ageBar.innerHTML=P.ageBands.map(b=>`<button type="button" data-age="${b.id}" aria-pressed="${b.id===age}">${b.label}</button>`).join('')}
-function bindCanonicalCards(){
-  gameGrid.querySelectorAll('[data-game]').forEach(button=>{
-    button.onclick=()=>startGame(button.dataset.game,{deferScroll:true});
-    button.dataset.v590Owner='canonical';
-  });
-}
 function renderGames(){
   const eligible=games.filter(g=>g.ages.includes(age)&&ownerFor(g.id));
-  gameGrid.innerHTML=eligible.length?eligible.map(g=>`<button class="gameCard" type="button" data-game="${g.id}"><b>${g.name}</b><small>${g.skill} · ${g.mechanic}</small></button>`).join(''):'<p>No hay todavía juegos jugables para esta franja.</p>';
-  bindCanonicalCards();
+  gameGrid.innerHTML=eligible.length?eligible.map(g=>`<button class="gameCard" type="button" data-game="${g.id}" data-v590-owner="canonical"><b>${g.name}</b><small>${g.skill} · ${g.mechanic}</small></button>`).join(''):'<p>No hay todavía juegos jugables para esta franja.</p>';
 }
 function setAge(next){
   if(!P.ageBands.some(b=>b.id===next)||next===age)return;
@@ -80,17 +72,28 @@ function setAge(next){
 }
 ageBar.addEventListener('click',event=>{const button=event.target.closest('[data-age]');if(button)setAge(button.dataset.age)});
 
-// Normal activation is bound directly to each freshly rendered card. This survives age
-// rebuilds without depending on a parent bubbling boundary, and native keyboard activation
-// reaches the exact same click handler. Pointer down/up alone still cannot mutate game DOM.
-// A defensive document fallback handles only externally cloned/replaced cards, which do not
-// copy JS onclick properties. It never cancels the event or changes browser default action.
+// The live V590 grid is the single normal activation boundary. A completed browser click
+// (mouse, touch or keyboard-generated) reaches this local listener after the target phase;
+// pointerdown/up alone cannot launch anything and no default action or propagation is blocked.
+// Keep per-event ownership in a WeakSet so the document fallback below can distinguish a
+// click already handled by the canonical live grid from a click on an externally cloned grid.
+const handledActivations=new WeakSet();
+gameGrid.addEventListener('click',event=>{
+  const button=event.target?.closest?.('[data-game]');
+  if(!button||!gameGrid.contains(button))return;
+  handledActivations.add(event);
+  startGame(button.dataset.game,{deferScroll:true});
+});
+
+// Defensive fallback only for an externally replaced/cloned #gameGrid. DOM cloning does not
+// copy listeners, so such a grid intentionally has no local owner. The same completed click
+// is routed here without preventDefault/stopPropagation/retries/timers.
 document.addEventListener('click',event=>{
+  if(handledActivations.has(event))return;
   const button=event.target?.closest?.('[data-game]');
   if(!button)return;
   const liveGrid=document.getElementById('gameGrid');
   if(!liveGrid||!liveGrid.contains(button))return;
-  if(button.dataset.v590Owner==='canonical'&&typeof button.onclick==='function')return;
   startGame(button.dataset.game,{deferScroll:true});
 });
 
