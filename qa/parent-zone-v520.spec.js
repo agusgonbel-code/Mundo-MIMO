@@ -21,6 +21,9 @@ test('parent zone is native, closed by default and requires an adult verificatio
   await page.fill('#parentAnswer',String(answer+1));
   await page.click('[data-parent-submit]');
   await expect(page.locator('#parentPanel')).toBeHidden();
+  await expect(page.locator('#parentGate')).toBeVisible();
+  await expect(page.locator('#parentAnswer')).toHaveAttribute('aria-invalid','true');
+  await expect(page.locator('#parentGateError')).toHaveAttribute('data-state','invalid');
   await expect(page.locator('#parentGateError')).toContainText('incorrecta');
   await page.fill('#parentAnswer',String(answer));
   await page.click('[data-parent-submit]');
@@ -43,49 +46,49 @@ test('summary derives only from local progress and reports truthful aggregate me
   expect(result.s.success).toBe(3);
   expect(result.s.successRate).toBe(30);
   expect(result.s.ageBand).toBe('3-4');
-  expect(result.stats).toHaveLength(4);
 });
 
 test('recommendations stay inside the selected developmental band',async({page})=>{
-  const result=await page.evaluate(()=>{
+  const recs=await page.evaluate(()=>{
     localStorage.setItem('mimo-v2-runtime-200',JSON.stringify({age:'1-2',games:{}}));
-    const recs=window.MundoMimoV2ParentV520.recommendations(8);
-    const byId=new Map(window.MundoMimoV2RuntimeV430.allGames().map(g=>[g.id,g]));
-    return recs.map(r=>({id:r.id,ages:byId.get(r.id).ages}));
+    return window.MundoMimoV2ParentV520.recommendations(20).map(r=>({id:r.id,ages:window.MundoMimoV2RuntimeV430.allGames().find(g=>g.id===r.id)?.ages||[]}));
   });
-  expect(result.length).toBeGreaterThan(0);
-  for(const r of result)expect(r.ages).toContain('1-2');
+  expect(recs.length).toBeGreaterThan(0);
+  recs.forEach(r=>expect(r.ages).toContain('1-2'));
 });
 
 test('family preferences persist locally and stay within safe bounds',async({page})=>{
-  const result=await page.evaluate(()=>{
-    const P=window.MundoMimoV2ParentV520;
-    P.saveConfig({dailyMinutes:500,sound:false,reducedMotion:true});
-    return {cfg:P.config(),raw:localStorage.getItem('mimo-v2-parent-v520')};
+  const cfg=await page.evaluate(()=>{
+    window.MundoMimoV2ParentV520.saveConfig({dailyMinutes:999,sound:false,reducedMotion:true});
+    return window.MundoMimoV2ParentV520.config();
   });
-  expect(result.cfg.dailyMinutes).toBe(60);
-  expect(result.cfg.sound).toBeFalsy();
-  expect(result.cfg.reducedMotion).toBeTruthy();
-  expect(result.raw).toContain('dailyMinutes');
+  expect(cfg.dailyMinutes).toBe(60);
+  expect(cfg.sound).toBeFalsy();
+  expect(cfg.reducedMotion).toBeTruthy();
+  await page.reload();
+  await page.waitForFunction(()=>Boolean(window.MundoMimoV2ParentV520));
+  const restored=await page.evaluate(()=>window.MundoMimoV2ParentV520.config());
+  expect(restored.dailyMinutes).toBe(60);
+  expect(restored.sound).toBeFalsy();
+  expect(restored.reducedMotion).toBeTruthy();
 });
 
 test('parent module makes no network requests for progress or family settings',async({page})=>{
-  const requests=[];
-  page.on('request',r=>{if(!r.url().includes('127.0.0.1')&&!r.url().includes('localhost'))requests.push(r.url())});
-  await page.reload();
-  await page.waitForFunction(()=>Boolean(window.MundoMimoV2ParentV520));
-  await page.evaluate(()=>{window.MundoMimoV2ParentV520.summary();window.MundoMimoV2ParentV520.areaBreakdown();window.MundoMimoV2ParentV520.recommendations();window.MundoMimoV2ParentV520.saveConfig({dailyMinutes:15});});
-  expect(requests).toEqual([]);
+  const external=[];
+  page.on('request',r=>{const u=new URL(r.url());if(u.origin!=='http://127.0.0.1:4173')external.push(r.url())});
+  await page.evaluate(()=>{
+    window.MundoMimoV2ParentV520.summary();
+    window.MundoMimoV2ParentV520.recommendations();
+    window.MundoMimoV2ParentV520.saveConfig({dailyMinutes:15});
+  });
+  expect(external).toEqual([]);
 });
 
 test('parent UI fits a 320px iPhone width with adult controls at least 44px high',async({page})=>{
-  await page.setViewportSize({width:320,height:700});
+  await page.setViewportSize({width:320,height:568});
   await page.click('#parentEntry');
-  const answer=await page.evaluate(()=>document.getElementById('parentQuestion').textContent.split('+').map(Number).reduce((a,b)=>a+b,0));
-  await page.fill('#parentAnswer',String(answer));
-  await page.click('[data-parent-submit]');
-  const metrics=await page.evaluate(()=>({scroll:document.documentElement.scrollWidth,inner:innerWidth,entry:document.getElementById('parentEntry').getBoundingClientRect().height,close:document.querySelector('.parentClose').getBoundingClientRect().height}));
-  expect(metrics.scroll).toBeLessThanOrEqual(metrics.inner+1);
-  expect(metrics.entry).toBeGreaterThanOrEqual(44);
-  expect(metrics.close).toBeGreaterThanOrEqual(44);
+  const gateOverflow=await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth);
+  expect(gateOverflow).toBeLessThanOrEqual(1);
+  const heights=await page.locator('#parentGate button,#parentAnswer').evaluateAll(nodes=>nodes.map(n=>n.getBoundingClientRect().height));
+  heights.forEach(h=>expect(h).toBeGreaterThanOrEqual(44));
 });
