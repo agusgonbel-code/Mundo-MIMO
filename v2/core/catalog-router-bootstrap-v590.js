@@ -17,10 +17,11 @@ function routeId(id,event,source){
   if(!id)return false;
   const dispatcher=globalThis.MundoMimoV2Performance;
   if(!dispatcher?.startGame)return false;
-  // Historical owners are allowed to perform their normal synchronous scroll.
-  // The compatibility click is intercepted by id afterwards, so launch correctness
-  // no longer depends on temporarily replacing scrollIntoView.
-  const launched=dispatcher.startGame(id);
+  // Pointer/mouse activation must not synchronously scroll the stage before the
+  // browser has finished synthesising the corresponding click. That layout shift
+  // can detach/move the card mid-activation in WebKit. The dispatcher already
+  // supports deferred scrolling specifically for this case.
+  const launched=dispatcher.startGame(id,{deferScroll:source!=='click'});
   if(!launched)return false;
   lastIntent={id,source,at:performance.now()};
   event.stopImmediatePropagation();
