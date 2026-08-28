@@ -52,6 +52,8 @@ function claimFromDown(event,pointerId){
   const button=cardFrom(event);
   if(!button)return false;
   pointerGesture={id:button.dataset.game,pointerId};
+  // A new physical gesture invalidates any compatibility marker left by the
+  // previous gesture. Its own marker is created only after this gesture launches.
   pendingCompatibilityId=null;
   event.stopImmediatePropagation();
   return true;
@@ -81,6 +83,13 @@ window.addEventListener('click',event=>{
     const isCompatibilityClick=button?.dataset.game===pendingCompatibilityId;
     pendingCompatibilityId=null;
     if(isCompatibilityClick){
+      // The game was already launched by the matching up event. Complete the
+      // browser activation transaction without launching twice, and record that
+      // the real click terminal arrived. This keeps pointer ownership observable
+      // while allowing full click activation to settle deterministically.
+      if(lastIntent?.id===button.dataset.game){
+        lastIntent={id:lastIntent.id,source:'click',at:performance.now()};
+      }
       event.preventDefault();
       event.stopImmediatePropagation();
       return;
