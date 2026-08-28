@@ -1,13 +1,11 @@
 (()=>{'use strict';
 // V590 owns catalog activation before historical handlers. A physical gesture is
-// claimed on down and completed once on the first matching terminal event. The
-// actual game start for pointer/mouse up is deferred to the microtask checkpoint:
-// WebKit can reject/mis-settle synchronous DOM-moving launches while dispatching
-// the up event itself. This is event-ordering, not a retry or timing tolerance.
+// claimed on down and completed exactly once on the first matching terminal event.
+// Historical runtimes can still own the game implementation; only activation is
+// centralized here so transient catalog nodes do not create duplicate launches.
 let lastIntent=null;
 let pointerGesture=null;
 let pendingCompatibilityId=null;
-let pendingLaunch=null;
 function cardFrom(event){
   const grid=document.getElementById('gameGrid');
   if(!grid)return null;
@@ -42,24 +40,23 @@ function matchingGesture(event){
 function finishClaimedGesture(event,source){
   if(event.isPrimary===false||event.button>0)return false;
   const gesture=matchingGesture(event);
-  if(!gesture)return false;
-  // Consume the historical up handlers now, but start after this dispatch has
-  // settled. A single token makes pointerup/mouseup aliases idempotent.
-  const token={id:gesture.id,source};
+  if(!gesture){
+    // pointerup is followed by mouseup in pointer-capable browsers. Once the
+    // pointer terminal event launched successfully, suppress only that alias.
+    if(pendingCompatibilityId){event.stopImmediatePropagation();return true;}
+    return false;
+  }
+  const id=gesture.id;
   pointerGesture=null;
-  pendingLaunch=token;
-  pendingCompatibilityId=gesture.id;
+  const launched=launchId(id,source,true);
+  if(!launched){
+    // Keep ownership for the browser compatibility click if the dispatcher is
+    // not yet able to accept this game. This is event fallback, never a retry.
+    pointerGesture={id,pointerId:null};
+    return false;
+  }
+  pendingCompatibilityId=id;
   event.stopImmediatePropagation();
-  queueMicrotask(()=>{
-    if(pendingLaunch!==token)return;
-    pendingLaunch=null;
-    if(!launchId(token.id,token.source,true)){
-      // Preserve the claimed id so the compatibility click can finish the same
-      // physical gesture if the owner was not ready at the microtask checkpoint.
-      pointerGesture={id:token.id,pointerId:null};
-      pendingCompatibilityId=null;
-    }
-  });
   return true;
 }
 function claimFromDown(event,pointerId){
@@ -67,29 +64,26 @@ function claimFromDown(event,pointerId){
   const button=cardFrom(event);
   if(!button)return false;
   pointerGesture={id:button.dataset.game,pointerId};
-  pendingLaunch=null;
   pendingCompatibilityId=null;
   event.stopImmediatePropagation();
   return true;
 }
 window.addEventListener('pointerdown',event=>{
   pointerGesture=null;
-  pendingLaunch=null;
   pendingCompatibilityId=null;
   claimFromDown(event,event.pointerId);
 },{capture:true});
 window.addEventListener('mousedown',event=>{
   // Pointer-capable browsers emit mousedown after pointerdown. Keep the existing
-  // ownership; mouse-only WebKit paths claim here instead.
+  // claim; mouse-only WebKit paths claim here instead.
   if(pointerGesture){event.stopImmediatePropagation();return;}
   claimFromDown(event,null);
 },{capture:true});
 window.addEventListener('pointerup',event=>{finishClaimedGesture(event,'pointerup')},{capture:true});
 window.addEventListener('mouseup',event=>{finishClaimedGesture(event,'mouseup')},{capture:true});
-window.addEventListener('pointercancel',()=>{pointerGesture=null;pendingLaunch=null;pendingCompatibilityId=null},{capture:true});
+window.addEventListener('pointercancel',()=>{pointerGesture=null;pendingCompatibilityId=null},{capture:true});
 window.addEventListener('click',event=>{
   if(event.detail===0){
-    pendingLaunch=null;
     pendingCompatibilityId=null;
     pointerGesture=null;
     route(event,'click');
@@ -100,9 +94,8 @@ window.addEventListener('click',event=>{
     const isCompatibilityClick=button?.dataset.game===pendingCompatibilityId;
     pendingCompatibilityId=null;
     if(isCompatibilityClick){
-      // The matching up already launched. Complete the activation transaction
-      // without launching twice; source=click denotes the fully settled browser
-      // activation while the launch remains exactly-once.
+      // The matching up already launched exactly once. The click merely closes
+      // the browser activation transaction and records its settled source.
       if(lastIntent?.id===button.dataset.game){lastIntent={id:lastIntent.id,source:'click',at:performance.now()}}
       event.preventDefault();
       event.stopImmediatePropagation();
@@ -112,7 +105,6 @@ window.addEventListener('click',event=>{
   if(pointerGesture){
     const id=pointerGesture.id;
     pointerGesture=null;
-    pendingLaunch=null;
     if(routeId(id,event,'click'))return;
   }
   route(event,'click');
