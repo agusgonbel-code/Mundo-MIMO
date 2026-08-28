@@ -89,11 +89,19 @@ test('V590 full browser click settles as click without a duplicate launch or sta
     source: 'click',
   });
 
-  const next = page.locator('[data-game="toca-la-campana"]');
+  // Use another game that is actually present in the currently rendered age
+  // catalogue; this catches stale ownership without coupling the regression to
+  // a removed fixture id.
+  const next = page.locator('#gameGrid .gameCard').nth(1);
+  await expect(next).toBeVisible();
+  const nextId = await next.getAttribute('data-game');
+  expect(nextId).toBeTruthy();
+  expect(nextId).not.toBe('sigue-el-destello');
   await next.click();
-  await expect(page.locator('#gameTitle')).toHaveText('Toca la campana');
+  await expect.poll(() => page.evaluate(() => globalThis.MundoMimoV2Performance?.lastStartedId)).toBe(nextId);
+  await expect(page.locator('#gameTitle')).not.toHaveText('');
   await expect.poll(() => page.evaluate(() => globalThis.MundoMimoV2CatalogRouterBootstrap?.lastIntent)).toMatchObject({
-    id: 'toca-la-campana',
+    id: nextId,
     source: 'click',
   });
 });
