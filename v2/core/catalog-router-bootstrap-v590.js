@@ -1,12 +1,15 @@
 (()=>{'use strict';
 // V590 owns catalog activation before historical handlers. Pointer activation is
 // deliberately a two-phase gesture: pointerdown claims the card without opening the
-// stage; pointerup launches exactly the card captured at gesture start. Cancelling
-// pointerdown suppresses browser compatibility mouse/click synthesis for that primary
-// pointer, so no synthetic-click guard can consume the child's first gameplay action.
-// Keyboard/AT activation remains on the native click path (detail===0).
+// stage; pointerup launches exactly the card captured at gesture start. We do not
+// cancel pointerdown's default action because WebKit may then cancel/retarget the
+// remaining pointer stream. Instead, after a successful pointerup launch we consume
+// exactly the following compatibility click. A new pointerdown clears that marker
+// first, so a genuine next child action can never be swallowed. Keyboard/AT remains
+// on the native click path (detail===0).
 let lastIntent=null;
 let pointerGesture=null;
+let pendingCompatibilityClick=false;
 function cardFrom(event){
   const grid=document.getElementById('gameGrid');
   if(!grid)return null;
@@ -34,14 +37,13 @@ function matchingGesture(event){
   return samePointer?gesture:null;
 }
 window.addEventListener('pointerdown',event=>{
+  // Any real new pointer action supersedes a compatibility-click marker left by the
+  // previous completed activation. This is event ordering, not a timeout window.
+  pendingCompatibilityClick=false;
   if(event.isPrimary===false||event.button>0)return;
   const button=cardFrom(event);
   if(!button)return;
   pointerGesture={id:button.dataset.game,pointerId:event.pointerId};
-  // Prevent compatibility mouse/click synthesis for this pointer activation. This is
-  // deterministic event ownership, not a timing guard or retry. The card is still
-  // keyboard-focusable and keyboard/AT click activation is handled below.
-  event.preventDefault();
   event.stopImmediatePropagation();
 },{capture:true});
 window.addEventListener('pointerup',event=>{
@@ -49,16 +51,23 @@ window.addEventListener('pointerup',event=>{
   const gesture=matchingGesture(event);
   if(!gesture)return;
   pointerGesture=null;
-  event.preventDefault();
-  routeId(gesture.id,event,'pointerup');
+  const launched=routeId(gesture.id,event,'pointerup');
+  if(launched){
+    // Browsers may synthesize a compatibility click after pointerup. Consume exactly
+    // that next pointer-origin click. If none is synthesized, the next real
+    // pointerdown clears the marker before its click can occur.
+    pendingCompatibilityClick=true;
+  }
 },{capture:true});
-window.addEventListener('pointercancel',()=>{pointerGesture=null},{capture:true});
+window.addEventListener('pointercancel',()=>{pointerGesture=null;pendingCompatibilityClick=false},{capture:true});
 window.addEventListener('click',event=>{
-  // A primary pointer activation is owned by pointerdown/pointerup above. Native
-  // keyboard and assistive-technology activation produces detail===0 and keeps the
-  // standard click path. A non-suppressed pointer click is routed only when no V590
-  // pointer gesture is active, preserving compatibility without duplicate launch.
   if(event.detail===0){route(event,'click');return;}
+  if(pendingCompatibilityClick){
+    pendingCompatibilityClick=false;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    return;
+  }
   if(pointerGesture)return;
   route(event,'click');
 },{capture:true});
