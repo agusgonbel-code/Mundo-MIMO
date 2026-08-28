@@ -64,11 +64,7 @@ function renderAges(){
 }
 function renderGames(){
   const eligible=games.filter(g=>g.ages.includes(age)&&ownerFor(g.id));
-  // Cards carry a declarative activation hook instead of depending on listeners
-  // attached to transient nodes or on event delegation through legacy layers.
-  // The inline hook is copied by cloneNode(), so routing survives DOM replacement
-  // while Recovery can continue observing the same click independently.
-  gameGrid.innerHTML=eligible.length?eligible.map(g=>`<button class="gameCard" type="button" data-game="${g.id}" onclick="return globalThis.MundoMimoV2Performance?.startGame(this.dataset.game) ?? false"><b>${g.name}</b><small>${g.skill} · ${g.mechanic}</small></button>`).join(''):'<p>No hay todavía juegos jugables para esta franja.</p>';
+  gameGrid.innerHTML=eligible.length?eligible.map(g=>`<button class="gameCard" type="button" data-game="${g.id}"><b>${g.name}</b><small>${g.skill} · ${g.mechanic}</small></button>`).join(''):'<p>No hay todavía juegos jugables para esta franja.</p>';
 }
 function setAge(next){
   if(!P.ageBands.some(b=>b.id===next)||next===age)return;
@@ -83,6 +79,19 @@ ageBar.addEventListener('click',event=>{
   const button=event.target.closest('[data-age]');
   if(button)setAge(button.dataset.age);
 });
+
+// Some historical runtimes installed document-level capture listeners before
+// V590 existed. Those listeners can stop propagation before a target/grid
+// handler runs. Observe activation one level earlier on window, but do not stop
+// or cancel the event: recovery, accessibility and telemetry still receive the
+// original click. Deferring launch to a microtask lets all legacy listeners
+// finish first, then V590 deterministically applies the canonical owner route.
+window.addEventListener('click',event=>{
+  const button=event.target?.closest?.('[data-game]');
+  if(!button||!gameGrid.contains(button))return;
+  const id=button.dataset.game;
+  queueMicrotask(()=>startGame(id));
+},true);
 
 syncLegacyAge();
 persistAge();
