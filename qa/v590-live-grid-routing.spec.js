@@ -77,3 +77,17 @@ test('V590 keeps one catalog owner and emits one launch event per completed acti
   expect(await page.evaluate(() => globalThis.__mimoLaunchProbe)).toBe(1);
   expect(await page.evaluate(() => globalThis.MundoMimoV2Performance.lastStartedId)).toBe('sigue-el-destello');
 });
+
+test('V590 capture owner survives a historical target listener that stops bubbling', async ({ page }) => {
+  await page.goto('/v2/app-v200.html', { waitUntil: 'load' });
+  await page.waitForFunction(() => globalThis.MundoMimoV2Performance?.version === 590);
+  await page.locator('[data-age="1-2"]').click();
+  await page.evaluate(() => {
+    const card = document.querySelector('[data-game="sigue-el-destello"]');
+    card.addEventListener('click', event => event.stopPropagation(), { once: true });
+  });
+  await page.locator('[data-game="sigue-el-destello"]').click();
+  await expect(page.locator('#gameTitle')).toHaveText('Sigue el destello');
+  await expect(page.locator('[data-light="izq"]')).toBeVisible();
+  expect(await page.evaluate(() => globalThis.MundoMimoV2Performance.lastStartedId)).toBe('sigue-el-destello');
+});
