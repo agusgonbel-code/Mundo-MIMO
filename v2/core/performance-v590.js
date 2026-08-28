@@ -73,10 +73,19 @@ ageBar.addEventListener('click',event=>{
   const button=event.target.closest('[data-age]');
   if(button)setAge(button.dataset.age);
 });
+// Route game-card activation in capture phase and stop only that card event.
+// Historical runtime layers registered document/bubbling click behaviour before
+// V590 existed; allowing those handlers to observe a V590 card could clear or
+// replace the stage after the correct owner had already started. The live V590
+// grid is authoritative, so card activation must be consumed here while all
+// other clicks keep their existing propagation semantics.
 gameGrid.addEventListener('click',event=>{
   const button=event.target.closest('[data-game]');
-  if(button)startGame(button.dataset.game);
-});
+  if(!button)return;
+  event.preventDefault();
+  event.stopPropagation();
+  startGame(button.dataset.game);
+},true);
 
 syncLegacyAge();
 persistAge();
