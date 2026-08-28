@@ -1,9 +1,11 @@
 (()=>{'use strict';
-// V590 owns catalog activation before historical handlers. Pointer activation is
-// routed on pointerup, but the stage scroll is deferred until after the synthetic
-// click so WebKit cannot retarget that click onto a different card. Keyboard/AT
-// activation keeps the click path. composedPath keeps nested/cloned cards routable.
+// V590 owns catalog activation before historical handlers. Pointerdown only claims
+// the gesture (without opening the stage) so legacy pointer handlers cannot mutate
+// the UI before pointerup. Pointerup launches the card captured at gesture start.
+// Keyboard/AT activation keeps the click path. composedPath keeps nested/cloned
+// cards routable.
 let lastIntent=null;
+let pointerGesture=null;
 let pointerLaunch=null;
 function cardFrom(event){
   const grid=document.getElementById('gameGrid');
@@ -12,10 +14,8 @@ function cardFrom(event){
   const button=path.find(node=>node?.nodeType===1&&node.matches?.('[data-game]'))||event.target?.closest?.('[data-game]');
   return button&&grid.contains(button)?button:null;
 }
-function route(event,source){
-  const button=cardFrom(event);
-  if(!button)return false;
-  const id=button.dataset.game;
+function routeId(id,event,source){
+  if(!id)return false;
   lastIntent={id,source,at:performance.now()};
   const dispatcher=globalThis.MundoMimoV2Performance;
   if(!dispatcher?.startGame)return false;
@@ -23,17 +23,33 @@ function route(event,source){
   if(launched)event.stopImmediatePropagation();
   return launched;
 }
-window.addEventListener('pointerup',event=>{
+function route(event,source){
+  const button=cardFrom(event);
+  return button?routeId(button.dataset.game,event,source):false;
+}
+window.addEventListener('pointerdown',event=>{
   if(event.isPrimary===false||event.button>0)return;
   const button=cardFrom(event);
   if(!button)return;
-  const id=button.dataset.game;
-  if(route(event,'pointerup'))pointerLaunch={id,at:performance.now()};
+  pointerGesture={id:button.dataset.game,pointerId:event.pointerId,at:performance.now()};
+  // Claim the gesture before historical handlers, but do not prevent the browser's
+  // normal pointer/click synthesis and do not reveal the stage until pointerup.
+  event.stopImmediatePropagation();
 },{capture:true});
+window.addEventListener('pointerup',event=>{
+  if(event.isPrimary===false||event.button>0)return;
+  const gesture=pointerGesture;
+  pointerGesture=null;
+  const samePointer=gesture&&(gesture.pointerId==null||event.pointerId==null||gesture.pointerId===event.pointerId);
+  const fresh=samePointer&&performance.now()-gesture.at<5000;
+  const id=fresh?gesture.id:cardFrom(event)?.dataset.game;
+  if(id&&routeId(id,event,'pointerup'))pointerLaunch={id,at:performance.now()};
+},{capture:true});
+window.addEventListener('pointercancel',()=>{pointerGesture=null},{capture:true});
 window.addEventListener('click',event=>{
   // A completed pointer launch owns its immediately following synthetic click.
-  // Consume it before resolving its target: defensive against engines that still
-  // retarget after layout changes. Keyboard/AT clicks have detail===0.
+  // Consume it before resolving its target: defensive against engines that retarget
+  // after layout changes. Keyboard/AT clicks have detail===0.
   if(pointerLaunch&&event.detail>0&&performance.now()-pointerLaunch.at<1200){
     pointerLaunch=null;
     event.stopImmediatePropagation();
