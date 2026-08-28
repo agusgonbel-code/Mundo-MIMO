@@ -62,10 +62,6 @@ test('V590: repeated age switching settles quickly and never duplicates cards', 
           pressed: document.querySelector('[data-age][aria-pressed="true"]')?.dataset.age,
         };
       }, age);
-      // Keep the original hard 750 ms budget, but measure app/main-thread work rather
-      // than CI WebKit frame pacing. Two nested requestAnimationFrame callbacks can
-      // be throttled by the headless runner and were adding ~1.5 s independently of
-      // the age-switch implementation.
       expect(result.syncDuration).toBeLessThan(750);
       expect(result.settleDuration).toBeLessThan(750);
       expect(result.count).toBeGreaterThan(0);
@@ -100,6 +96,19 @@ test('V590: centralized age navigation persists across reload without reviving o
   }));
   expect(after.age).toBe('5-6');
   expect(after.unique).toBe(after.cards);
+});
+
+test('V590: unified dispatcher launches games owned by historical runtimes', async ({ page }) => {
+  await page.goto(URL, { waitUntil: 'load' });
+  await waitForFullRuntime(page);
+  await page.locator('[data-age="1-2"]').click();
+  const card = page.locator('[data-game="sigue-el-destello"]');
+  await expect(card).toBeVisible();
+  await card.click();
+  await expect(page.locator('#gameTitle')).toHaveText('Sigue el destello');
+  await expect(page.locator('[data-light="izq"]')).toBeVisible();
+  const owner = await page.evaluate(() => globalThis.MundoMimoV2Performance.ownerFor('sigue-el-destello')?.version);
+  expect(owner).toBe(370);
 });
 
 test('V590: offscreen cards use rendering containment without breaking interaction', async ({ page }) => {
