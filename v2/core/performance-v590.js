@@ -64,7 +64,11 @@ function renderAges(){
 }
 function renderGames(){
   const eligible=games.filter(g=>g.ages.includes(age)&&ownerFor(g.id));
-  gameGrid.innerHTML=eligible.length?eligible.map(g=>`<button class="gameCard" type="button" data-game="${g.id}"><b>${g.name}</b><small>${g.skill} · ${g.mechanic}</small></button>`).join(''):'<p>No hay todavía juegos jugables para esta franja.</p>';
+  // Cards carry a declarative activation hook instead of depending on listeners
+  // attached to transient nodes or on event delegation through legacy layers.
+  // The inline hook is copied by cloneNode(), so routing survives DOM replacement
+  // while Recovery can continue observing the same click independently.
+  gameGrid.innerHTML=eligible.length?eligible.map(g=>`<button class="gameCard" type="button" data-game="${g.id}" onclick="return globalThis.MundoMimoV2Performance?.startGame(this.dataset.game) ?? false"><b>${g.name}</b><small>${g.skill} · ${g.mechanic}</small></button>`).join(''):'<p>No hay todavía juegos jugables para esta franja.</p>';
 }
 function setAge(next){
   if(!P.ageBands.some(b=>b.id===next)||next===age)return;
@@ -79,18 +83,6 @@ ageBar.addEventListener('click',event=>{
   const button=event.target.closest('[data-age]');
   if(button)setAge(button.dataset.age);
 });
-
-// V590 owns the live grid after replacing the observer-heavy legacy node, so
-// route activation on that stable grid instead of intercepting every document
-// click. Delegation survives replacement of card descendants while allowing
-// recovery/accessibility/core listeners to observe the same user action.
-function routeGameClick(event){
-  const button=event.target?.closest?.('[data-game]');
-  if(!button||!gameGrid.contains(button))return;
-  event.preventDefault();
-  startGame(button.dataset.game);
-}
-gameGrid.addEventListener('click',routeGameClick,true);
 
 syncLegacyAge();
 persistAge();
