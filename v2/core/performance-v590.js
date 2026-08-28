@@ -80,18 +80,16 @@ ageBar.addEventListener('click',event=>{
   if(button)setAge(button.dataset.age);
 });
 
-// Some historical runtimes installed document-level capture listeners before
-// V590 existed. Those listeners can stop propagation before a target/grid
-// handler runs. Observe activation one level earlier on window, but do not stop
-// or cancel the event: recovery, accessibility and telemetry still receive the
-// original click. Deferring launch to a microtask lets all legacy listeners
-// finish first, then V590 deterministically applies the canonical owner route.
-window.addEventListener('click',event=>{
+// V590 owns the live catalog grid after detaching every legacy expansion grid.
+// Route from that stable surface, synchronously and in capture phase, so the
+// exact historical owner has opened the stage before any later observer (for
+// example Recovery V570) records the same user activation. Delegation on the
+// grid also survives innerHTML renders and replacement/cloning of card nodes.
+gameGrid.addEventListener('click',event=>{
   const button=event.target?.closest?.('[data-game]');
   if(!button||!gameGrid.contains(button))return;
-  const id=button.dataset.game;
-  queueMicrotask(()=>startGame(id));
-},true);
+  startGame(button.dataset.game);
+},{capture:true});
 
 syncLegacyAge();
 persistAge();
