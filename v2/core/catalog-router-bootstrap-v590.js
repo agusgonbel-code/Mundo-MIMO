@@ -32,11 +32,20 @@ window.addEventListener('pointerup',event=>{
   if(route(event,'pointerup'))pointerLaunch={id,at:performance.now()};
 },{capture:true});
 window.addEventListener('click',event=>{
+  // Opening #stage during pointerup can retarget the browser's synthetic click
+  // away from the original card. Consume that immediate pointer-generated click
+  // before resolving a card, otherwise a legacy window/document click handler
+  // can replace the game that V590 just launched. Keyboard/AT clicks have
+  // detail===0 and remain available to the canonical click fallback.
+  if(pointerLaunch&&event.detail>0&&performance.now()-pointerLaunch.at<1200){
+    pointerLaunch=null;
+    event.stopImmediatePropagation();
+    return;
+  }
   const button=cardFrom(event);
   if(!button)return;
   const id=button.dataset.game;
-  // A successful pointerup already launched this card. Consume the follow-up
-  // click so historical click listeners cannot undo/replace the active stage.
+  // Defensive same-card path for engines that preserve the original click target.
   if(pointerLaunch&&pointerLaunch.id===id&&performance.now()-pointerLaunch.at<1200){
     pointerLaunch=null;
     event.stopImmediatePropagation();
