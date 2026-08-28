@@ -5,15 +5,17 @@ const Base=globalThis.MundoMimoV2Runtime;
 if(!P||!R||!Base)throw new Error('Mundo Mimo V590 performance dependencies missing');
 
 const oldAgeBar=document.getElementById('ageBar');
-const gameGrid=document.getElementById('gameGrid');
-if(!oldAgeBar||!gameGrid)throw new Error('Mundo Mimo V590 shell missing');
+const inheritedGrid=document.getElementById('gameGrid');
+if(!oldAgeBar||!inheritedGrid)throw new Error('Mundo Mimo V590 shell missing');
 
-// V430 already replaces #gameGrid once and installs the final delegated owner on that
-// live node. V590 must not clone it again: doing so drops the only listener that knows
-// how to route all historical runtimes. Age navigation is still centralized here because
-// the legacy age bar intentionally owns capture/stopImmediatePropagation.
+// V590 is the final catalog shell. Replace the inherited grid exactly once so the
+// incremental runtime listeners/observers cannot compete for a completed activation.
+// This node has one delegated click owner below; the click is never cancelled and keeps
+// bubbling to analytics, accessibility and recovery observers.
 const ageBar=oldAgeBar.cloneNode(false);
 oldAgeBar.replaceWith(ageBar);
+const gameGrid=inheritedGrid.cloneNode(false);
+inheritedGrid.replaceWith(gameGrid);
 const canonicalGrid=gameGrid;
 
 const STATE_KEY='mimo-v2-runtime-200';
@@ -55,8 +57,7 @@ function startGame(id,options={}){
       try{if(ownScroll===undefined)delete stage.scrollIntoView;else stage.scrollIntoView=ownScroll}catch{}
     }
   }
-  const launched=finishLaunch(id,deferredScroll);
-  return launched;
+  return finishLaunch(id,deferredScroll);
 }
 function syncLegacyAge(){
   oldAgeBar.querySelectorAll('[data-age]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.age===age)));
@@ -74,38 +75,23 @@ function setAge(next){
 }
 ageBar.addEventListener('click',event=>{const button=event.target.closest('[data-age]');if(button)setAge(button.dataset.age)});
 
-// Preserve the V430 delegated click path. Capture is used only to defer its synchronous
-// scrollIntoView without cancelling the event. The bubble listener runs after V430 and
-// records the launch/recovery event exactly once. If some external code replaces the whole
-// grid node later, a window fallback starts only that replacement grid because it no longer
-// has V430's delegated listener.
-const activationState=new WeakMap();
-window.addEventListener('click',event=>{
-  const button=event.target?.closest?.('[data-game]');
-  if(!button)return;
-  const liveGrid=document.getElementById('gameGrid');
-  if(!liveGrid||!liveGrid.contains(button))return;
-  const id=button.dataset.game;
-  if(liveGrid!==canonicalGrid){
-    const launched=startGame(id,{deferScroll:true});
-    activationState.set(event,{handled:launched});
-    return;
-  }
-  const stage=document.getElementById('stage');
-  if(!stage||typeof stage.scrollIntoView!=='function')return;
-  const own=Object.prototype.hasOwnProperty.call(stage,'scrollIntoView')?stage.scrollIntoView:undefined;
-  let deferred=false;
-  try{stage.scrollIntoView=()=>{deferred=true};activationState.set(event,{stage,own,get deferred(){return deferred}})}catch{}
-},{capture:true});
-
+// The canonical live grid owns every catalog activation. Runtime starts happen on the
+// completed browser click, so pointer down/up alone cannot mutate the game. No preventDefault
+// or propagation cancellation is used. Keyboard activation reaches this same click path.
 gameGrid.addEventListener('click',event=>{
   const button=event.target?.closest?.('[data-game]');
   if(!button||!gameGrid.contains(button))return;
-  const state=activationState.get(event);
-  if(state?.stage){
-    try{if(state.own===undefined)delete state.stage.scrollIntoView;else state.stage.scrollIntoView=state.own}catch{}
-  }
-  finishLaunch(button.dataset.game,Boolean(state?.deferred));
+  startGame(button.dataset.game,{deferScroll:true});
+});
+
+// Defensive fallback for a third-party/runtime replacement of the whole live grid. It is
+// deliberately document-delegated and ignores the canonical node to guarantee one launch.
+document.addEventListener('click',event=>{
+  const button=event.target?.closest?.('[data-game]');
+  if(!button)return;
+  const liveGrid=document.getElementById('gameGrid');
+  if(!liveGrid||liveGrid===canonicalGrid||!liveGrid.contains(button))return;
+  startGame(button.dataset.game,{deferScroll:true});
 });
 
 syncLegacyAge();persistAge();renderAges();renderGames();
