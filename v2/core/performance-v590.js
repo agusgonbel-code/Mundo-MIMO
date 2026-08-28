@@ -72,29 +72,34 @@ function setAge(next){
 }
 ageBar.addEventListener('click',event=>{const button=event.target.closest('[data-age]');if(button)setAge(button.dataset.age)});
 
-// The live V590 grid owns only the completed browser click. Listen in capture phase so a
-// historical target/bubble listener cannot make a valid card activation disappear before it
-// reaches the canonical owner. We deliberately do not preventDefault/stopPropagation and do
-// not launch from pointerdown/up, so the same completed click continues normally to body and
-// document and the first gameplay interaction remains independent from catalog activation.
+// Canonical launches are committed in the microtask immediately after the completed click.
+// This lets every historical click listener finish without cancelling normal propagation or
+// default actions, while ensuring any stale runtime side effects cannot overwrite the final
+// V590 launch. This is one deterministic launch, not a retry or timing tolerance.
 const handledActivations=new WeakSet();
+const scheduledActivations=new WeakSet();
+function scheduleCanonicalLaunch(event,id){
+  if(scheduledActivations.has(event))return;
+  scheduledActivations.add(event);
+  queueMicrotask(()=>startGame(id,{deferScroll:true}));
+}
 gameGrid.addEventListener('click',event=>{
   const button=event.target?.closest?.('[data-game]');
   if(!button||!gameGrid.contains(button))return;
   handledActivations.add(event);
-  startGame(button.dataset.game,{deferScroll:true});
+  scheduleCanonicalLaunch(event,button.dataset.game);
 },true);
 
 // Defensive fallback only for an externally replaced/cloned #gameGrid. DOM cloning does not
 // copy listeners, so such a grid intentionally has no local owner. The same completed click
-// is routed here without preventDefault/stopPropagation/retries/timers.
+// is routed once after dispatch without preventDefault/stopPropagation/retries/timers.
 document.addEventListener('click',event=>{
   if(handledActivations.has(event))return;
   const button=event.target?.closest?.('[data-game]');
   if(!button)return;
   const liveGrid=document.getElementById('gameGrid');
   if(!liveGrid||!liveGrid.contains(button))return;
-  startGame(button.dataset.game,{deferScroll:true});
+  scheduleCanonicalLaunch(event,button.dataset.game);
 });
 
 syncLegacyAge();persistAge();renderAges();renderGames();
