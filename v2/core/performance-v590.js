@@ -5,13 +5,16 @@ const Base=globalThis.MundoMimoV2Runtime;
 if(!P||!R||!Base)throw new Error('Mundo Mimo V590 performance dependencies missing');
 
 const oldAgeBar=document.getElementById('ageBar');
-const oldGrid=document.getElementById('gameGrid');
-if(!oldAgeBar||!oldGrid)throw new Error('Mundo Mimo V590 shell missing');
+const gameGrid=document.getElementById('gameGrid');
+if(!oldAgeBar||!gameGrid)throw new Error('Mundo Mimo V590 shell missing');
 
+// V430 already replaces #gameGrid once and installs the final delegated owner on that
+// live node. V590 must not clone it again: doing so drops the only listener that knows
+// how to route all historical runtimes. Age navigation is still centralized here because
+// the legacy age bar intentionally owns capture/stopImmediatePropagation.
 const ageBar=oldAgeBar.cloneNode(false);
-const gameGrid=oldGrid.cloneNode(false);
 oldAgeBar.replaceWith(ageBar);
-oldGrid.replaceWith(gameGrid);
+const canonicalGrid=gameGrid;
 
 const STATE_KEY='mimo-v2-runtime-200';
 const versions=[200,210,220,230,240,250,260,270,280,290,300,310,320,330,340,350,360,370,380,390,400,410,420,430];
@@ -26,6 +29,17 @@ try{const saved=JSON.parse(localStorage.getItem(STATE_KEY)||'{}');if(P.ageBands.
 
 function persistAge(){try{const state=JSON.parse(localStorage.getItem(STATE_KEY)||'{}');state.age=age;localStorage.setItem(STATE_KEY,JSON.stringify(state))}catch{}}
 function ownerFor(id){return owners.get(id)||null}
+function finishLaunch(id,deferredScroll=false){
+  const stage=document.getElementById('stage');
+  const title=document.getElementById('gameTitle');
+  const launched=Boolean(stage&&!stage.hidden&&title?.textContent?.trim());
+  if(!launched)return false;
+  lastStartedId=id;
+  document.dispatchEvent(new CustomEvent('mimo:game-started',{detail:{id,age}}));
+  globalThis.MundoMimoV2CatalogRouterBootstrap?.recordLaunch?.(id,'click');
+  if(deferredScroll)setTimeout(()=>stage?.scrollIntoView?.({block:'start'}),0);
+  return true;
+}
 function startGame(id,options={}){
   const owner=ownerFor(id);
   if(!owner||typeof owner.start!=='function')return false;
@@ -38,19 +52,10 @@ function startGame(id,options={}){
   }
   try{owner.start(id)}finally{
     if(options.deferScroll&&stage){
-      try{
-        if(ownScroll===undefined)delete stage.scrollIntoView;
-        else stage.scrollIntoView=ownScroll;
-      }catch{}
+      try{if(ownScroll===undefined)delete stage.scrollIntoView;else stage.scrollIntoView=ownScroll}catch{}
     }
   }
-  const title=document.getElementById('gameTitle');
-  const launched=Boolean(stage&&!stage.hidden&&title?.textContent?.trim());
-  if(launched){
-    lastStartedId=id;
-    document.dispatchEvent(new CustomEvent('mimo:game-started',{detail:{id,age}}));
-    if(deferredScroll)setTimeout(()=>stage?.scrollIntoView?.({block:'start'}),0);
-  }
+  const launched=finishLaunch(id,deferredScroll);
   return launched;
 }
 function syncLegacyAge(){
@@ -69,21 +74,39 @@ function setAge(next){
 }
 ageBar.addEventListener('click',event=>{const button=event.target.closest('[data-age]');if(button)setAge(button.dataset.age)});
 
-// The browser click is the single activation boundary for touch, mouse, keyboard and AT.
-// Route it from window capture so legacy document/body listeners cannot starve catalog
-// activation during bubbling. We never cancel or stop the click: stage controls, recovery,
-// analytics and assistive observers must still receive the same completed activation.
-// Scope remains the current live #gameGrid, so parent-zone and in-game controls are excluded.
+// Preserve the V430 delegated click path. Capture is used only to defer its synchronous
+// scrollIntoView without cancelling the event. The bubble listener runs after V430 and
+// records the launch/recovery event exactly once. If some external code replaces the whole
+// grid node later, a window fallback starts only that replacement grid because it no longer
+// has V430's delegated listener.
+const activationState=new WeakMap();
 window.addEventListener('click',event=>{
   const button=event.target?.closest?.('[data-game]');
   if(!button)return;
   const liveGrid=document.getElementById('gameGrid');
   if(!liveGrid||!liveGrid.contains(button))return;
   const id=button.dataset.game;
-  if(startGame(id,{deferScroll:true})){
-    globalThis.MundoMimoV2CatalogRouterBootstrap?.recordLaunch?.(id,'click');
+  if(liveGrid!==canonicalGrid){
+    const launched=startGame(id,{deferScroll:true});
+    activationState.set(event,{handled:launched});
+    return;
   }
+  const stage=document.getElementById('stage');
+  if(!stage||typeof stage.scrollIntoView!=='function')return;
+  const own=Object.prototype.hasOwnProperty.call(stage,'scrollIntoView')?stage.scrollIntoView:undefined;
+  let deferred=false;
+  try{stage.scrollIntoView=()=>{deferred=true};activationState.set(event,{stage,own,get deferred(){return deferred}})}catch{}
 },{capture:true});
+
+gameGrid.addEventListener('click',event=>{
+  const button=event.target?.closest?.('[data-game]');
+  if(!button||!gameGrid.contains(button))return;
+  const state=activationState.get(event);
+  if(state?.stage){
+    try{if(state.own===undefined)delete state.stage.scrollIntoView;else state.stage.scrollIntoView=state.own}catch{}
+  }
+  finishLaunch(button.dataset.game,Boolean(state?.deferred));
+});
 
 syncLegacyAge();persistAge();renderAges();renderGames();
 
