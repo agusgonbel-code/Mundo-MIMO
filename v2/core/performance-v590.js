@@ -46,7 +46,13 @@ function startGame(id){
   const owner=ownerFor(id);
   if(!owner||typeof owner.start!=='function')return false;
   owner.start(id);
-  return true;
+  const stage=document.getElementById('stage');
+  const title=document.getElementById('gameTitle');
+  const launched=Boolean(stage&&!stage.hidden&&title?.textContent?.trim());
+  if(launched){
+    document.dispatchEvent(new CustomEvent('mimo:game-started',{detail:{id,age}}));
+  }
+  return launched;
 }
 function syncLegacyAge(){
   // Detached nodes are still read by older handlers when persisting a result.
@@ -74,20 +80,17 @@ ageBar.addEventListener('click',event=>{
   if(button)setAge(button.dataset.age);
 });
 
-// Route game activation from a stable root instead of storing handlers on
-// transient card nodes. Historical runtimes and later core modules may rebuild
-// descendants of the live grid; a document-capture router survives those DOM
-// replacements and stops the old per-runtime click graph before it can launch a
-// different layer. The exact owner still supplies the original game handler.
+// V590 owns the live grid after replacing the observer-heavy legacy node, so
+// route activation on that stable grid instead of intercepting every document
+// click. Delegation survives replacement of card descendants while allowing
+// recovery/accessibility/core listeners to observe the same user action.
 function routeGameClick(event){
   const button=event.target?.closest?.('[data-game]');
-  const liveGrid=document.getElementById('gameGrid');
-  if(!button||!liveGrid||!liveGrid.contains(button))return;
+  if(!button||!gameGrid.contains(button))return;
   event.preventDefault();
-  event.stopPropagation();
   startGame(button.dataset.game);
 }
-document.addEventListener('click',routeGameClick,true);
+gameGrid.addEventListener('click',routeGameClick,true);
 
 syncLegacyAge();
 persistAge();
