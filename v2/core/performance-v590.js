@@ -69,11 +69,12 @@ function setAge(next){
 }
 ageBar.addEventListener('click',event=>{const button=event.target.closest('[data-age]');if(button)setAge(button.dataset.age)});
 
-// One delegated activation owner survives live-grid replacement and age churn.
-// It is deliberately scoped to the *current* #gameGrid so controls in the stage,
-// parent zone and other shells can never be consumed by catalog routing.
-// Pointer/mouse/keyboard/assistive activation all converge on browser click.
-document.addEventListener('click',event=>{
+// The browser click is the single activation boundary for touch, mouse, keyboard and AT.
+// Route it from window capture so legacy document/body listeners cannot starve catalog
+// activation during bubbling. We never cancel or stop the click: stage controls, recovery,
+// analytics and assistive observers must still receive the same completed activation.
+// Scope remains the current live #gameGrid, so parent-zone and in-game controls are excluded.
+window.addEventListener('click',event=>{
   const button=event.target?.closest?.('[data-game]');
   if(!button)return;
   const liveGrid=document.getElementById('gameGrid');
@@ -81,10 +82,8 @@ document.addEventListener('click',event=>{
   const id=button.dataset.game;
   if(startGame(id,{deferScroll:true})){
     globalThis.MundoMimoV2CatalogRouterBootstrap?.recordLaunch?.(id,'click');
-    event.preventDefault();
-    event.stopImmediatePropagation();
   }
-},{capture:false});
+},{capture:true});
 
 syncLegacyAge();persistAge();renderAges();renderGames();
 
