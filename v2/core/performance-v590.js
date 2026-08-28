@@ -8,12 +8,6 @@ const oldAgeBar=document.getElementById('ageBar');
 const oldGrid=document.getElementById('gameGrid');
 if(!oldAgeBar||!oldGrid)throw new Error('Mundo Mimo V590 shell missing');
 
-// The expansion runtimes up to V430 attach one MutationObserver each to the
-// original grid. Keeping those observers attached during every age change made
-// one user action fan out into many redundant augment passes. Replace only the
-// navigation surfaces after all expansion runtimes are registered: game
-// handlers/stage/progress remain untouched, while the legacy observer graph is
-// detached from the live document.
 const ageBar=oldAgeBar.cloneNode(false);
 const gameGrid=oldGrid.cloneNode(false);
 oldAgeBar.replaceWith(ageBar);
@@ -25,22 +19,12 @@ const runtimes=versions.map(v=>v===200?Base:globalThis[`MundoMimoV2RuntimeV${v}`
 const games=R.allGames();
 const owners=new Map();
 for(const id of Base.implemented||[])owners.set(id,Base);
-for(const runtime of runtimes){
-  for(const id of runtime.extra||[])owners.set(id,runtime);
-}
+for(const runtime of runtimes){for(const id of runtime.extra||[])owners.set(id,runtime)}
 let age='2-3';
-try{
-  const saved=JSON.parse(localStorage.getItem(STATE_KEY)||'{}');
-  if(P.ageBands.some(b=>b.id===saved.age))age=saved.age;
-}catch{}
+let lastStartedId=null;
+try{const saved=JSON.parse(localStorage.getItem(STATE_KEY)||'{}');if(P.ageBands.some(b=>b.id===saved.age))age=saved.age}catch{}
 
-function persistAge(){
-  try{
-    const state=JSON.parse(localStorage.getItem(STATE_KEY)||'{}');
-    state.age=age;
-    localStorage.setItem(STATE_KEY,JSON.stringify(state));
-  }catch{}
-}
+function persistAge(){try{const state=JSON.parse(localStorage.getItem(STATE_KEY)||'{}');state.age=age;localStorage.setItem(STATE_KEY,JSON.stringify(state))}catch{}}
 function ownerFor(id){return owners.get(id)||null}
 function startGame(id){
   const owner=ownerFor(id);
@@ -50,51 +34,36 @@ function startGame(id){
   const title=document.getElementById('gameTitle');
   const launched=Boolean(stage&&!stage.hidden&&title?.textContent?.trim());
   if(launched){
+    lastStartedId=id;
     document.dispatchEvent(new CustomEvent('mimo:game-started',{detail:{id,age}}));
   }
   return launched;
 }
 function syncLegacyAge(){
-  // Detached nodes are still read by older handlers when persisting a result.
   oldAgeBar.querySelectorAll('[data-age]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.age===age)));
   if(typeof Base.setAge==='function')Base.setAge(age);
 }
-function renderAges(){
-  ageBar.innerHTML=P.ageBands.map(b=>`<button type="button" data-age="${b.id}" aria-pressed="${b.id===age}">${b.label}</button>`).join('');
-}
+function renderAges(){ageBar.innerHTML=P.ageBands.map(b=>`<button type="button" data-age="${b.id}" aria-pressed="${b.id===age}">${b.label}</button>`).join('')}
 function renderGames(){
   const eligible=games.filter(g=>g.ages.includes(age)&&ownerFor(g.id));
   gameGrid.innerHTML=eligible.length?eligible.map(g=>`<button class="gameCard" type="button" data-game="${g.id}"><b>${g.name}</b><small>${g.skill} · ${g.mechanic}</small></button>`).join(''):'<p>No hay todavía juegos jugables para esta franja.</p>';
 }
 function setAge(next){
   if(!P.ageBands.some(b=>b.id===next)||next===age)return;
-  age=next;
-  syncLegacyAge();
-  persistAge();
-  renderAges();
-  renderGames();
+  age=next;syncLegacyAge();persistAge();renderAges();renderGames();
   ageBar.dispatchEvent(new CustomEvent('mimo:agechange',{bubbles:true,detail:{age}}));
 }
-ageBar.addEventListener('click',event=>{
-  const button=event.target.closest('[data-age]');
-  if(button)setAge(button.dataset.age);
-});
+ageBar.addEventListener('click',event=>{const button=event.target.closest('[data-age]');if(button)setAge(button.dataset.age)});
 
-// V590 is the only router for the live catalog grid. Once a launch has been
-// verified, stop the original click before historical target/bubble handlers can
-// run against detached navigation state and overwrite the stage. Recovery and
-// other observers subscribe to the semantic mimo:game-started event emitted by
-// startGame(), so successful launches remain observable without sharing routing.
+// Fast path for events that do reach the live grid. The early window bootstrap
+// is the safety net for historical capture handlers that stop propagation first.
 gameGrid.addEventListener('click',event=>{
   const button=event.target?.closest?.('[data-game]');
   if(!button||!gameGrid.contains(button))return;
   if(startGame(button.dataset.game))event.stopImmediatePropagation();
 },{capture:true});
 
-syncLegacyAge();
-persistAge();
-renderAges();
-renderGames();
+syncLegacyAge();persistAge();renderAges();renderGames();
 
-globalThis.MundoMimoV2Performance=Object.freeze({version:590,setAge,startGame,ownerFor,get age(){return age;},gameCount:games.length,ownedGameCount:owners.size});
+globalThis.MundoMimoV2Performance=Object.freeze({version:590,setAge,startGame,ownerFor,get age(){return age;},get lastStartedId(){return lastStartedId;},gameCount:games.length,ownedGameCount:owners.size});
 })();
