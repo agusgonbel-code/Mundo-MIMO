@@ -1,12 +1,15 @@
 (()=>{'use strict';
 // V590 owns catalog activation before historical handlers. Pointer activation is
 // deliberately a two-phase gesture: pointerdown claims the card without opening the
-// stage; pointerup launches exactly the card captured at gesture start. We do not
-// cancel pointerdown's default action because WebKit may then cancel/retarget the
-// remaining pointer stream. Instead, after a successful pointerup launch we consume
-// exactly the following compatibility click. A new pointerdown clears that marker
-// first, so a genuine next child action can never be swallowed. Keyboard/AT remains
-// on the native click path (detail===0).
+// stage; pointerup launches exactly the card captured at gesture start. Some WebKit
+// automation/native mouse bridges can finish the same physical gesture with mouseup
+// when no usable pointerup reaches the page, so mouseup is an alternate completion
+// event for the already-claimed gesture, never a retry: the first completion clears
+// ownership and every later completion becomes a no-op. We do not cancel pointerdown's
+// default action. After a successful completion we consume exactly the compatibility
+// click from that gesture. Any new pointerdown clears both stale ownership and that
+// marker before resolving its target, so a genuine child action can never be swallowed.
+// Keyboard/AT remains on the native click path (detail===0).
 let lastIntent=null;
 let pointerGesture=null;
 let pendingCompatibilityClick=false;
@@ -36,9 +39,19 @@ function matchingGesture(event){
   const samePointer=gesture.pointerId==null||event.pointerId==null||gesture.pointerId===event.pointerId;
   return samePointer?gesture:null;
 }
+function finishClaimedGesture(event){
+  if(event.isPrimary===false||event.button>0)return false;
+  const gesture=matchingGesture(event);
+  if(!gesture)return false;
+  pointerGesture=null;
+  const launched=routeId(gesture.id,event,'pointerup');
+  if(launched)pendingCompatibilityClick=true;
+  return launched;
+}
 window.addEventListener('pointerdown',event=>{
-  // Any real new pointer action supersedes a compatibility-click marker left by the
-  // previous completed activation. This is event ordering, not a timeout window.
+  // A new physical action invalidates all state belonging to a previous action,
+  // including a missing compatibility click from an already completed gesture.
+  pointerGesture=null;
   pendingCompatibilityClick=false;
   if(event.isPrimary===false||event.button>0)return;
   const button=cardFrom(event);
@@ -46,19 +59,8 @@ window.addEventListener('pointerdown',event=>{
   pointerGesture={id:button.dataset.game,pointerId:event.pointerId};
   event.stopImmediatePropagation();
 },{capture:true});
-window.addEventListener('pointerup',event=>{
-  if(event.isPrimary===false||event.button>0)return;
-  const gesture=matchingGesture(event);
-  if(!gesture)return;
-  pointerGesture=null;
-  const launched=routeId(gesture.id,event,'pointerup');
-  if(launched){
-    // Browsers may synthesize a compatibility click after pointerup. Consume exactly
-    // that next pointer-origin click. If none is synthesized, the next real
-    // pointerdown clears the marker before its click can occur.
-    pendingCompatibilityClick=true;
-  }
-},{capture:true});
+window.addEventListener('pointerup',event=>{finishClaimedGesture(event)},{capture:true});
+window.addEventListener('mouseup',event=>{finishClaimedGesture(event)},{capture:true});
 window.addEventListener('pointercancel',()=>{pointerGesture=null;pendingCompatibilityClick=false},{capture:true});
 window.addEventListener('click',event=>{
   if(event.detail===0){route(event,'click');return;}
