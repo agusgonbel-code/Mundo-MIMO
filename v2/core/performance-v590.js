@@ -69,12 +69,19 @@ function setAge(next){
 }
 ageBar.addEventListener('click',event=>{const button=event.target.closest('[data-age]');if(button)setAge(button.dataset.age)});
 
-// Fast path for events that do reach the live grid. The early window bootstrap
-// is the safety net for historical capture handlers that stop propagation first.
+// V590 has one activation owner: this listener on the live replacement grid.
+// Historical runtime listeners remain attached to the detached pre-V590 grid and
+// cannot compete with it. Pointer, mouse, keyboard and assistive activation all
+// converge on the browser's canonical click without mutating the DOM beforehand.
 gameGrid.addEventListener('click',event=>{
   const button=event.target?.closest?.('[data-game]');
   if(!button||!gameGrid.contains(button))return;
-  if(startGame(button.dataset.game))event.stopImmediatePropagation();
+  const id=button.dataset.game;
+  if(startGame(id)){
+    globalThis.MundoMimoV2CatalogRouterBootstrap?.recordLaunch?.(id,'click');
+    event.preventDefault();
+    event.stopImmediatePropagation();
+  }
 },{capture:true});
 
 syncLegacyAge();persistAge();renderAges();renderGames();
