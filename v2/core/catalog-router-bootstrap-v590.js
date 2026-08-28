@@ -1,7 +1,9 @@
 (()=>{'use strict';
 // V590 owns catalog activation before historical handlers. Pointerdown only claims
 // the gesture (without opening the stage) so legacy pointer handlers cannot mutate
-// the UI before pointerup. Pointerup launches the card captured at gesture start.
+// the UI before completion. Pointerup launches the card captured at gesture start;
+// mouseup/click provide deterministic compatibility fallbacks when a browser or
+// automation stack does not deliver the expected PointerEvent completion.
 // Keyboard/AT activation keeps the click path. composedPath keeps nested/cloned
 // cards routable.
 let lastIntent=null;
@@ -19,7 +21,7 @@ function routeId(id,event,source){
   lastIntent={id,source,at:performance.now()};
   const dispatcher=globalThis.MundoMimoV2Performance;
   if(!dispatcher?.startGame)return false;
-  const launched=dispatcher.startGame(id,{deferScroll:source==='pointerup'});
+  const launched=dispatcher.startGame(id,{deferScroll:source==='pointerup'||source==='mouseup'});
   if(launched)event.stopImmediatePropagation();
   return launched;
 }
@@ -35,23 +37,43 @@ function armSyntheticClickGuard(id){
   // so a child's fast first answer can never be mistaken for that synthetic click.
   setTimeout(()=>{if(pointerLaunch===token)pointerLaunch=null},0);
 }
+function freshGesture(event){
+  const gesture=pointerGesture;
+  if(!gesture)return null;
+  const samePointer=gesture.pointerId==null||event.pointerId==null||gesture.pointerId===event.pointerId;
+  return samePointer&&performance.now()-gesture.at<5000?gesture:null;
+}
+function finishGesture(event,source){
+  const gesture=freshGesture(event);
+  const id=gesture?.id||cardFrom(event)?.dataset.game;
+  if(!id)return false;
+  const launched=routeId(id,event,source);
+  if(launched){
+    pointerGesture=null;
+    armSyntheticClickGuard(id);
+  }
+  return launched;
+}
 window.addEventListener('pointerdown',event=>{
   if(event.isPrimary===false||event.button>0)return;
   const button=cardFrom(event);
   if(!button)return;
   pointerGesture={id:button.dataset.game,pointerId:event.pointerId,at:performance.now()};
   // Claim the gesture before historical handlers, but do not prevent the browser's
-  // normal pointer/click synthesis and do not reveal the stage until pointerup.
+  // normal pointer/click synthesis and do not reveal the stage until completion.
   event.stopImmediatePropagation();
 },{capture:true});
 window.addEventListener('pointerup',event=>{
   if(event.isPrimary===false||event.button>0)return;
-  const gesture=pointerGesture;
-  pointerGesture=null;
-  const samePointer=gesture&&(gesture.pointerId==null||event.pointerId==null||gesture.pointerId===event.pointerId);
-  const fresh=samePointer&&performance.now()-gesture.at<5000;
-  const id=fresh?gesture.id:cardFrom(event)?.dataset.game;
-  if(id&&routeId(id,event,'pointerup'))armSyntheticClickGuard(id);
+  finishGesture(event,'pointerup');
+},{capture:true});
+// Some WebKit/automation mouse paths can complete a claimed pointer gesture with
+// mouseup even when the expected pointerup is not observable by this listener.
+// This is not a retry: it is the compatibility completion event for the same single
+// gesture, and it becomes a no-op whenever pointerup already launched the game.
+window.addEventListener('mouseup',event=>{
+  if(event.button>0||!pointerGesture)return;
+  finishGesture(event,'mouseup');
 },{capture:true});
 window.addEventListener('pointercancel',()=>{pointerGesture=null},{capture:true});
 window.addEventListener('click',event=>{
@@ -62,6 +84,12 @@ window.addEventListener('click',event=>{
     pointerLaunch=null;
     event.stopImmediatePropagation();
     return;
+  }
+  // If neither pointerup nor mouseup completed a claimed gesture, the compatibility
+  // click is the final event in that same activation and must launch the captured id
+  // before historical click handlers can mutate the UI.
+  if(pointerGesture&&event.detail>0){
+    if(finishGesture(event,'click'))return;
   }
   const button=cardFrom(event);
   if(!button)return;
