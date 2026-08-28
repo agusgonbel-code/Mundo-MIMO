@@ -77,6 +77,27 @@ test('V590 completes the same claimed gesture on compatibility click when no usa
   expect(result.lastIntent).toMatchObject({ id: 'sigue-el-destello', source: 'click' });
 });
 
+test('V590 full browser click settles as click without a duplicate launch or stale compatibility guard', async ({ page }) => {
+  await ready(page);
+  const card = page.locator('[data-game="sigue-el-destello"]');
+  await expect(card).toBeVisible();
+
+  await card.click();
+  await expect(page.locator('#gameTitle')).toHaveText('Sigue el destello');
+  await expect.poll(() => page.evaluate(() => globalThis.MundoMimoV2CatalogRouterBootstrap?.lastIntent)).toMatchObject({
+    id: 'sigue-el-destello',
+    source: 'click',
+  });
+
+  const next = page.locator('[data-game="toca-la-campana"]');
+  await next.click();
+  await expect(page.locator('#gameTitle')).toHaveText('Toca la campana');
+  await expect.poll(() => page.evaluate(() => globalThis.MundoMimoV2CatalogRouterBootstrap?.lastIntent)).toMatchObject({
+    id: 'toca-la-campana',
+    source: 'click',
+  });
+});
+
 test('V590 synthetic-click guard never swallows the first fast gameplay answer', async ({ page }) => {
   await ready(page, '4-5');
   const card = page.locator('[data-game="serie-de-numeros"]');
