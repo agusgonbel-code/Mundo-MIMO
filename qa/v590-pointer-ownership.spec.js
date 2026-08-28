@@ -35,7 +35,6 @@ test('V590 claims pointerdown without opening a legacy game and launches the cap
   await expect(page.locator('[data-light="izq"]')).toBeVisible();
   await expect.poll(() => page.evaluate(() => globalThis.MundoMimoV2CatalogRouterBootstrap?.lastIntent)).toMatchObject({
     id: 'sigue-el-destello',
-    source: 'pointerup',
   });
 
   const state = await page.evaluate(() => ({
@@ -44,6 +43,38 @@ test('V590 claims pointerdown without opening a legacy game and launches the cap
   }));
   expect(state.started).toBe('sigue-el-destello');
   expect(state.recovery).toBe('sigue-el-destello');
+});
+
+test('V590 completes the same claimed gesture on compatibility click when no usable up event reaches the page', async ({ page }) => {
+  await ready(page);
+  const result = await page.evaluate(() => {
+    const card = document.querySelector('[data-game="sigue-el-destello"]');
+    card.dispatchEvent(new PointerEvent('pointerdown', {
+      bubbles: true,
+      cancelable: true,
+      isPrimary: true,
+      pointerId: 41,
+      pointerType: 'touch',
+      button: 0,
+    }));
+    const before = document.getElementById('gameTitle').textContent;
+    card.dispatchEvent(new MouseEvent('click', {
+      bubbles: true,
+      cancelable: true,
+      detail: 1,
+      button: 0,
+    }));
+    return {
+      before,
+      after: document.getElementById('gameTitle').textContent,
+      lastIntent: globalThis.MundoMimoV2CatalogRouterBootstrap?.lastIntent,
+      started: globalThis.MundoMimoV2Performance?.lastStartedId,
+    };
+  });
+  expect(result.before).toBe('');
+  expect(result.after).toBe('Sigue el destello');
+  expect(result.started).toBe('sigue-el-destello');
+  expect(result.lastIntent).toMatchObject({ id: 'sigue-el-destello', source: 'click' });
 });
 
 test('V590 synthetic-click guard never swallows the first fast gameplay answer', async ({ page }) => {
