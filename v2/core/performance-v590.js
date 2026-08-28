@@ -59,18 +59,6 @@ function renderAges(){
 function renderGames(){
   const eligible=games.filter(g=>g.ages.includes(age)&&ownerFor(g.id));
   gameGrid.innerHTML=eligible.length?eligible.map(g=>`<button class="gameCard" type="button" data-game="${g.id}"><b>${g.name}</b><small>${g.skill} · ${g.mechanic}</small></button>`).join(''):'<p>No hay todavía juegos jugables para esta franja.</p>';
-  // The V590 grid is a fresh node, so legacy per-grid listeners and observers
-  // are already detached. Bind each visible card directly to the authoritative
-  // dispatcher instead of relying on delegated bubbling/capture. This removes
-  // event-order ambiguity with historical runtime layers while preserving the
-  // exact owner/handler for every one of the 150 games.
-  gameGrid.querySelectorAll('[data-game]').forEach(button=>{
-    button.onclick=event=>{
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      startGame(button.dataset.game);
-    };
-  });
 }
 function setAge(next){
   if(!P.ageBands.some(b=>b.id===next)||next===age)return;
@@ -85,6 +73,21 @@ ageBar.addEventListener('click',event=>{
   const button=event.target.closest('[data-age]');
   if(button)setAge(button.dataset.age);
 });
+
+// Route game activation from a stable root instead of storing handlers on
+// transient card nodes. Historical runtimes and later core modules may rebuild
+// descendants of the live grid; a document-capture router survives those DOM
+// replacements and stops the old per-runtime click graph before it can launch a
+// different layer. The exact owner still supplies the original game handler.
+function routeGameClick(event){
+  const button=event.target?.closest?.('[data-game]');
+  const liveGrid=document.getElementById('gameGrid');
+  if(!button||!liveGrid||!liveGrid.contains(button))return;
+  event.preventDefault();
+  event.stopPropagation();
+  startGame(button.dataset.game);
+}
+document.addEventListener('click',routeGameClick,true);
 
 syncLegacyAge();
 persistAge();
