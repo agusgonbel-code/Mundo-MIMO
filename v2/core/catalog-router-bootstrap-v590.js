@@ -1,15 +1,14 @@
 (()=>{'use strict';
 // V590 owns catalog activation before historical handlers. Pointer activation is
-// deliberately a two-phase gesture: pointerdown claims the card without opening the
-// stage; pointerup launches exactly the card captured at gesture start. Some WebKit
-// automation/native mouse bridges can finish the same physical gesture with mouseup
-// when no usable pointerup reaches the page, so mouseup is an alternate completion
-// event for the already-claimed gesture, never a retry: the first completion clears
-// ownership and every later completion becomes a no-op. We do not cancel pointerdown's
-// default action. After a successful completion we consume exactly the compatibility
-// click from that gesture. Any new pointerdown clears both stale ownership and that
-// marker before resolving its target, so a genuine child action can never be swallowed.
-// Keyboard/AT remains on the native click path (detail===0).
+// deliberately a claimed gesture: pointerdown captures the intended card without
+// opening the stage, and the first terminal event that can successfully launch that
+// captured id completes the gesture. Native/WebKit may expose pointerup, mouseup or
+// the compatibility click as the usable terminal event. This is one gesture state
+// machine, not a retry loop: successful completion clears ownership immediately and
+// any later compatibility click is consumed exactly once. Keeping the captured id
+// until success also makes launch immune to hit-test/scroll retargeting between down
+// and click. A new pointerdown invalidates all stale state, so a genuine gameplay
+// action can never be swallowed. Keyboard/AT remains on the native click path.
 let lastIntent=null;
 let pointerGesture=null;
 let pendingCompatibilityClick=false;
@@ -24,10 +23,11 @@ function routeId(id,event,source){
   if(!id)return false;
   const dispatcher=globalThis.MundoMimoV2Performance;
   if(!dispatcher?.startGame)return false;
+  const launched=dispatcher.startGame(id,{deferScroll:source!=='click'});
+  if(!launched)return false;
   lastIntent={id,source,at:performance.now()};
-  const launched=dispatcher.startGame(id,{deferScroll:source==='pointerup'});
-  if(launched)event.stopImmediatePropagation();
-  return launched;
+  event.stopImmediatePropagation();
+  return true;
 }
 function route(event,source){
   const button=cardFrom(event);
@@ -39,18 +39,18 @@ function matchingGesture(event){
   const samePointer=gesture.pointerId==null||event.pointerId==null||gesture.pointerId===event.pointerId;
   return samePointer?gesture:null;
 }
-function finishClaimedGesture(event){
+function finishClaimedGesture(event,source){
   if(event.isPrimary===false||event.button>0)return false;
   const gesture=matchingGesture(event);
   if(!gesture)return false;
+  const launched=routeId(gesture.id,event,source);
+  if(!launched)return false;
   pointerGesture=null;
-  const launched=routeId(gesture.id,event,'pointerup');
-  if(launched)pendingCompatibilityClick=true;
-  return launched;
+  pendingCompatibilityClick=source!=='click';
+  return true;
 }
 window.addEventListener('pointerdown',event=>{
-  // A new physical action invalidates all state belonging to a previous action,
-  // including a missing compatibility click from an already completed gesture.
+  // A new physical action invalidates every remnant of the previous action.
   pointerGesture=null;
   pendingCompatibilityClick=false;
   if(event.isPrimary===false||event.button>0)return;
@@ -59,8 +59,8 @@ window.addEventListener('pointerdown',event=>{
   pointerGesture={id:button.dataset.game,pointerId:event.pointerId};
   event.stopImmediatePropagation();
 },{capture:true});
-window.addEventListener('pointerup',event=>{finishClaimedGesture(event)},{capture:true});
-window.addEventListener('mouseup',event=>{finishClaimedGesture(event)},{capture:true});
+window.addEventListener('pointerup',event=>{finishClaimedGesture(event,'pointerup')},{capture:true});
+window.addEventListener('mouseup',event=>{finishClaimedGesture(event,'mouseup')},{capture:true});
 window.addEventListener('pointercancel',()=>{pointerGesture=null;pendingCompatibilityClick=false},{capture:true});
 window.addEventListener('click',event=>{
   if(event.detail===0){route(event,'click');return;}
@@ -70,7 +70,10 @@ window.addEventListener('click',event=>{
     event.stopImmediatePropagation();
     return;
   }
-  if(pointerGesture)return;
+  if(pointerGesture){
+    finishClaimedGesture(event,'click');
+    return;
+  }
   route(event,'click');
 },{capture:true});
 globalThis.MundoMimoV2CatalogRouterBootstrap=Object.freeze({version:590,get lastIntent(){return lastIntent;}});
