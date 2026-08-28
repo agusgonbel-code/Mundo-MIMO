@@ -69,23 +69,22 @@ function setAge(next){
 }
 ageBar.addEventListener('click',event=>{const button=event.target.closest('[data-age]');if(button)setAge(button.dataset.age)});
 
-// V590 has one activation owner: this listener on the live replacement grid.
-// Historical runtime listeners remain attached to the detached pre-V590 grid and
-// cannot compete with it. Pointer, mouse, keyboard and assistive activation all
-// converge on the browser's canonical click without mutating the DOM beforehand.
-// Historical runtimes scroll the stage synchronously from start(). During a real
-// WebKit activation that scroll can disturb the in-flight click sequence, so the
-// live router defers only that scroll until after the canonical click has finished.
-gameGrid.addEventListener('click',event=>{
+// One delegated activation owner survives live-grid replacement and age churn.
+// It is deliberately scoped to the *current* #gameGrid so controls in the stage,
+// parent zone and other shells can never be consumed by catalog routing.
+// Pointer/mouse/keyboard/assistive activation all converge on browser click.
+document.addEventListener('click',event=>{
   const button=event.target?.closest?.('[data-game]');
-  if(!button||!gameGrid.contains(button))return;
+  if(!button)return;
+  const liveGrid=document.getElementById('gameGrid');
+  if(!liveGrid||!liveGrid.contains(button))return;
   const id=button.dataset.game;
   if(startGame(id,{deferScroll:true})){
     globalThis.MundoMimoV2CatalogRouterBootstrap?.recordLaunch?.(id,'click');
     event.preventDefault();
     event.stopImmediatePropagation();
   }
-},{capture:true});
+},{capture:false});
 
 syncLegacyAge();persistAge();renderAges();renderGames();
 
