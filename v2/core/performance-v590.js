@@ -26,16 +26,30 @@ try{const saved=JSON.parse(localStorage.getItem(STATE_KEY)||'{}');if(P.ageBands.
 
 function persistAge(){try{const state=JSON.parse(localStorage.getItem(STATE_KEY)||'{}');state.age=age;localStorage.setItem(STATE_KEY,JSON.stringify(state))}catch{}}
 function ownerFor(id){return owners.get(id)||null}
-function startGame(id){
+function startGame(id,options={}){
   const owner=ownerFor(id);
   if(!owner||typeof owner.start!=='function')return false;
-  owner.start(id);
   const stage=document.getElementById('stage');
+  let deferredScroll=false;
+  let ownScroll;
+  if(options.deferScroll&&stage&&typeof stage.scrollIntoView==='function'){
+    ownScroll=Object.prototype.hasOwnProperty.call(stage,'scrollIntoView')?stage.scrollIntoView:undefined;
+    try{stage.scrollIntoView=()=>{deferredScroll=true}}catch{}
+  }
+  try{owner.start(id)}finally{
+    if(options.deferScroll&&stage){
+      try{
+        if(ownScroll===undefined)delete stage.scrollIntoView;
+        else stage.scrollIntoView=ownScroll;
+      }catch{}
+    }
+  }
   const title=document.getElementById('gameTitle');
   const launched=Boolean(stage&&!stage.hidden&&title?.textContent?.trim());
   if(launched){
     lastStartedId=id;
     document.dispatchEvent(new CustomEvent('mimo:game-started',{detail:{id,age}}));
+    if(deferredScroll)setTimeout(()=>stage?.scrollIntoView?.({block:'start'}),0);
   }
   return launched;
 }
