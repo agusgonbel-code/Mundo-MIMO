@@ -72,18 +72,18 @@ function setAge(next){
 }
 ageBar.addEventListener('click',event=>{const button=event.target.closest('[data-age]');if(button)setAge(button.dataset.age)});
 
-// The live V590 grid is the single normal activation boundary. A completed browser click
-// (mouse, touch or keyboard-generated) reaches this local listener after the target phase;
-// pointerdown/up alone cannot launch anything and no default action or propagation is blocked.
-// Keep per-event ownership in a WeakSet so the document fallback below can distinguish a
-// click already handled by the canonical live grid from a click on an externally cloned grid.
+// The live V590 grid owns only the completed browser click. Listen in capture phase so a
+// historical target/bubble listener cannot make a valid card activation disappear before it
+// reaches the canonical owner. We deliberately do not preventDefault/stopPropagation and do
+// not launch from pointerdown/up, so the same completed click continues normally to body and
+// document and the first gameplay interaction remains independent from catalog activation.
 const handledActivations=new WeakSet();
 gameGrid.addEventListener('click',event=>{
   const button=event.target?.closest?.('[data-game]');
   if(!button||!gameGrid.contains(button))return;
   handledActivations.add(event);
   startGame(button.dataset.game,{deferScroll:true});
-});
+},true);
 
 // Defensive fallback only for an externally replaced/cloned #gameGrid. DOM cloning does not
 // copy listeners, so such a grid intentionally has no local owner. The same completed click
