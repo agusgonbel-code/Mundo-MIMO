@@ -1,15 +1,11 @@
 (()=>{'use strict';
-// V590 owns catalog activation before historical handlers. Pointer activation is
-// deliberately a claimed gesture: down captures the intended card without opening
-// the stage, and the first terminal event that can successfully launch that captured
-// id completes the gesture. Some WebKit automation/input paths expose a mouse-only
-// sequence, so mousedown can claim the same state when no pointer claim exists.
-// This remains one gesture state machine, not a retry loop: successful completion
-// clears ownership immediately and any later compatibility click is consumed once.
-// A genuinely new down event invalidates stale state, so gameplay input is not eaten.
+// V590 owns catalog activation before historical handlers. A physical gesture is
+// claimed on down and completed once on the first matching terminal event. The
+// compatibility click guard is target-scoped: it can only consume the synthetic
+// click for the same catalog card, never a later gameplay or parent-zone action.
 let lastIntent=null;
 let pointerGesture=null;
-let pendingCompatibilityClick=false;
+let pendingCompatibilityId=null;
 function cardFrom(event){
   const grid=document.getElementById('gameGrid');
   if(!grid)return null;
@@ -21,7 +17,10 @@ function routeId(id,event,source){
   if(!id)return false;
   const dispatcher=globalThis.MundoMimoV2Performance;
   if(!dispatcher?.startGame)return false;
-  const launched=dispatcher.startGame(id,{deferScroll:source!=='click'});
+  // Historical owners are allowed to perform their normal synchronous scroll.
+  // The compatibility click is intercepted by id afterwards, so launch correctness
+  // no longer depends on temporarily replacing scrollIntoView.
+  const launched=dispatcher.startGame(id);
   if(!launched)return false;
   lastIntent={id,source,at:performance.now()};
   event.stopImmediatePropagation();
@@ -44,7 +43,7 @@ function finishClaimedGesture(event,source){
   const launched=routeId(gesture.id,event,source);
   if(!launched)return false;
   pointerGesture=null;
-  pendingCompatibilityClick=source!=='click';
+  pendingCompatibilityId=source==='click'?null:gesture.id;
   return true;
 }
 function claimFromDown(event,pointerId){
@@ -52,31 +51,39 @@ function claimFromDown(event,pointerId){
   const button=cardFrom(event);
   if(!button)return false;
   pointerGesture={id:button.dataset.game,pointerId};
+  pendingCompatibilityId=null;
   event.stopImmediatePropagation();
   return true;
 }
 window.addEventListener('pointerdown',event=>{
   pointerGesture=null;
-  pendingCompatibilityClick=false;
+  pendingCompatibilityId=null;
   claimFromDown(event,event.pointerId);
 },{capture:true});
 window.addEventListener('mousedown',event=>{
-  // Pointer-capable browsers normally emit this after pointerdown. Preserve that
-  // existing claim; mouse-only WebKit paths claim here instead.
+  // Pointer-capable browsers emit mousedown after pointerdown. Keep the existing
+  // ownership; mouse-only WebKit paths claim here instead.
   if(pointerGesture){event.stopImmediatePropagation();return;}
-  pendingCompatibilityClick=false;
   claimFromDown(event,null);
 },{capture:true});
 window.addEventListener('pointerup',event=>{finishClaimedGesture(event,'pointerup')},{capture:true});
 window.addEventListener('mouseup',event=>{finishClaimedGesture(event,'mouseup')},{capture:true});
-window.addEventListener('pointercancel',()=>{pointerGesture=null;pendingCompatibilityClick=false},{capture:true});
+window.addEventListener('pointercancel',()=>{pointerGesture=null;pendingCompatibilityId=null},{capture:true});
 window.addEventListener('click',event=>{
-  if(event.detail===0){route(event,'click');return;}
-  if(pendingCompatibilityClick){
-    pendingCompatibilityClick=false;
-    event.preventDefault();
-    event.stopImmediatePropagation();
+  if(event.detail===0){
+    pendingCompatibilityId=null;
+    route(event,'click');
     return;
+  }
+  if(pendingCompatibilityId){
+    const button=cardFrom(event);
+    const isCompatibilityClick=button?.dataset.game===pendingCompatibilityId;
+    pendingCompatibilityId=null;
+    if(isCompatibilityClick){
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      return;
+    }
   }
   if(pointerGesture){
     finishClaimedGesture(event,'click');
