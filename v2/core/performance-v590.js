@@ -23,6 +23,11 @@ const STATE_KEY='mimo-v2-runtime-200';
 const versions=[200,210,220,230,240,250,260,270,280,290,300,310,320,330,340,350,360,370,380,390,400,410,420,430];
 const runtimes=versions.map(v=>v===200?Base:globalThis[`MundoMimoV2RuntimeV${v}`]).filter(Boolean);
 const games=R.allGames();
+const owners=new Map();
+for(const id of Base.implemented||[])owners.set(id,Base);
+for(const runtime of runtimes){
+  for(const id of runtime.extra||[])owners.set(id,runtime);
+}
 let age='2-3';
 try{
   const saved=JSON.parse(localStorage.getItem(STATE_KEY)||'{}');
@@ -36,12 +41,12 @@ function persistAge(){
     localStorage.setItem(STATE_KEY,JSON.stringify(state));
   }catch{}
 }
-function ownerFor(id){
-  for(let i=runtimes.length-1;i>=0;i--){
-    const rt=runtimes[i];
-    if(Array.isArray(rt.extra)&&rt.extra.includes(id))return rt;
-  }
-  return Base.implemented.includes(id)?Base:null;
+function ownerFor(id){return owners.get(id)||null}
+function startGame(id){
+  const owner=ownerFor(id);
+  if(!owner||typeof owner.start!=='function')return false;
+  owner.start(id);
+  return true;
 }
 function syncLegacyAge(){
   // Detached nodes are still read by older handlers when persisting a result.
@@ -70,9 +75,7 @@ ageBar.addEventListener('click',event=>{
 });
 gameGrid.addEventListener('click',event=>{
   const button=event.target.closest('[data-game]');
-  if(!button)return;
-  const owner=ownerFor(button.dataset.game);
-  owner?.start(button.dataset.game);
+  if(button)startGame(button.dataset.game);
 });
 
 syncLegacyAge();
@@ -80,5 +83,5 @@ persistAge();
 renderAges();
 renderGames();
 
-globalThis.MundoMimoV2Performance=Object.freeze({version:590,setAge,get age(){return age;},gameCount:games.length});
+globalThis.MundoMimoV2Performance=Object.freeze({version:590,setAge,startGame,ownerFor,get age(){return age;},gameCount:games.length,ownedGameCount:owners.size});
 })();
