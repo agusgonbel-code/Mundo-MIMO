@@ -8,10 +8,8 @@ const oldAgeBar=document.getElementById('ageBar');
 const inheritedGrid=document.getElementById('gameGrid');
 if(!oldAgeBar||!inheritedGrid)throw new Error('Mundo Mimo V590 shell missing');
 
-// V590 is the final catalog shell. Replace the inherited grid exactly once so the
-// incremental runtime listeners/observers cannot compete for a completed activation.
-// This node has one delegated click owner below; the click is never cancelled and keeps
-// bubbling to analytics, accessibility and recovery observers.
+// V590 is the final catalog shell. Replace the inherited nodes exactly once so legacy
+// incremental listeners/observers cannot compete with the canonical catalog owner.
 const ageBar=oldAgeBar.cloneNode(false);
 oldAgeBar.replaceWith(ageBar);
 const gameGrid=inheritedGrid.cloneNode(false);
@@ -64,9 +62,16 @@ function syncLegacyAge(){
   if(typeof Base.setAge==='function')Base.setAge(age);
 }
 function renderAges(){ageBar.innerHTML=P.ageBands.map(b=>`<button type="button" data-age="${b.id}" aria-pressed="${b.id===age}">${b.label}</button>`).join('')}
+function bindCanonicalCards(){
+  gameGrid.querySelectorAll('[data-game]').forEach(button=>{
+    button.onclick=()=>startGame(button.dataset.game,{deferScroll:true});
+    button.dataset.v590Owner='canonical';
+  });
+}
 function renderGames(){
   const eligible=games.filter(g=>g.ages.includes(age)&&ownerFor(g.id));
   gameGrid.innerHTML=eligible.length?eligible.map(g=>`<button class="gameCard" type="button" data-game="${g.id}"><b>${g.name}</b><small>${g.skill} · ${g.mechanic}</small></button>`).join(''):'<p>No hay todavía juegos jugables para esta franja.</p>';
+  bindCanonicalCards();
 }
 function setAge(next){
   if(!P.ageBands.some(b=>b.id===next)||next===age)return;
@@ -75,22 +80,17 @@ function setAge(next){
 }
 ageBar.addEventListener('click',event=>{const button=event.target.closest('[data-age]');if(button)setAge(button.dataset.age)});
 
-// The canonical live grid owns every catalog activation. Runtime starts happen on the
-// completed browser click, so pointer down/up alone cannot mutate the game. No preventDefault
-// or propagation cancellation is used. Keyboard activation reaches this same click path.
-gameGrid.addEventListener('click',event=>{
-  const button=event.target?.closest?.('[data-game]');
-  if(!button||!gameGrid.contains(button))return;
-  startGame(button.dataset.game,{deferScroll:true});
-});
-
-// Defensive fallback for a third-party/runtime replacement of the whole live grid. It is
-// deliberately document-delegated and ignores the canonical node to guarantee one launch.
+// Normal activation is bound directly to each freshly rendered card. This survives age
+// rebuilds without depending on a parent bubbling boundary, and native keyboard activation
+// reaches the exact same click handler. Pointer down/up alone still cannot mutate game DOM.
+// A defensive document fallback handles only externally cloned/replaced cards, which do not
+// copy JS onclick properties. It never cancels the event or changes browser default action.
 document.addEventListener('click',event=>{
   const button=event.target?.closest?.('[data-game]');
   if(!button)return;
   const liveGrid=document.getElementById('gameGrid');
-  if(!liveGrid||liveGrid===canonicalGrid||!liveGrid.contains(button))return;
+  if(!liveGrid||!liveGrid.contains(button))return;
+  if(button.dataset.v590Owner==='canonical'&&typeof button.onclick==='function')return;
   startGame(button.dataset.game,{deferScroll:true});
 });
 
