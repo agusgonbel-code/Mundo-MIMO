@@ -57,3 +57,20 @@ test('V590 catalog routing does not consume the completed browser click', async 
     id: 'sigue-el-destello', source: 'click'
   });
 });
+
+test('V590 keeps one catalog owner and emits one launch event per completed activation', async ({ page }) => {
+  await page.goto('/v2/app-v200.html', { waitUntil: 'load' });
+  await page.waitForFunction(() => globalThis.MundoMimoV2Performance?.version === 590);
+  await page.locator('[data-age="1-2"]').click();
+  await page.evaluate(() => {
+    globalThis.__mimoLaunchProbe = 0;
+    document.addEventListener('mimo:game-started', event => {
+      if (event.detail?.id === 'sigue-el-destello') globalThis.__mimoLaunchProbe += 1;
+    });
+  });
+  await page.locator('[data-game="sigue-el-destello"]').click();
+  await expect(page.locator('#gameTitle')).toHaveText('Sigue el destello');
+  await expect(page.locator('[data-light="izq"]')).toBeVisible();
+  expect(await page.evaluate(() => globalThis.__mimoLaunchProbe)).toBe(1);
+  expect(await page.evaluate(() => globalThis.MundoMimoV2Performance.lastStartedId)).toBe('sigue-el-destello');
+});
