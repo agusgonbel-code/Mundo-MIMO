@@ -36,23 +36,26 @@ test('V590 delegated owner survives replacement of the live grid node', async ({
   });
 });
 
-test('V590 catalog routing does not consume the completed browser click', async ({ page }) => {
+test('V590 catalog routing preserves the completed browser click and default action', async ({ page }) => {
   await page.goto('/v2/app-v200.html', { waitUntil: 'load' });
   await page.waitForFunction(() => globalThis.MundoMimoV2Performance?.version === 590);
   await page.locator('[data-age="1-2"]').click();
   await page.evaluate(() => {
     globalThis.__mimoBubbleProbe = [];
     document.body.addEventListener('click', event => {
-      if (event.target?.closest?.('[data-game="sigue-el-destello"]')) globalThis.__mimoBubbleProbe.push('body');
+      if (event.target?.closest?.('[data-game="sigue-el-destello"]')) globalThis.__mimoBubbleProbe.push({ owner: 'body', defaultPrevented: event.defaultPrevented });
     }, { once: true });
     document.addEventListener('click', event => {
-      if (event.target?.closest?.('[data-game="sigue-el-destello"]')) globalThis.__mimoBubbleProbe.push('document');
+      if (event.target?.closest?.('[data-game="sigue-el-destello"]')) globalThis.__mimoBubbleProbe.push({ owner: 'document', defaultPrevented: event.defaultPrevented });
     }, { once: true });
   });
   await page.locator('[data-game="sigue-el-destello"]').click();
   await expect(page.locator('#gameTitle')).toHaveText('Sigue el destello');
   await expect(page.locator('[data-light="izq"]')).toBeVisible();
-  expect(await page.evaluate(() => globalThis.__mimoBubbleProbe)).toEqual(['body', 'document']);
+  expect(await page.evaluate(() => globalThis.__mimoBubbleProbe)).toEqual([
+    { owner: 'body', defaultPrevented: false },
+    { owner: 'document', defaultPrevented: false }
+  ]);
   await expect.poll(() => page.evaluate(() => globalThis.MundoMimoV2CatalogRouterBootstrap?.lastIntent)).toMatchObject({
     id: 'sigue-el-destello', source: 'click'
   });
