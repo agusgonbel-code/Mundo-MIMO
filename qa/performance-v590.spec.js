@@ -140,6 +140,24 @@ test('V590: unified dispatcher launches games owned by historical runtimes', asy
   expect(owner).toBe(370);
 });
 
+test('V590: completed pointer activation launches once and keyboard activation still works', async ({ page }) => {
+  await page.goto(URL, { waitUntil: 'load' });
+  await waitForFullRuntime(page);
+  await page.locator('[data-age="1-2"]').click();
+  const card = page.locator('[data-game="sigue-el-destello"]');
+  await card.click();
+  await expect(page.locator('#gameTitle')).toHaveText('Sigue el destello');
+  await expect.poll(() => page.evaluate(() => globalThis.MundoMimoV2CatalogRouterBootstrap?.lastIntent?.source)).toBe('pointerup');
+  const active = await page.evaluate(() => JSON.parse(localStorage.getItem('mimo-v2-recovery-v570') || '{}').activeGame || null);
+  expect(active).toBe('sigue-el-destello');
+
+  await page.locator('#closeGame').click();
+  await page.locator('[data-game="sigue-el-destello"]').focus();
+  await page.keyboard.press('Enter');
+  await expect(page.locator('#gameTitle')).toHaveText('Sigue el destello');
+  await expect.poll(() => page.evaluate(() => globalThis.MundoMimoV2CatalogRouterBootstrap?.lastIntent?.source)).toBe('click');
+});
+
 test('V590: historical game routing survives replacement of transient card nodes', async ({ page }) => {
   await page.goto(URL, { waitUntil: 'load' });
   await waitForFullRuntime(page);
