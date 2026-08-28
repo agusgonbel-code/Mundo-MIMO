@@ -148,7 +148,7 @@ test('V590: completed pointer activation launches once and keyboard activation s
   await card.click();
   await expect(page.locator('#gameTitle')).toHaveText('Sigue el destello');
   await expect.poll(() => page.evaluate(() => globalThis.MundoMimoV2CatalogRouterBootstrap?.lastIntent?.source)).toBe('pointerup');
-  const active = await page.evaluate(() => JSON.parse(localStorage.getItem('mimo-v2-recovery-v570') || '{}').activeGame || null);
+  const active = await page.evaluate(() => JSON.parse(localStorage.getItem('mimo-v2-recovery-570') || '{}').activeGame || null);
   expect(active).toBe('sigue-el-destello');
 
   await page.locator('#closeGame').click();
