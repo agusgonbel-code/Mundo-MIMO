@@ -29,11 +29,15 @@ function claim(event,pointerId){
   claimedGesture={id:button.dataset.game,pointerId};
   return true;
 }
-function matchesClaim(event,button){
+function matchesClaim(button){
   const claim=claimedGesture;
   if(!claim)return true;
-  const samePointer=claim.pointerId==null||event.pointerId==null||claim.pointerId===event.pointerId;
-  return samePointer&&claim.id===button.dataset.game;
+  // A click is the canonical activation boundary. WebKit is allowed to normalize
+  // or omit PointerEvent pointerId when synthesizing the terminal click, so a
+  // pointer-id equality check here can reject the legitimate click that follows
+  // the very pointerdown we observed. Gesture continuity is safely tied to the
+  // exact live card id; a different card can never consume the claim.
+  return claim.id===button.dataset.game;
 }
 window.addEventListener('pointerdown',event=>{
   claimedGesture=null;
@@ -49,8 +53,9 @@ window.addEventListener('click',event=>{
   const button=cardFrom(event);
   if(!button)return;
   // Keyboard/assistive activation (detail=0) is canonical even without a claim.
-  // Physical clicks must either match the claimed card or arrive without a claim.
-  if(event.detail!==0&&!matchesClaim(event,button)){
+  // Physical clicks must match the card claimed at pointer/mouse down when a
+  // claim exists. The click's pointerId is deliberately not part of this match.
+  if(event.detail!==0&&!matchesClaim(button)){
     claimedGesture=null;
     return;
   }
