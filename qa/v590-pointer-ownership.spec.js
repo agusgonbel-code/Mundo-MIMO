@@ -4,7 +4,11 @@ const URL = '/v2/app-v200.html';
 
 async function ready(page) {
   await page.goto(URL, { waitUntil: 'load' });
-  await page.waitForFunction(() => globalThis.MundoMimoV2RuntimeV430?.implemented?.length === 150);
+  await page.waitForFunction(() =>
+    globalThis.MundoMimoV2RuntimeV430?.implemented?.length === 150 &&
+    typeof globalThis.MundoMimoV2Performance?.startGame === 'function' &&
+    globalThis.MundoMimoV2CatalogRouterBootstrap?.version === 590
+  );
   await page.locator('[data-age="1-2"]').click();
   await expect(page.locator('[data-game="sigue-el-destello"]')).toBeVisible();
 }
