@@ -10,7 +10,10 @@ const validGame=id=>typeof id==='string'&&games().some(game=>game.id===id);
 function remember(partial){const prev=read();write({...prev,...partial,updatedAt:Date.now()})}
 function clearActive(){const prev=read();delete prev.activeGame;delete prev.startedAt;write({...prev,updatedAt:Date.now()})}
 ageBar.addEventListener('click',event=>{const button=event.target.closest('[data-age]');if(!button)return;remember({age:button.dataset.age})});
-gameGrid.addEventListener('click',event=>{const button=event.target.closest('[data-game]');if(!button)return;remember({age:currentAge(),activeGame:button.dataset.game,startedAt:Date.now()})},{capture:true});
+// Persist only launches that the canonical router has actually verified. This
+// avoids coupling recovery to raw click propagation and prevents failed/legacy
+// handlers from being recorded as resumable sessions.
+document.addEventListener('mimo:game-started',event=>{const id=event.detail?.id;if(!validGame(id))return;remember({age:event.detail?.age||currentAge(),activeGame:id,startedAt:Date.now()})});
 closeGame.addEventListener('click',clearActive,{capture:true});
 function startGame(id){
  const dispatcher=globalThis.MundoMimoV2Performance;
