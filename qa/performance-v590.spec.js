@@ -140,6 +140,22 @@ test('V590: unified dispatcher launches games owned by historical runtimes', asy
   expect(owner).toBe(370);
 });
 
+test('V590: historical game routing survives replacement of transient card nodes', async ({ page }) => {
+  await page.goto(URL, { waitUntil: 'load' });
+  await waitForFullRuntime(page);
+  await page.locator('[data-age="1-2"]').click();
+  await page.evaluate(() => {
+    const card=document.querySelector('[data-game="sigue-el-destello"]');
+    if (!card) throw new Error('historical card missing');
+    card.replaceWith(card.cloneNode(true));
+  });
+  const rebuilt = page.locator('[data-game="sigue-el-destello"]');
+  await expect(rebuilt).toBeVisible();
+  await rebuilt.click();
+  await expect(page.locator('#gameTitle')).toHaveText('Sigue el destello');
+  await expect(page.locator('[data-light="izq"]')).toBeVisible();
+});
+
 test('V590: offscreen cards use rendering containment without breaking interaction', async ({ page }) => {
   await page.goto(URL, { waitUntil: 'load' });
   await waitForFullRuntime(page);
