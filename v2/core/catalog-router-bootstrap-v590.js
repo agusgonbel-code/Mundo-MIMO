@@ -1,14 +1,12 @@
 (()=>{'use strict';
 // V590 owns catalog activation before historical handlers. Pointer activation is
-// deliberately a claimed gesture: pointerdown captures the intended card without
-// opening the stage, and the first terminal event that can successfully launch that
-// captured id completes the gesture. Native/WebKit may expose pointerup, mouseup or
-// the compatibility click as the usable terminal event. This is one gesture state
-// machine, not a retry loop: successful completion clears ownership immediately and
-// any later compatibility click is consumed exactly once. Keeping the captured id
-// until success also makes launch immune to hit-test/scroll retargeting between down
-// and click. A new pointerdown invalidates all stale state, so a genuine gameplay
-// action can never be swallowed. Keyboard/AT remains on the native click path.
+// deliberately a claimed gesture: down captures the intended card without opening
+// the stage, and the first terminal event that can successfully launch that captured
+// id completes the gesture. Some WebKit automation/input paths expose a mouse-only
+// sequence, so mousedown can claim the same state when no pointer claim exists.
+// This remains one gesture state machine, not a retry loop: successful completion
+// clears ownership immediately and any later compatibility click is consumed once.
+// A genuinely new down event invalidates stale state, so gameplay input is not eaten.
 let lastIntent=null;
 let pointerGesture=null;
 let pendingCompatibilityClick=false;
@@ -49,15 +47,25 @@ function finishClaimedGesture(event,source){
   pendingCompatibilityClick=source!=='click';
   return true;
 }
+function claimFromDown(event,pointerId){
+  if(event.isPrimary===false||event.button>0)return false;
+  const button=cardFrom(event);
+  if(!button)return false;
+  pointerGesture={id:button.dataset.game,pointerId};
+  event.stopImmediatePropagation();
+  return true;
+}
 window.addEventListener('pointerdown',event=>{
-  // A new physical action invalidates every remnant of the previous action.
   pointerGesture=null;
   pendingCompatibilityClick=false;
-  if(event.isPrimary===false||event.button>0)return;
-  const button=cardFrom(event);
-  if(!button)return;
-  pointerGesture={id:button.dataset.game,pointerId:event.pointerId};
-  event.stopImmediatePropagation();
+  claimFromDown(event,event.pointerId);
+},{capture:true});
+window.addEventListener('mousedown',event=>{
+  // Pointer-capable browsers normally emit this after pointerdown. Preserve that
+  // existing claim; mouse-only WebKit paths claim here instead.
+  if(pointerGesture){event.stopImmediatePropagation();return;}
+  pendingCompatibilityClick=false;
+  claimFromDown(event,null);
 },{capture:true});
 window.addEventListener('pointerup',event=>{finishClaimedGesture(event,'pointerup')},{capture:true});
 window.addEventListener('mouseup',event=>{finishClaimedGesture(event,'mouseup')},{capture:true});
