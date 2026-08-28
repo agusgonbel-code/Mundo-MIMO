@@ -80,15 +80,15 @@ ageBar.addEventListener('click',event=>{
   if(button)setAge(button.dataset.age);
 });
 
-// V590 owns the live catalog grid after detaching every legacy expansion grid.
-// Route from that stable surface, synchronously and in capture phase, so the
-// exact historical owner has opened the stage before any later observer (for
-// example Recovery V570) records the same user activation. Delegation on the
-// grid also survives innerHTML renders and replacement/cloning of card nodes.
+// V590 is the only router for the live catalog grid. Once a launch has been
+// verified, stop the original click before historical target/bubble handlers can
+// run against detached navigation state and overwrite the stage. Recovery and
+// other observers subscribe to the semantic mimo:game-started event emitted by
+// startGame(), so successful launches remain observable without sharing routing.
 gameGrid.addEventListener('click',event=>{
   const button=event.target?.closest?.('[data-game]');
   if(!button||!gameGrid.contains(button))return;
-  startGame(button.dataset.game);
+  if(startGame(button.dataset.game))event.stopImmediatePropagation();
 },{capture:true});
 
 syncLegacyAge();
