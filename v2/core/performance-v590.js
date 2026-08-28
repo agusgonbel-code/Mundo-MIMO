@@ -73,11 +73,14 @@ ageBar.addEventListener('click',event=>{const button=event.target.closest('[data
 // Historical runtime listeners remain attached to the detached pre-V590 grid and
 // cannot compete with it. Pointer, mouse, keyboard and assistive activation all
 // converge on the browser's canonical click without mutating the DOM beforehand.
+// Historical runtimes scroll the stage synchronously from start(). During a real
+// WebKit activation that scroll can disturb the in-flight click sequence, so the
+// live router defers only that scroll until after the canonical click has finished.
 gameGrid.addEventListener('click',event=>{
   const button=event.target?.closest?.('[data-game]');
   if(!button||!gameGrid.contains(button))return;
   const id=button.dataset.game;
-  if(startGame(id)){
+  if(startGame(id,{deferScroll:true})){
     globalThis.MundoMimoV2CatalogRouterBootstrap?.recordLaunch?.(id,'click');
     event.preventDefault();
     event.stopImmediatePropagation();
