@@ -98,6 +98,35 @@ test('V590: centralized age navigation persists across reload without reviving o
   expect(after.unique).toBe(after.cards);
 });
 
+test('V590: dispatcher API reaches the exact historical owner before UI event routing', async ({ page }) => {
+  await page.goto(URL, { waitUntil: 'load' });
+  await waitForFullRuntime(page);
+  const probe = await page.evaluate(() => {
+    const id='sigue-el-destello';
+    const dispatcher=globalThis.MundoMimoV2Performance;
+    const owner=dispatcher?.ownerFor(id);
+    const inOwnerExtra=Boolean(owner?.extra?.includes(id));
+    const inOwnerCatalog=Boolean(globalThis.MundoMimoV2ExpansionV370?.merged?.some(g=>g.id===id));
+    const returned=dispatcher?.startGame(id);
+    return {
+      ownerVersion:owner?.version||null,
+      inOwnerExtra,
+      inOwnerCatalog,
+      returned:Boolean(returned),
+      title:document.getElementById('gameTitle')?.textContent||'',
+      stageHidden:Boolean(document.getElementById('stage')?.hidden),
+      hasInteraction:Boolean(document.querySelector('[data-light="izq"]')),
+    };
+  });
+  expect(probe.ownerVersion).toBe(370);
+  expect(probe.inOwnerExtra).toBeTruthy();
+  expect(probe.inOwnerCatalog).toBeTruthy();
+  expect(probe.returned).toBeTruthy();
+  expect(probe.title).toBe('Sigue el destello');
+  expect(probe.stageHidden).toBeFalsy();
+  expect(probe.hasInteraction).toBeTruthy();
+});
+
 test('V590: unified dispatcher launches games owned by historical runtimes', async ({ page }) => {
   await page.goto(URL, { waitUntil: 'load' });
   await waitForFullRuntime(page);
