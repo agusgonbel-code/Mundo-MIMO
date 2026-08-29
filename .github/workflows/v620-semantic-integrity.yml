@@ -1,0 +1,41 @@
+name: Mundo Mimo V620 Semantic Integrity QA
+
+on:
+  pull_request:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+concurrency:
+  group: mundo-mimo-v620-semantic-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  semantic-integrity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Playwright WebKit
+        run: |
+          npm install --no-save @playwright/test
+          npx playwright install --with-deps webkit
+      - name: Start Mundo Mimo V2
+        run: python3 -m http.server 4173 >/tmp/mimo-v620-http.log 2>&1 &
+      - name: Certify semantic differentiation and validated challenge contracts
+        env:
+          PLAYWRIGHT_BASE_URL: http://127.0.0.1:4173
+        run: npx playwright test qa/semantic-integrity-v620.spec.js --config=qa/playwright.config.js --project=webkit --reporter=line
+      - name: Upload diagnostics on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mundo-mimo-v620-semantic-diagnostics
+          path: |
+            test-results/
+            /tmp/mimo-v620-http.log
+          if-no-files-found: warn
+          retention-days: 14
