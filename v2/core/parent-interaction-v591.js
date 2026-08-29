@@ -10,5 +10,5 @@ if(!Parent||!submit)throw new Error('Mundo Mimo V591 parent interaction dependen
 // This guard fails loudly if the validated V520 ownership ever disappears.
 if(typeof submit.onclick!=='function')throw new Error('Mundo Mimo V591 parent submit owner missing');
 
-globalThis.MundoMimoV2ParentInteractionV591=Object.freeze({version:592,owner:'v520-direct'});
+globalThis.MundoMimoV2ParentInteractionV591=Object.freeze({version:591,owner:'v520-direct'});
 })();
