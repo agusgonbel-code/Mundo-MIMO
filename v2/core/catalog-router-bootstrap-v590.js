@@ -1,11 +1,11 @@
 (()=>{'use strict';
 // V593 is loaded before every historical runtime. Capture records only completed
 // catalog-game click intents before any later listener can stop propagation.
-// Finalization is queued as a microtask: it runs only after the synchronous click
-// dispatch has completed, but does not depend on a future animation frame. V590
-// already replaces ageBar/gameGrid with listener-free canonical nodes, so there is
-// no reason to postpone a completed activation to the next rendering frame.
-// No timers, retries, preventDefault or propagation suppression are used here.
+// Finalization is posted to the browser task queue with MessageChannel. A microtask
+// is too early for this job in WebKit because later listeners from the same click
+// dispatch may still mutate/clear the historical stage after a capture listener has
+// queued it. A posted task is a real post-dispatch boundary without timers, retries,
+// preventDefault or propagation suppression.
 //
 // Adult-gate controls are deliberately NOT routed here. V520 owns their submit
 // target directly; routing the same click through this queue would create a second
@@ -14,6 +14,7 @@ let lastIntent=null;
 const pending=[];
 let sequence=0;
 let flushScheduled=false;
+const channel=new MessageChannel();
 function flush(){
   flushScheduled=false;
   const batch=pending.splice(0,pending.length);
@@ -22,10 +23,11 @@ function flush(){
   }
   if(pending.length)scheduleFlush();
 }
+channel.port1.onmessage=flush;
 function scheduleFlush(){
   if(flushScheduled)return;
   flushScheduled=true;
-  queueMicrotask(flush);
+  channel.port2.postMessage(0);
 }
 function recordLaunch(id,source='click'){
   if(!id)return false;
