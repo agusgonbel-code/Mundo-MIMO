@@ -1,22 +1,32 @@
 (()=>{'use strict';
-// V590 is loaded before every historical runtime. Capture records only completed
+// V594 is loaded before every historical runtime. Capture records only completed
 // catalog-game click intents before any later listener can stop propagation.
-// Finalization is posted through MessageChannel so it runs as a task after the whole
-// synchronous click dispatch has finished; this avoids microtask interleaving between
-// listeners without timers, retries, preventDefault or propagation suppression.
+// Finalization is scheduled once on the next animation frame so every synchronous
+// click listener has finished before the canonical game mutates the stage. This also
+// follows the same WebKit frame lifecycle as trusted iPhone/iPad pointer activation,
+// avoiding the MessageChannel divergence observed in CI. No timers, retries,
+// preventDefault or propagation suppression are used.
 //
-// Adult-gate controls are deliberately NOT routed here. V520/V591 own their submit
+// Adult-gate controls are deliberately NOT routed here. V520 owns their submit
 // target directly; routing the same click through this queue would create a second
 // activation path and can overwrite the truthful invalid-answer state.
 let lastIntent=null;
 const pending=[];
 let sequence=0;
-const channel=new MessageChannel();
-channel.port1.onmessage=()=>{
-  const intent=pending.shift();
-  if(!intent)return;
-  if(intent.kind==='game')globalThis.MundoMimoV2Performance?.startGame?.(intent.id,{deferScroll:true,source:'click'});
-};
+let frameScheduled=false;
+function flush(){
+  frameScheduled=false;
+  const batch=pending.splice(0,pending.length);
+  for(const intent of batch){
+    if(intent.kind==='game')globalThis.MundoMimoV2Performance?.startGame?.(intent.id,{deferScroll:true,source:'click'});
+  }
+  if(pending.length)scheduleFlush();
+}
+function scheduleFlush(){
+  if(frameScheduled)return;
+  frameScheduled=true;
+  requestAnimationFrame(flush);
+}
 function recordLaunch(id,source='click'){
   if(!id)return false;
   lastIntent={id,source,at:performance.now()};
@@ -24,7 +34,7 @@ function recordLaunch(id,source='click'){
 }
 function queueIntent(intent){
   pending.push({...intent,sequence:++sequence});
-  channel.port2.postMessage(sequence);
+  scheduleFlush();
 }
 window.addEventListener('click',event=>{
   const target=event.target;
@@ -33,9 +43,10 @@ window.addEventListener('click',event=>{
 },true);
 
 globalThis.MundoMimoV2CatalogRouterBootstrap=Object.freeze({
-  version:593,
+  version:594,
   recordLaunch,
   get lastIntent(){return lastIntent;},
-  get pendingCount(){return pending.length;}
+  get pendingCount(){return pending.length;},
+  get frameScheduled(){return frameScheduled;}
 });
 })();
