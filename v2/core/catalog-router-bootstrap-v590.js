@@ -1,14 +1,16 @@
 (()=>{'use strict';
-// V594 keeps the historical runtimes as game owners but moves canonical activation
-// to the actual game-card target. Mutating the stage from a window capture listener
-// proved unreliable in WebKit because it changed the live UI before the physical
-// click had reached its target. Each live card now owns one DOM0 click handler that
-// delegates to V590. A document observer rebinds cards created or cloned later.
-// No retry, preventDefault, stopPropagation, timer or scheduler is used to launch.
+// V595 keeps the historical runtimes as game owners but makes canonical activation
+// independent from the mutable DOM0 `onclick` slot used by historical runtimes.
+// Every live card gets one target-side EventTarget listener, tracked by an internal
+// symbol. This prevents later DOM0 assignment from replacing canonical ownership.
+// A document observer rebinds cards created or cloned later; renderGames still binds
+// canonical cards synchronously before yielding. No retry, preventDefault,
+// stopPropagation, timer or scheduler is used to launch.
 let lastIntent=null;
 let sequence=0;
 let launchCount=0;
-const BOUND=Symbol('mimo-v594-bound');
+const BOUND=Symbol('mimo-v595-bound');
+const HANDLER=Symbol('mimo-v595-handler');
 
 function recordLaunch(id,source='click'){
   if(!id)return false;
@@ -26,9 +28,16 @@ function activate(id,source='click'){
 
 function bindCard(card){
   if(!card?.dataset?.game||card[BOUND])return false;
+  const handler=()=>activate(card.dataset.game,'click');
+  card.addEventListener('click',handler);
+  card[HANDLER]=handler;
   card[BOUND]=true;
-  card.onclick=()=>activate(card.dataset.game,'click');
+  card.dataset.v595Owner='canonical';
   return true;
+}
+
+function isBound(card){
+  return Boolean(card?.[BOUND]&&typeof card?.[HANDLER]==='function');
 }
 
 function bind(root=document){
@@ -43,10 +52,11 @@ observer.observe(document.documentElement,{subtree:true,childList:true});
 bind(document);
 
 globalThis.MundoMimoV2CatalogRouterBootstrap=Object.freeze({
-  version:594,
+  version:595,
   recordLaunch,
   activate,
   bind,
+  isBound,
   get lastIntent(){return lastIntent;},
   get pendingCount(){return 0;},
   get flushScheduled(){return false;},
