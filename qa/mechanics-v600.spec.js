@@ -2,7 +2,9 @@ const {test,expect}=require('@playwright/test');
 
 async function boot(page){
   await page.goto('/v2/app-v200.html');
-  await page.waitForFunction(()=>Boolean(window.MundoMimoV2MechanicsV600)&&typeof window.MundoMimoV2Performance?.startGame==='function'&&window.MundoMimoV2CatalogRouterBootstrap?.version===594);
+  await page.waitForFunction(()=>Boolean(window.MundoMimoV2ExpansionV430)&&Boolean(window.MundoMimoV2RuntimeV430)&&typeof window.MundoMimoV2Performance?.startGame==='function'&&window.MundoMimoV2CatalogRouterBootstrap?.version===594);
+  await page.addScriptTag({url:'/v2/core/mechanics-v600.js'});
+  await page.waitForFunction(()=>Boolean(window.MundoMimoV2MechanicsV600));
 }
 
 test('V600 ties the final 150-game catalog to at least 40 declared mechanics and runtime owners',async({page})=>{
