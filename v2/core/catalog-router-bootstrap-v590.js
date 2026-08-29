@@ -29,7 +29,7 @@ window.addEventListener('click',event=>{
 },true);
 
 globalThis.MundoMimoV2CatalogRouterBootstrap=Object.freeze({
-  version:594,
+  version:593,
   recordLaunch,
   activate,
   get lastIntent(){return lastIntent;},
