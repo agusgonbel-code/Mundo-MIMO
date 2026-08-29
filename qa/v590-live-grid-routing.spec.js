@@ -78,7 +78,7 @@ test('V590 keeps one catalog owner and emits one launch event per completed acti
   expect(await page.evaluate(() => globalThis.MundoMimoV2Performance.lastStartedId)).toBe('sigue-el-destello');
 });
 
-test('V590 capture owner survives a target listener that stops bubbling', async ({ page }) => {
+test('V590 target owner survives a later target listener that stops bubbling', async ({ page }) => {
   await page.goto('/v2/app-v200.html', { waitUntil: 'load' });
   await page.waitForFunction(() => globalThis.MundoMimoV2Performance?.version === 590);
   await page.locator('[data-age="1-2"]').click();
@@ -92,7 +92,7 @@ test('V590 capture owner survives a target listener that stops bubbling', async 
   expect(await page.evaluate(() => globalThis.MundoMimoV2Performance.lastStartedId)).toBe('sigue-el-destello');
 });
 
-test('V590 canonical capture owner is established before target-side effects and remains exactly once', async ({ page }) => {
+test('V590 canonical target owner is established before later target-side effects and remains exactly once', async ({ page }) => {
   await page.goto('/v2/app-v200.html', { waitUntil: 'load' });
   await page.waitForFunction(() => globalThis.MundoMimoV2Performance?.version === 590);
   await page.locator('[data-age="1-2"]').click();
@@ -125,9 +125,9 @@ test('V590 canonical capture owner is established before target-side effects and
   await expect(page.locator('[data-light="izq"]')).toBeVisible();
 });
 
-test('V593 preserves every rapid completed activation instead of overwriting the pending intent', async ({ page }) => {
+test('V594 preserves every rapid completed activation without a pending queue', async ({ page }) => {
   await page.goto('/v2/app-v200.html', { waitUntil: 'load' });
-  await page.waitForFunction(() => globalThis.MundoMimoV2CatalogRouterBootstrap?.version === 593 && globalThis.MundoMimoV2Performance?.version === 590);
+  await page.waitForFunction(() => globalThis.MundoMimoV2CatalogRouterBootstrap?.version === 594 && globalThis.MundoMimoV2Performance?.version === 590);
   await page.locator('[data-age="1-2"]').click();
   const ids = await page.evaluate(() => [...document.querySelectorAll('#gameGrid [data-game]')].slice(0, 2).map(el => el.dataset.game));
   expect(ids).toHaveLength(2);
