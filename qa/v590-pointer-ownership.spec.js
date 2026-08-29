@@ -7,7 +7,7 @@ async function ready(page, age = '1-2') {
   await page.waitForFunction(() =>
     globalThis.MundoMimoV2RuntimeV430?.implemented?.length === 150 &&
     typeof globalThis.MundoMimoV2Performance?.startGame === 'function' &&
-    globalThis.MundoMimoV2CatalogRouterBootstrap?.version === 592
+    globalThis.MundoMimoV2CatalogRouterBootstrap?.version === 593
   );
   await page.locator(`[data-age="${age}"]`).click();
 }
