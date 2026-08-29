@@ -11,7 +11,7 @@ async function boot(page) {
   );
 }
 
-test('V593: physical click launches synchronously exactly once without an activation scheduler', async ({ page }) => {
+test('V593: physical click launches synchronously exactly once; only viewport scroll is deferred', async ({ page }) => {
   await boot(page);
   await page.locator('[data-age="1-2"]').click();
 
@@ -61,7 +61,9 @@ test('V593: physical click launches synchronously exactly once without an activa
   expect(result.pendingCount).toBe(0);
   expect(result.flushScheduled).toBeFalsy();
   expect(result.launches).toEqual(['sigue-el-destello']);
-  expect(result.timeoutCalls).toBe(0);
+  // The single timer belongs only to post-launch scrollIntoView. The launch itself,
+  // title, first interaction and mimo:game-started event are already complete here.
+  expect(result.timeoutCalls).toBe(1);
   expect(result.rafCalls).toBe(0);
   expect(result.channelCalls).toBe(0);
   await expect(page.locator('[data-light="izq"]')).toBeVisible();
