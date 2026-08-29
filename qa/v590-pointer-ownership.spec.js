@@ -7,7 +7,7 @@ async function ready(page, age = '1-2') {
   await page.waitForFunction(() =>
     globalThis.MundoMimoV2RuntimeV430?.implemented?.length === 150 &&
     typeof globalThis.MundoMimoV2Performance?.startGame === 'function' &&
-    globalThis.MundoMimoV2CatalogRouterBootstrap?.version === 590
+    globalThis.MundoMimoV2CatalogRouterBootstrap?.version === 592
   );
   await page.locator(`[data-age="${age}"]`).click();
 }
@@ -26,9 +26,6 @@ test('V590 down/up never mutates the game DOM before canonical click activation'
   await ready(page);
   const card = page.locator('[data-game="sigue-el-destello"]');
   await expect(card).toBeVisible();
-
-  // Synthetic down/up without click models an interrupted activation. The router
-  // must not open, scroll or replace UI before the browser commits the click.
   await page.evaluate(() => {
     const card = document.querySelector('[data-game="sigue-el-destello"]');
     card.dispatchEvent(new PointerEvent('pointerdown', { bubbles:true, cancelable:true, isPrimary:true, pointerId:41, pointerType:'touch', button:0 }));
@@ -36,20 +33,16 @@ test('V590 down/up never mutates the game DOM before canonical click activation'
   });
   await expect(page.locator('#stage')).toBeHidden();
   await expect(page.locator('#gameTitle')).toHaveText('');
-
   await card.click();
   await expect(page.locator('#gameTitle')).toHaveText('Sigue el destello');
   await expect(page.locator('[data-light="izq"]')).toBeVisible();
-  await expect.poll(() => page.evaluate(() => globalThis.MundoMimoV2CatalogRouterBootstrap?.lastIntent)).toMatchObject({
-    id: 'sigue-el-destello', source: 'click'
-  });
+  await expect.poll(() => page.evaluate(() => globalThis.MundoMimoV2CatalogRouterBootstrap?.lastIntent)).toMatchObject({ id: 'sigue-el-destello', source: 'click' });
 });
 
 test('V590 physical browser click launches exactly once through the canonical owner', async ({ page }) => {
   await ready(page);
   const card = page.locator('[data-game="sigue-el-destello"]');
   await expect(card).toBeVisible();
-
   await card.click();
   await expect(page.locator('#gameTitle')).toHaveText('Sigue el destello');
   const first = await page.evaluate(() => ({
@@ -60,8 +53,6 @@ test('V590 physical browser click launches exactly once through the canonical ow
   expect(first.started).toBe('sigue-el-destello');
   expect(first.recovery).toBe('sigue-el-destello');
   expect(first.intent).toMatchObject({ id:'sigue-el-destello', source:'click' });
-
-  // A subsequent real catalog activation must not inherit stale ownership.
   const next = page.locator('#gameGrid .gameCard').nth(1);
   const nextId = await next.getAttribute('data-game');
   expect(nextId).toBeTruthy();
@@ -77,9 +68,7 @@ test('V590 keyboard activation uses the same canonical click path', async ({ pag
   await card.focus();
   await page.keyboard.press('Enter');
   await expect(page.locator('#gameTitle')).toHaveText('Sigue el destello');
-  await expect.poll(() => page.evaluate(() => globalThis.MundoMimoV2CatalogRouterBootstrap?.lastIntent)).toMatchObject({
-    id:'sigue-el-destello', source:'click'
-  });
+  await expect.poll(() => page.evaluate(() => globalThis.MundoMimoV2CatalogRouterBootstrap?.lastIntent)).toMatchObject({ id:'sigue-el-destello', source:'click' });
 });
 
 test('V590 catalog activation never swallows the first fast gameplay answer', async ({ page }) => {
@@ -88,7 +77,6 @@ test('V590 catalog activation never swallows the first fast gameplay answer', as
   await expect(card).toBeVisible();
   await card.click();
   await expect(page.locator('#gameTitle')).toHaveText('Serie de números');
-
   await page.locator('[data-number="5"]').click();
   await expect(page.locator('#feedback')).toContainText('aumenta');
   await page.locator('[data-number="3"]').click();
