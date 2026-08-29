@@ -11,6 +11,8 @@ async function boot(page) {
   );
 }
 
+const nextTask = page => page.evaluate(() => new Promise(resolve => setTimeout(resolve, 0)));
+
 test('V593: completed historical click waits until a real post-dispatch task and never uses requestAnimationFrame', async ({ page }) => {
   await boot(page);
   await page.locator('[data-age="1-2"]').click();
@@ -27,11 +29,7 @@ test('V593: completed historical click waits until a real post-dispatch task and
       const immediate = document.getElementById('gameTitle')?.textContent || '';
       await Promise.resolve();
       const afterMicrotask = document.getElementById('gameTitle')?.textContent || '';
-      await new Promise(resolve => {
-        const probe = new MessageChannel();
-        probe.port1.onmessage = () => { probe.port1.close(); probe.port2.close(); resolve(); };
-        probe.port2.postMessage(0);
-      });
+      await new Promise(resolve => setTimeout(resolve, 0));
       return {
         immediate,
         afterMicrotask,
@@ -73,11 +71,7 @@ test('V593: later click listeners finish before the canonical historical launch'
     document.addEventListener('mimo:game-started', () => order.push('canonical-launch'), { once:true });
     try {
       card.click();
-      await new Promise(resolve => {
-        const probe = new MessageChannel();
-        probe.port1.onmessage = () => { probe.port1.close(); probe.port2.close(); resolve(); };
-        probe.port2.postMessage(0);
-      });
+      await new Promise(resolve => setTimeout(resolve, 0));
       return {
         order,
         title: document.getElementById('gameTitle')?.textContent || '',
@@ -109,11 +103,7 @@ test('V593: FIFO still preserves two completed activations before the posted-tas
         card.click();
       }
       const pendingBefore = globalThis.MundoMimoV2CatalogRouterBootstrap?.pendingCount;
-      await new Promise(resolve => {
-        const probe = new MessageChannel();
-        probe.port1.onmessage = () => { probe.port1.close(); probe.port2.close(); resolve(); };
-        probe.port2.postMessage(0);
-      });
+      await new Promise(resolve => setTimeout(resolve, 0));
       return {
         pendingBefore,
         pendingAfter: globalThis.MundoMimoV2CatalogRouterBootstrap?.pendingCount,
@@ -129,4 +119,21 @@ test('V593: FIFO still preserves two completed activations before the posted-tas
   expect(result.pendingAfter).toBe(0);
   expect(result.started).toEqual(['que-cambia-si', 'vecinos-del-numero']);
   expect(result.lastStartedId).toBe('vecinos-del-numero');
+});
+
+test('V593: physical catalog routing remains functional when MessageChannel is unavailable', async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(globalThis, 'MessageChannel', {
+      configurable: true,
+      value: class DisabledMessageChannel {
+        constructor() { throw new Error('MessageChannel intentionally unavailable in regression'); }
+      }
+    });
+  });
+  await boot(page);
+  await page.locator('[data-age="1-2"]').click();
+  await page.locator('[data-game="sigue-el-destello"]').click();
+  await expect(page.locator('#gameTitle')).toHaveText('Sigue el destello');
+  await expect(page.locator('[data-light="izq"]')).toBeVisible();
+  await expect.poll(() => page.evaluate(() => globalThis.MundoMimoV2CatalogRouterBootstrap?.pendingCount)).toBe(0);
 });
