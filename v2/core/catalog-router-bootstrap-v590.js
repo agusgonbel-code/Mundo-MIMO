@@ -1,11 +1,11 @@
 (()=>{'use strict';
 // V593 is loaded before every historical runtime. Capture records only completed
 // catalog-game click intents before any later listener can stop propagation.
-// Finalization is posted to the browser task queue with MessageChannel. A microtask
-// is too early for this job in WebKit because later listeners from the same click
-// dispatch may still mutate/clear the historical stage after a capture listener has
-// queued it. A posted task is a real post-dispatch boundary without timers, retries,
-// preventDefault or propagation suppression.
+// Finalization runs in the next browser task with setTimeout(0). This is a single
+// deterministic post-dispatch boundary, not a retry: it lets every synchronous
+// listener/default click side effect finish before the canonical owner renders the
+// game. The previous MessageChannel boundary did not dispatch reliably in the
+// WebKit gate even though the direct dispatcher path was healthy.
 //
 // Adult-gate controls are deliberately NOT routed here. V520 owns their submit
 // target directly; routing the same click through this queue would create a second
@@ -14,8 +14,9 @@ let lastIntent=null;
 const pending=[];
 let sequence=0;
 let flushScheduled=false;
-const channel=new MessageChannel();
+let flushHandle=null;
 function flush(){
+  flushHandle=null;
   flushScheduled=false;
   const batch=pending.splice(0,pending.length);
   for(const intent of batch){
@@ -23,11 +24,10 @@ function flush(){
   }
   if(pending.length)scheduleFlush();
 }
-channel.port1.onmessage=flush;
 function scheduleFlush(){
   if(flushScheduled)return;
   flushScheduled=true;
-  channel.port2.postMessage(0);
+  flushHandle=setTimeout(flush,0);
 }
 function recordLaunch(id,source='click'){
   if(!id)return false;
@@ -49,6 +49,7 @@ globalThis.MundoMimoV2CatalogRouterBootstrap=Object.freeze({
   recordLaunch,
   get lastIntent(){return lastIntent;},
   get pendingCount(){return pending.length;},
-  get flushScheduled(){return flushScheduled;}
+  get flushScheduled(){return flushScheduled;},
+  get flushHandle(){return flushHandle;}
 });
 })();
