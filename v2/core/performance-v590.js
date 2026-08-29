@@ -8,8 +8,8 @@ const oldAgeBar=document.getElementById('ageBar');
 const inheritedGrid=document.getElementById('gameGrid');
 if(!oldAgeBar||!inheritedGrid)throw new Error('Mundo Mimo V590 shell missing');
 
-// V590 is the final catalog shell. Replace the inherited nodes exactly once so legacy
-// incremental listeners/observers cannot compete with the canonical catalog owner.
+// V590 is the final catalog shell. Replace inherited catalog nodes exactly once so
+// historical per-grid listeners/observers cannot compete with the canonical owner.
 const ageBar=oldAgeBar.cloneNode(false);
 oldAgeBar.replaceWith(ageBar);
 const gameGrid=inheritedGrid.cloneNode(false);
@@ -70,37 +70,27 @@ function setAge(next){
   age=next;syncLegacyAge();persistAge();renderAges();renderGames();
   ageBar.dispatchEvent(new CustomEvent('mimo:agechange',{bubbles:true,detail:{age}}));
 }
-ageBar.addEventListener('click',event=>{const button=event.target.closest('[data-age]');if(button)setAge(button.dataset.age)});
+ageBar.addEventListener('click',event=>{const button=event.target?.closest?.('[data-age]');if(button)setAge(button.dataset.age)});
 
-// Canonical launches are committed in the microtask immediately after the completed click.
-// This lets every historical click listener finish without cancelling normal propagation or
-// default actions, while ensuring any stale runtime side effects cannot overwrite the final
-// V590 launch. This is one deterministic launch, not a retry or timing tolerance.
-const handledActivations=new WeakSet();
+// A completed click is the only catalog activation. Ownership lives at the stable
+// window capture boundary so a stale descendant/ancestor listener cannot prevent the
+// canonical owner from observing the event. The launch itself is committed in the
+// post-dispatch microtask: every normal click listener/default action is preserved and
+// stale synchronous side effects finish before the single canonical render. There are
+// no pointerdown/up activations, preventDefault/stopPropagation calls, timers or retries.
 const scheduledActivations=new WeakSet();
 function scheduleCanonicalLaunch(event,id){
-  if(scheduledActivations.has(event))return;
+  if(!id||scheduledActivations.has(event))return;
   scheduledActivations.add(event);
   queueMicrotask(()=>startGame(id,{deferScroll:true}));
 }
-gameGrid.addEventListener('click',event=>{
-  const button=event.target?.closest?.('[data-game]');
-  if(!button||!gameGrid.contains(button))return;
-  handledActivations.add(event);
-  scheduleCanonicalLaunch(event,button.dataset.game);
-},true);
-
-// Defensive fallback only for an externally replaced/cloned #gameGrid. DOM cloning does not
-// copy listeners, so such a grid intentionally has no local owner. The same completed click
-// is routed once after dispatch without preventDefault/stopPropagation/retries/timers.
-document.addEventListener('click',event=>{
-  if(handledActivations.has(event))return;
+window.addEventListener('click',event=>{
   const button=event.target?.closest?.('[data-game]');
   if(!button)return;
   const liveGrid=document.getElementById('gameGrid');
   if(!liveGrid||!liveGrid.contains(button))return;
   scheduleCanonicalLaunch(event,button.dataset.game);
-});
+},true);
 
 syncLegacyAge();persistAge();renderAges();renderGames();
 
