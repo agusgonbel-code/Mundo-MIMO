@@ -18,7 +18,10 @@ function record(ok){if(!currentGameId)return null;const p=D.recordOutcome(curren
 grid.addEventListener('click',e=>{const card=e.target.closest('[data-game]');if(card&&grid.contains(card))begin(card.dataset.game)});
 stage.addEventListener('click',e=>{
   if(!currentGameId||!play.contains(e.target))return;
-  const actionable=e.target.closest('button,[role="button"],input,select,[data-choice],[data-target],[data-answer]');
+  // Real V430 mechanics use native controls plus semantic data hooks. Gesture buttons are
+  // intentionally custom elements, so they must participate in the same adaptive outcome
+  // path; otherwise an assisted gesture round is silently counted as a first-try success.
+  const actionable=e.target.closest('button,[role="button"],input,select,[data-choice],[data-target],[data-answer],[data-gesture]');
   if(!actionable)return;
   const id=currentGameId,before=stats(id),feedback=document.getElementById('feedback'),beforeFeedback=feedback?.textContent||'';
   queueMicrotask(()=>{
