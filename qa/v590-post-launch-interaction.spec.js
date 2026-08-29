@@ -6,7 +6,7 @@ async function ready(page){
   await page.goto(URL,{waitUntil:'load'});
   await page.waitForFunction(()=>
     globalThis.MundoMimoV2RuntimeV430?.implemented?.length===150 &&
-    globalThis.MundoMimoV2CatalogRouterBootstrap?.version===590
+    globalThis.MundoMimoV2CatalogRouterBootstrap?.version===592
   );
 }
 
