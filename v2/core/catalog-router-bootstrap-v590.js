@@ -1,6 +1,6 @@
 (()=>{'use strict';
-// V595 keeps the historical runtimes as game owners but makes canonical activation
-// independent from the mutable DOM0 `onclick` slot used by historical runtimes.
+// V594 hardened: historical runtimes remain game owners, while canonical activation
+// is independent from the mutable DOM0 `onclick` slot used by those runtimes.
 // Every live card gets one target-side EventTarget listener, tracked by an internal
 // symbol. This prevents later DOM0 assignment from replacing canonical ownership.
 // A document observer rebinds cards created or cloned later; renderGames still binds
@@ -9,8 +9,8 @@
 let lastIntent=null;
 let sequence=0;
 let launchCount=0;
-const BOUND=Symbol('mimo-v595-bound');
-const HANDLER=Symbol('mimo-v595-handler');
+const BOUND=Symbol('mimo-v594-bound');
+const HANDLER=Symbol('mimo-v594-handler');
 
 function recordLaunch(id,source='click'){
   if(!id)return false;
@@ -32,7 +32,7 @@ function bindCard(card){
   card.addEventListener('click',handler);
   card[HANDLER]=handler;
   card[BOUND]=true;
-  card.dataset.v595Owner='canonical';
+  card.dataset.v594Owner='canonical';
   return true;
 }
 
@@ -52,7 +52,7 @@ observer.observe(document.documentElement,{subtree:true,childList:true});
 bind(document);
 
 globalThis.MundoMimoV2CatalogRouterBootstrap=Object.freeze({
-  version:595,
+  version:594,
   recordLaunch,
   activate,
   bind,
