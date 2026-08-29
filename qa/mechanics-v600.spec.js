@@ -42,6 +42,12 @@ test('every mechanic has a representative that physically launches into real pla
     expect(live.html,`${rep.mechanic}/${rep.gameId} rendered no play content`).toBeGreaterThan(0);
     expect(live.interactive+live.text,`${rep.mechanic}/${rep.gameId} rendered no actionable or instructional UI`).toBeGreaterThan(0);
     const list=signatures.get(live.signature)||[];list.push(rep.mechanic);signatures.set(live.signature,list);
+
+    // Exercise the real user back path before switching developmental band. This keeps the
+    // gate physically faithful: age controls are intentionally hidden while a game is open.
+    await page.locator('#closeGame').click();
+    await expect(page.locator('#stage')).toBeHidden();
+    await expect(page.locator('#gameGrid')).toBeVisible();
   }
   // DOM shape alone is not a mechanic definition, but a portfolio in which every representative
   // renders the exact same interaction shell is not acceptable evidence of 40 real mechanics.
