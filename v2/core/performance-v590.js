@@ -28,53 +28,42 @@ try{const saved=JSON.parse(localStorage.getItem(STATE_KEY)||'{}');if(P.ageBands.
 
 function persistAge(){try{const state=JSON.parse(localStorage.getItem(STATE_KEY)||'{}');state.age=age;localStorage.setItem(STATE_KEY,JSON.stringify(state))}catch{}}
 function ownerFor(id){return owners.get(id)||null}
-function finishLaunch(id,deferredScroll=false){
+function finishLaunch(id,source='click'){
   const stage=document.getElementById('stage');
   const title=document.getElementById('gameTitle');
   const launched=Boolean(stage&&!stage.hidden&&title?.textContent?.trim());
   if(!launched)return false;
   lastStartedId=id;
   document.dispatchEvent(new CustomEvent('mimo:game-started',{detail:{id,age}}));
-  globalThis.MundoMimoV2CatalogRouterBootstrap?.recordLaunch?.(id,'click');
-  if(deferredScroll)setTimeout(()=>stage?.scrollIntoView?.({block:'start'}),0);
+  globalThis.MundoMimoV2CatalogRouterBootstrap?.recordLaunch?.(id,source);
   return true;
 }
 function startGame(id,options={}){
   const owner=ownerFor(id);
   if(!owner||typeof owner.start!=='function')return false;
   const stage=document.getElementById('stage');
-  let deferredScroll=false;
   let ownScroll;
   if(options.deferScroll&&stage&&typeof stage.scrollIntoView==='function'){
     ownScroll=Object.prototype.hasOwnProperty.call(stage,'scrollIntoView')?stage.scrollIntoView:undefined;
-    try{stage.scrollIntoView=()=>{deferredScroll=true}}catch{}
+    try{stage.scrollIntoView=()=>{}}catch{}
   }
   try{owner.start(id)}finally{
     if(options.deferScroll&&stage){
       try{if(ownScroll===undefined)delete stage.scrollIntoView;else stage.scrollIntoView=ownScroll}catch{}
     }
   }
-  return finishLaunch(id,deferredScroll);
+  const launched=finishLaunch(id,options.source||'click');
+  if(launched&&options.deferScroll)setTimeout(()=>stage?.scrollIntoView?.({block:'start'}),0);
+  return launched;
 }
 function syncLegacyAge(){
   oldAgeBar.querySelectorAll('[data-age]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.age===age)));
   if(typeof Base.setAge==='function')Base.setAge(age);
 }
-function scheduleCanonicalLaunch(event,id){
-  if(!id||event.__mimoV590Scheduled)return;
-  try{Object.defineProperty(event,'__mimoV590Scheduled',{value:true,configurable:true})}catch{if(event.__mimoV590Scheduled)return;event.__mimoV590Scheduled=true}
-  queueMicrotask(()=>startGame(id,{deferScroll:true}));
-}
-function bindCardActivation(button){
-  if(!button||button.dataset.v590Bound==='true')return;
-  button.dataset.v590Bound='true';
-  button.addEventListener('click',event=>scheduleCanonicalLaunch(event,button.dataset.game));
-}
 function renderAges(){ageBar.innerHTML=P.ageBands.map(b=>`<button type="button" data-age="${b.id}" aria-pressed="${b.id===age}">${b.label}</button>`).join('')}
 function renderGames(){
   const eligible=games.filter(g=>g.ages.includes(age)&&ownerFor(g.id));
   gameGrid.innerHTML=eligible.length?eligible.map(g=>`<button class="gameCard" type="button" data-game="${g.id}" data-v590-owner="canonical"><b>${g.name}</b><small>${g.skill} · ${g.mechanic}</small></button>`).join(''):'<p>No hay todavía juegos jugables para esta franja.</p>';
-  gameGrid.querySelectorAll('[data-game]').forEach(bindCardActivation);
 }
 function setAge(next){
   if(!P.ageBands.some(b=>b.id===next)||next===age)return;
@@ -83,19 +72,15 @@ function setAge(next){
 }
 ageBar.addEventListener('click',event=>{const button=event.target?.closest?.('[data-age]');if(button)setAge(button.dataset.age)});
 
-// Live cards own their completed click directly. They are created after historical
-// runtimes, so their listener is registered before any later stale card listener and
-// can queue the canonical post-dispatch render even if that stale listener stops
-// bubbling. A document-capture fallback exists only for externally cloned/replaced
-// grids, whose cards do not retain JS listeners. No pointerdown/up activation,
-// preventDefault, stopPropagation, timers or retries are used.
-document.addEventListener('click',event=>{
+// The final V590 grid is created only after all historical runtimes have installed
+// their listeners on the discarded grid. A single delegated click owner on this live
+// node therefore covers mouse, touch-generated click, keyboard activation and cloned
+// cards without cross-phase races, duplicate launches or propagation suppression.
+gameGrid.addEventListener('click',event=>{
   const button=event.target?.closest?.('[data-game]');
-  if(!button||button.dataset.v590Bound==='true')return;
-  const liveGrid=document.getElementById('gameGrid');
-  if(!liveGrid||!liveGrid.contains(button))return;
-  scheduleCanonicalLaunch(event,button.dataset.game);
-},true);
+  if(!button||!gameGrid.contains(button))return;
+  startGame(button.dataset.game,{deferScroll:true,source:'click'});
+});
 
 syncLegacyAge();persistAge();renderAges();renderGames();
 
