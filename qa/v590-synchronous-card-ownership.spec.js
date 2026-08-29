@@ -2,7 +2,7 @@ const { test, expect } = require('@playwright/test');
 
 test('V590 binds every newly rendered canonical card before renderGames returns', async ({ page }) => {
   await page.goto('/v2/app-v200.html', { waitUntil: 'load' });
-  await page.waitForFunction(() => globalThis.MundoMimoV2CatalogRouterBootstrap?.version === 595 && globalThis.MundoMimoV2Performance?.version === 590);
+  await page.waitForFunction(() => globalThis.MundoMimoV2CatalogRouterBootstrap?.version === 594 && globalThis.MundoMimoV2Performance?.version === 590);
 
   const snapshot = await page.evaluate(() => {
     globalThis.MundoMimoV2Performance.setAge('1-2');
@@ -34,9 +34,9 @@ test('V590 binds every newly rendered canonical card before renderGames returns'
   await expect(page.locator('[data-light="izq"]')).toBeVisible();
 });
 
-test('V595 canonical ownership survives a later DOM0 onclick replacement', async ({ page }) => {
+test('V594 canonical ownership survives a later DOM0 onclick replacement', async ({ page }) => {
   await page.goto('/v2/app-v200.html', { waitUntil: 'load' });
-  await page.waitForFunction(() => globalThis.MundoMimoV2CatalogRouterBootstrap?.version === 595 && globalThis.MundoMimoV2Performance?.version === 590);
+  await page.waitForFunction(() => globalThis.MundoMimoV2CatalogRouterBootstrap?.version === 594 && globalThis.MundoMimoV2Performance?.version === 590);
   await page.locator('[data-age="1-2"]').click();
   const result = await page.evaluate(() => {
     const card = document.querySelector('[data-game="sigue-el-destello"]');
