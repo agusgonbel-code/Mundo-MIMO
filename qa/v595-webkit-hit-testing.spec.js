@@ -10,6 +10,13 @@ async function boot(page) {
   );
 }
 
+function expectLayoutPaintContainment(contain) {
+  const tokens = new Set(String(contain).trim().split(/\s+/).filter(Boolean));
+  const canonicalContent = tokens.has('content');
+  expect(canonicalContent || tokens.has('layout')).toBeTruthy();
+  expect(canonicalContent || tokens.has('paint')).toBeTruthy();
+}
+
 test('V595 keeps interactive game cards hit-testable for trusted WebKit clicks', async ({ page }) => {
   await boot(page);
   await page.locator('[data-age="1-2"]').click();
@@ -23,8 +30,7 @@ test('V595 keeps interactive game cards hit-testable for trusted WebKit clicks',
     return { contentVisibility: s.contentVisibility, contain: s.contain };
   });
   expect(style.contentVisibility).toBe('visible');
-  expect(style.contain).toContain('layout');
-  expect(style.contain).toContain('paint');
+  expectLayoutPaintContainment(style.contain);
 
   for (const index of [0, Math.floor(count / 2), count - 1]) {
     const card = cards.nth(index);
