@@ -109,3 +109,20 @@ test('V590 finalizes the canonical game after stale click side effects finish', 
   await expect(page.locator('[data-light="izq"]')).toBeVisible();
   expect(await page.evaluate(() => globalThis.MundoMimoV2Performance.lastStartedId)).toBe('sigue-el-destello');
 });
+
+test('V593 preserves every rapid completed activation instead of overwriting the pending intent', async ({ page }) => {
+  await page.goto('/v2/app-v200.html', { waitUntil: 'load' });
+  await page.waitForFunction(() => globalThis.MundoMimoV2CatalogRouterBootstrap?.version === 593 && globalThis.MundoMimoV2Performance?.version === 590);
+  await page.locator('[data-age="1-2"]').click();
+  const ids = await page.evaluate(() => [...document.querySelectorAll('#gameGrid [data-game]')].slice(0, 2).map(el => el.dataset.game));
+  expect(ids).toHaveLength(2);
+  await page.evaluate(([first, second]) => {
+    globalThis.__rapidLaunches = [];
+    document.addEventListener('mimo:game-started', event => globalThis.__rapidLaunches.push(event.detail?.id));
+    document.querySelector(`[data-game="${first}"]`).click();
+    document.querySelector(`[data-game="${second}"]`).click();
+  }, ids);
+  await expect.poll(() => page.evaluate(() => globalThis.__rapidLaunches)).toEqual(ids);
+  await expect.poll(() => page.evaluate(() => globalThis.MundoMimoV2CatalogRouterBootstrap.pendingCount)).toBe(0);
+  expect(await page.evaluate(() => globalThis.MundoMimoV2Performance.lastStartedId)).toBe(ids[1]);
+});
