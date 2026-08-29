@@ -6,7 +6,7 @@ async function waitForFullRuntime(page) {
   await page.waitForFunction(() =>
     globalThis.MundoMimoV2RuntimeV430?.implemented?.length === 150 &&
     typeof globalThis.MundoMimoV2Performance?.startGame === 'function' &&
-    globalThis.MundoMimoV2CatalogRouterBootstrap?.version === 592
+    globalThis.MundoMimoV2CatalogRouterBootstrap?.version === 593
   );
 }
 
