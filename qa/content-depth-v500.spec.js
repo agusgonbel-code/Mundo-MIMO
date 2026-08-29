@@ -76,6 +76,20 @@ test('adaptive depth progresses after mastery, backs off after repeated errors a
   expect(p.level).toBe(1);
 });
 
+test('adaptive streak counts consecutive mastery after an error instead of carrying negative debt',async({page})=>{
+  await boot(page);
+  const game=await page.evaluate(()=>window.MundoMimoV2RuntimeV430.implemented[20]);
+  await page.evaluate(id=>window.MundoMimoV2DepthV500.reset(id),game);
+  let p=await page.evaluate(id=>window.MundoMimoV2DepthV500.recordOutcome(id,false),game);
+  expect(p).toMatchObject({level:1,streak:-1,attempts:1,correct:0});
+  p=await page.evaluate(id=>window.MundoMimoV2DepthV500.recordOutcome(id,true),game);
+  expect(p).toMatchObject({level:1,streak:1,attempts:2,correct:1});
+  p=await page.evaluate(id=>window.MundoMimoV2DepthV500.recordOutcome(id,true),game);
+  expect(p).toMatchObject({level:1,streak:2,attempts:3,correct:2});
+  p=await page.evaluate(id=>window.MundoMimoV2DepthV500.recordOutcome(id,true),game);
+  expect(p).toMatchObject({level:2,streak:0,attempts:4,correct:3});
+});
+
 test('sessions enforce developmental age bands and return five validated challenges',async({page})=>{
   await boot(page);
   const result=await page.evaluate(()=>{
