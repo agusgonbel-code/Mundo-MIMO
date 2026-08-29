@@ -160,19 +160,17 @@ test('V590: historical game routing survives replacement of transient card nodes
   await expect(page.locator('[data-light="izq"]')).toBeVisible();
 });
 
-test('V590: offscreen cards use rendering containment without breaking interaction', async ({ page }) => {
+test('V595: interactive cards keep containment without content virtualization and remain clickable', async ({ page }) => {
   await page.goto(URL, { waitUntil: 'load' });
   await waitForFullRuntime(page);
 
-  const support = await page.evaluate(() => CSS.supports('content-visibility', 'auto'));
-  if (support) {
-    const styles = await page.locator('#gameGrid .gameCard').first().evaluate(el => {
-      const s = getComputedStyle(el);
-      return { contentVisibility: s.contentVisibility, containIntrinsicSize: s.containIntrinsicSize };
-    });
-    expect(styles.contentVisibility).toBe('auto');
-    expect(styles.containIntrinsicSize).not.toBe('none');
-  }
+  const styles = await page.locator('#gameGrid .gameCard').first().evaluate(el => {
+    const s = getComputedStyle(el);
+    return { contentVisibility: s.contentVisibility, contain: s.contain };
+  });
+  expect(styles.contentVisibility).toBe('visible');
+  expect(styles.contain).toContain('layout');
+  expect(styles.contain).toContain('paint');
 
   const last = page.locator('#gameGrid .gameCard').last();
   await last.scrollIntoViewIfNeeded();
