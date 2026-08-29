@@ -8,6 +8,16 @@ const oldAgeBar=document.getElementById('ageBar');
 const inheritedGrid=document.getElementById('gameGrid');
 if(!oldAgeBar||!inheritedGrid)throw new Error('Mundo Mimo V590 shell missing');
 
+// V595: content-visibility:auto is valuable for passive content but must not be
+// applied to the interactive catalog surface. WebKit trusted-pointer runs proved
+// that programmatic activation could work while physical clicks on virtualized
+// buttons were lost. Keep layout/paint/style containment for card cost isolation,
+// while forcing interactive cards to remain fully hit-testable.
+const interactionStyle=document.createElement('style');
+interactionStyle.dataset.mimoV595='trusted-pointer-safety';
+interactionStyle.textContent='@supports(content-visibility:auto){#gameGrid .gameCard{content-visibility:visible;contain:layout paint style;contain-intrinsic-size:none}}';
+document.head.appendChild(interactionStyle);
+
 const ageBar=oldAgeBar.cloneNode(false);
 oldAgeBar.replaceWith(ageBar);
 const gameGrid=inheritedGrid.cloneNode(false);
