@@ -31,6 +31,24 @@ test('parent zone is native, closed by default and requires an adult verificatio
   await expect(page.locator('#parentPanel')).toContainText('Zona de familias');
 });
 
+test('adult submit has one owner and never enters the catalog routing queue',async({page})=>{
+  const state=await page.evaluate(()=>{
+    document.getElementById('parentEntry').click();
+    const q=document.getElementById('parentQuestion').textContent.split('+').map(Number);
+    const input=document.getElementById('parentAnswer');
+    input.value=String(q[0]+q[1]+1);
+    document.querySelector('[data-parent-submit]').click();
+    return {
+      invalid:input.getAttribute('aria-invalid'),
+      errorState:document.getElementById('parentGateError').dataset.state,
+      pending:globalThis.MundoMimoV2CatalogRouterBootstrap?.pendingCount,
+      panelHidden:document.getElementById('parentPanel').hidden,
+      gateHidden:document.getElementById('parentGate').hidden,
+    };
+  });
+  expect(state).toEqual({invalid:'true',errorState:'invalid',pending:0,panelHidden:true,gateHidden:false});
+});
+
 test('summary derives only from local progress and reports truthful aggregate metrics',async({page})=>{
   const result=await page.evaluate(()=>{
     const ids=window.MundoMimoV2RuntimeV430.implemented.slice(0,4),games={};
