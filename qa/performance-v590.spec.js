@@ -10,6 +10,13 @@ async function waitForFullRuntime(page) {
   );
 }
 
+function expectLayoutPaintContainment(contain) {
+  const tokens = new Set(String(contain).trim().split(/\s+/).filter(Boolean));
+  const canonicalContent = tokens.has('content');
+  expect(canonicalContent || tokens.has('layout')).toBeTruthy();
+  expect(canonicalContent || tokens.has('paint')).toBeTruthy();
+}
+
 test('V590: full 150-game runtime boots within explicit iPhone/iPad budgets', async ({ page }) => {
   const started = Date.now();
   await page.goto(URL, { waitUntil: 'load' });
@@ -169,8 +176,7 @@ test('V595: interactive cards keep containment without content virtualization an
     return { contentVisibility: s.contentVisibility, contain: s.contain };
   });
   expect(styles.contentVisibility).toBe('visible');
-  expect(styles.contain).toContain('layout');
-  expect(styles.contain).toContain('paint');
+  expectLayoutPaintContainment(styles.contain);
 
   const last = page.locator('#gameGrid .gameCard').last();
   await last.scrollIntoViewIfNeeded();
