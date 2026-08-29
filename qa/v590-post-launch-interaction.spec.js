@@ -23,11 +23,20 @@ test('V590 routing does not consume adult-gate validation controls',async({page}
   await ready(page);
   await page.locator('#parentEntry').click();
   await expect(page.locator('#parentGate')).toBeVisible();
-  expect(await page.evaluate(()=>document.querySelector('[data-parent-submit]').onclick===globalThis.MundoMimoV2ParentV520.submit)).toBeTruthy();
+  const ownership=await page.evaluate(()=>{
+    const submit=document.querySelector('[data-parent-submit]');
+    return {
+      owned:globalThis.MundoMimoV2ParentV520.ownsSubmit(submit),
+      dom0:submit.onclick,
+      marker:submit.dataset.parentOwner
+    };
+  });
+  expect(ownership).toEqual({owned:true,dom0:null,marker:'v520-eventtarget'});
   const answer=await page.evaluate(()=>document.getElementById('parentQuestion').textContent.split('+').map(Number).reduce((a,b)=>a+b,0));
   await page.locator('#parentAnswer').fill(String(answer+1));
   await page.locator('[data-parent-submit]').click();
   await expect(page.locator('#parentAnswer')).toHaveAttribute('aria-invalid','true');
+  await expect(page.locator('#parentGateError')).toHaveAttribute('data-state','invalid');
   await expect(page.locator('#parentGateError')).toContainText('incorrecta');
   expect(await page.evaluate(()=>globalThis.MundoMimoV2CatalogRouterBootstrap.pendingCount)).toBe(0);
 });
