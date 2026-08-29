@@ -12,7 +12,10 @@ function session(id=currentGameId){if(!id)return null;const g=R.allGames().find(
 function syncMeta(){const s=session();if(!s)return null;const g=R.allGames().find(x=>x.id===s.gameId);if(!g)return null;meta.textContent=`${g.area} · ${g.skill} · ${s.activity.label} · Nivel ${s.level.number}/36`;stage.dataset.adaptiveGame=s.gameId;stage.dataset.adaptiveLevel=String(s.level.number);stage.dataset.adaptiveActivity=s.activity.mode;lastSession=s;return s}
 function begin(id){if(!R.allGames().some(g=>g.id===id))return null;currentGameId=id;roundHadError=false;queueMicrotask(syncMeta);return session(id)}
 function record(ok){if(!currentGameId)return null;const p=D.recordOutcome(currentGameId,Boolean(ok));syncMeta();return p}
-grid.addEventListener('click',e=>{const card=e.target.closest('[data-game]');if(card&&grid.contains(card))begin(card.dataset.game)},true);
+// V430 owns the first bubble listener on the final grid and opens the game. V610 listens
+// afterwards in the same phase, so its adaptive metadata is applied after V430 writes the
+// base area/skill metadata. This keeps one deterministic event path with no retry or timer.
+grid.addEventListener('click',e=>{const card=e.target.closest('[data-game]');if(card&&grid.contains(card))begin(card.dataset.game)});
 stage.addEventListener('click',e=>{
   if(!currentGameId||!play.contains(e.target))return;
   const actionable=e.target.closest('button,[role="button"],input,select,[data-choice],[data-target],[data-answer]');
