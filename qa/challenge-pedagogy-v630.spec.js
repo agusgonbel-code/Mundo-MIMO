@@ -26,14 +26,21 @@ test('every level exposes five distinct pedagogical roles and explicit context, 
   }
 });
 
-test('difficulty carries nine genuinely different cognitive demands inside each activity',async({page})=>{
+test('difficulty carries the complete ordered nine-step cognitive demand progression inside every activity',async({page})=>{
   await boot(page);
   const data=await page.evaluate(()=>{
     const D=window.MundoMimoV2DepthV500,R=window.MundoMimoV2RuntimeV430;
-    return R.implemented.map(id=>Array.from({length:4},(_,a)=>Array.from({length:9},(_,i)=>D.challenge(id,a*9+i+1,1).cognitiveDemand));
+    return {
+      expected:[...D.difficultyDemands],
+      games:R.implemented.map(id=>Array.from({length:4},(_,a)=>Array.from({length:9},(_,i)=>D.challenge(id,a*9+i+1,1).cognitiveDemand)))
+    };
   });
-  for(const game of data)for(const activity of game){expect(new Set(activity).size).toBe(9);expect(activity).toEqual([...windowSafe(activity)]);}
-  function windowSafe(x){return x;}
+  expect(data.expected).toHaveLength(9);
+  expect(new Set(data.expected).size).toBe(9);
+  for(const game of data.games)for(const activity of game){
+    expect(activity).toEqual(data.expected);
+    expect(new Set(activity).size).toBe(9);
+  }
 });
 
 test('semantic uniqueness survives after stripping all challenge identity fields',async({page})=>{
