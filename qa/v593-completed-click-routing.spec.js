@@ -11,11 +11,11 @@ async function boot(page) {
   );
 }
 
-test('V593: completed historical click finalizes in the same dispatch without async schedulers', async ({ page }) => {
+test('V593: physical click completes once in the next task after browser dispatch', async ({ page }) => {
   await boot(page);
   await page.locator('[data-age="1-2"]').click();
 
-  const result = await page.evaluate(() => {
+  const immediate = await page.evaluate(() => {
     const card = document.querySelector('[data-game="sigue-el-destello"]');
     if (!card) throw new Error('historical card missing');
     let timeoutCalls = 0;
@@ -35,9 +35,9 @@ test('V593: completed historical click finalizes in the same dispatch without as
       card.click();
       return {
         title: document.getElementById('gameTitle')?.textContent || '',
-        hasInteraction: Boolean(document.querySelector('[data-light="izq"]')),
         lastStartedId: globalThis.MundoMimoV2Performance?.lastStartedId || null,
         pendingCount: globalThis.MundoMimoV2CatalogRouterBootstrap?.pendingCount,
+        flushScheduled: globalThis.MundoMimoV2CatalogRouterBootstrap?.flushScheduled,
         timeoutCalls,
         rafCalls,
         channelCalls,
@@ -49,76 +49,78 @@ test('V593: completed historical click finalizes in the same dispatch without as
     }
   });
 
-  expect(result.title).toBe('Sigue el destello');
-  expect(result.hasInteraction).toBeTruthy();
-  expect(result.lastStartedId).toBe('sigue-el-destello');
-  expect(result.pendingCount).toBe(0);
-  expect(result.timeoutCalls).toBe(0);
-  expect(result.rafCalls).toBe(0);
-  expect(result.channelCalls).toBe(0);
+  expect(immediate.title).toBe('');
+  expect(immediate.lastStartedId).toBeNull();
+  expect(immediate.pendingCount).toBe(1);
+  expect(immediate.flushScheduled).toBeTruthy();
+  expect(immediate.timeoutCalls).toBe(1);
+  expect(immediate.rafCalls).toBe(0);
+  expect(immediate.channelCalls).toBe(0);
+
+  await expect(page.locator('#gameTitle')).toHaveText('Sigue el destello');
+  await expect(page.locator('[data-light="izq"]')).toBeVisible();
+  await expect.poll(() => page.evaluate(() => ({
+    pendingCount: globalThis.MundoMimoV2CatalogRouterBootstrap?.pendingCount,
+    flushScheduled: globalThis.MundoMimoV2CatalogRouterBootstrap?.flushScheduled,
+    lastStartedId: globalThis.MundoMimoV2Performance?.lastStartedId,
+  }))).toEqual({ pendingCount: 0, flushScheduled: false, lastStartedId: 'sigue-el-destello' });
 });
 
-test('V593: later document click listeners finish before the canonical historical launch', async ({ page }) => {
+test('V593: late synchronous click side effects finish before the canonical launch', async ({ page }) => {
   await boot(page);
   await page.locator('[data-age="1-2"]').click();
 
-  const result = await page.evaluate(() => {
+  const immediateOrder = await page.evaluate(() => {
     const card = document.querySelector('[data-game="sigue-el-destello"]');
     if (!card) throw new Error('historical card missing');
-    const order = [];
+    globalThis.__v593Order = [];
     const listener = event => {
       if (event.target?.closest?.('[data-game="sigue-el-destello"]')) {
-        order.push('late-listener');
+        globalThis.__v593Order.push('late-listener');
         document.getElementById('gameTitle').textContent = '';
+        document.getElementById('stage').hidden = true;
       }
     };
-    document.addEventListener('click', listener);
-    document.addEventListener('mimo:game-started', () => order.push('canonical-launch'), { once:true });
-    try {
-      card.click();
-      return {
-        order,
-        title: document.getElementById('gameTitle')?.textContent || '',
-        hasInteraction: Boolean(document.querySelector('[data-light="izq"]')),
-      };
-    } finally {
-      document.removeEventListener('click', listener);
-    }
+    document.addEventListener('click', listener, { once: true });
+    document.addEventListener('mimo:game-started', () => globalThis.__v593Order.push('canonical-launch'), { once: true });
+    card.click();
+    return [...globalThis.__v593Order];
   });
 
-  expect(result.order).toEqual(['late-listener', 'canonical-launch']);
-  expect(result.title).toBe('Sigue el destello');
-  expect(result.hasInteraction).toBeTruthy();
+  expect(immediateOrder).toEqual(['late-listener']);
+  await expect.poll(() => page.evaluate(() => globalThis.__v593Order)).toEqual(['late-listener', 'canonical-launch']);
+  await expect(page.locator('#gameTitle')).toHaveText('Sigue el destello');
+  await expect(page.locator('#stage')).not.toHaveAttribute('hidden', '');
+  await expect(page.locator('[data-light="izq"]')).toBeVisible();
 });
 
-test('V593: rapid completed activations remain ordered and exactly once', async ({ page }) => {
+test('V593: rapid activations share one scheduled flush and remain FIFO exactly once', async ({ page }) => {
   await boot(page);
   await page.locator('[data-age="4-5"]').click();
 
-  const result = await page.evaluate(() => {
+  const immediate = await page.evaluate(() => {
     const ids = ['que-cambia-si', 'vecinos-del-numero'];
-    const started = [];
-    const listener = event => started.push(event.detail.id);
-    document.addEventListener('mimo:game-started', listener);
-    try {
-      for (const id of ids) {
-        const card = document.querySelector(`[data-game="${id}"]`);
-        if (!card) throw new Error(`card missing: ${id}`);
-        card.click();
-      }
-      return {
-        pendingAfter: globalThis.MundoMimoV2CatalogRouterBootstrap?.pendingCount,
-        started,
-        lastStartedId: globalThis.MundoMimoV2Performance?.lastStartedId,
-      };
-    } finally {
-      document.removeEventListener('mimo:game-started', listener);
+    globalThis.__v593RapidStarted = [];
+    document.addEventListener('mimo:game-started', event => globalThis.__v593RapidStarted.push(event.detail.id));
+    for (const id of ids) {
+      const card = document.querySelector(`[data-game="${id}"]`);
+      if (!card) throw new Error(`card missing: ${id}`);
+      card.click();
     }
+    return {
+      ids,
+      started: [...globalThis.__v593RapidStarted],
+      pendingCount: globalThis.MundoMimoV2CatalogRouterBootstrap?.pendingCount,
+      flushScheduled: globalThis.MundoMimoV2CatalogRouterBootstrap?.flushScheduled,
+    };
   });
 
-  expect(result.pendingAfter).toBe(0);
-  expect(result.started).toEqual(['que-cambia-si', 'vecinos-del-numero']);
-  expect(result.lastStartedId).toBe('vecinos-del-numero');
+  expect(immediate.started).toEqual([]);
+  expect(immediate.pendingCount).toBe(2);
+  expect(immediate.flushScheduled).toBeTruthy();
+  await expect.poll(() => page.evaluate(() => globalThis.__v593RapidStarted)).toEqual(immediate.ids);
+  await expect.poll(() => page.evaluate(() => globalThis.MundoMimoV2CatalogRouterBootstrap?.pendingCount)).toBe(0);
+  expect(await page.evaluate(() => globalThis.MundoMimoV2Performance.lastStartedId)).toBe(immediate.ids[1]);
 });
 
 test('V593: physical catalog routing remains functional when MessageChannel is unavailable', async ({ page }) => {
