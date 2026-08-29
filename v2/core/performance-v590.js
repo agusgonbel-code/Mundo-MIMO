@@ -62,6 +62,10 @@ function renderAges(){ageBar.innerHTML=P.ageBands.map(b=>`<button type="button" 
 function renderGames(){
   const eligible=games.filter(g=>g.ages.includes(age)&&ownerFor(g.id));
   gameGrid.innerHTML=eligible.length?eligible.map(g=>`<button class="gameCard" type="button" data-game="${g.id}" data-v590-owner="canonical"><b>${g.name}</b><small>${g.skill} · ${g.mechanic}</small></button>`).join(''):'<p>No hay todavía juegos jugables para esta franja.</p>';
+  // Bind the just-rendered live cards in the same task that created them. The
+  // MutationObserver in V594 remains the safety net for external clones/replacements,
+  // but canonical cards must never be visible/clickable before ownership exists.
+  globalThis.MundoMimoV2CatalogRouterBootstrap?.bind?.(gameGrid);
 }
 function setAge(next){
   if(!P.ageBands.some(b=>b.id===next)||next===age)return;
@@ -70,9 +74,8 @@ function setAge(next){
 }
 ageBar.addEventListener('click',event=>{const button=event.target?.closest?.('[data-age]');if(button)setAge(button.dataset.age)});
 
-// Game activation is intentionally not bound here. The preloaded bootstrap owns the
-// completed click in capture and posts exactly one post-dispatch task, which remains
-// valid even if live cards/grid nodes are cloned or stale target listeners stop bubble.
+// Game activation is owned by the preloaded V594 bootstrap. Canonical cards are
+// bound synchronously by renderGames; its observer only covers later external DOM churn.
 syncLegacyAge();persistAge();renderAges();renderGames();
 
 globalThis.MundoMimoV2Performance=Object.freeze({version:590,setAge,startGame,ownerFor,get age(){return age;},get lastStartedId(){return lastStartedId;},gameCount:games.length,ownedGameCount:owners.size});
