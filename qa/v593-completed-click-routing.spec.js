@@ -11,7 +11,7 @@ async function boot(page) {
   );
 }
 
-test('V593: completed historical click launches by microtask and never waits for requestAnimationFrame', async ({ page }) => {
+test('V593: completed historical click waits until a real post-dispatch task and never uses requestAnimationFrame', async ({ page }) => {
   await boot(page);
   await page.locator('[data-age="1-2"]').click();
 
@@ -26,9 +26,16 @@ test('V593: completed historical click launches by microtask and never waits for
       card.click();
       const immediate = document.getElementById('gameTitle')?.textContent || '';
       await Promise.resolve();
+      const afterMicrotask = document.getElementById('gameTitle')?.textContent || '';
+      await new Promise(resolve => {
+        const probe = new MessageChannel();
+        probe.port1.onmessage = () => { probe.port1.close(); probe.port2.close(); resolve(); };
+        probe.port2.postMessage(0);
+      });
       return {
         immediate,
-        afterMicrotask: document.getElementById('gameTitle')?.textContent || '',
+        afterMicrotask,
+        afterPostedTask: document.getElementById('gameTitle')?.textContent || '',
         hasInteraction: Boolean(document.querySelector('[data-light="izq"]')),
         lastStartedId: globalThis.MundoMimoV2Performance?.lastStartedId || null,
         pendingCount: globalThis.MundoMimoV2CatalogRouterBootstrap?.pendingCount,
@@ -40,14 +47,53 @@ test('V593: completed historical click launches by microtask and never waits for
   });
 
   expect(result.immediate).toBe('');
-  expect(result.afterMicrotask).toBe('Sigue el destello');
+  expect(result.afterMicrotask).toBe('');
+  expect(result.afterPostedTask).toBe('Sigue el destello');
   expect(result.hasInteraction).toBeTruthy();
   expect(result.lastStartedId).toBe('sigue-el-destello');
   expect(result.pendingCount).toBe(0);
   expect(result.rafCalls).toBe(0);
 });
 
-test('V593: FIFO still preserves two completed activations before the microtask checkpoint', async ({ page }) => {
+test('V593: later click listeners finish before the canonical historical launch', async ({ page }) => {
+  await boot(page);
+  await page.locator('[data-age="1-2"]').click();
+
+  const result = await page.evaluate(async () => {
+    const card = document.querySelector('[data-game="sigue-el-destello"]');
+    if (!card) throw new Error('historical card missing');
+    const order = [];
+    const listener = event => {
+      if (event.target?.closest?.('[data-game="sigue-el-destello"]')) {
+        order.push('late-listener');
+        document.getElementById('gameTitle').textContent = '';
+      }
+    };
+    document.addEventListener('click', listener);
+    document.addEventListener('mimo:game-started', () => order.push('canonical-launch'), { once:true });
+    try {
+      card.click();
+      await new Promise(resolve => {
+        const probe = new MessageChannel();
+        probe.port1.onmessage = () => { probe.port1.close(); probe.port2.close(); resolve(); };
+        probe.port2.postMessage(0);
+      });
+      return {
+        order,
+        title: document.getElementById('gameTitle')?.textContent || '',
+        hasInteraction: Boolean(document.querySelector('[data-light="izq"]')),
+      };
+    } finally {
+      document.removeEventListener('click', listener);
+    }
+  });
+
+  expect(result.order).toEqual(['late-listener', 'canonical-launch']);
+  expect(result.title).toBe('Sigue el destello');
+  expect(result.hasInteraction).toBeTruthy();
+});
+
+test('V593: FIFO still preserves two completed activations before the posted-task checkpoint', async ({ page }) => {
   await boot(page);
   await page.locator('[data-age="4-5"]').click();
 
@@ -63,7 +109,11 @@ test('V593: FIFO still preserves two completed activations before the microtask 
         card.click();
       }
       const pendingBefore = globalThis.MundoMimoV2CatalogRouterBootstrap?.pendingCount;
-      await Promise.resolve();
+      await new Promise(resolve => {
+        const probe = new MessageChannel();
+        probe.port1.onmessage = () => { probe.port1.close(); probe.port2.close(); resolve(); };
+        probe.port2.postMessage(0);
+      });
       return {
         pendingBefore,
         pendingAfter: globalThis.MundoMimoV2CatalogRouterBootstrap?.pendingCount,
