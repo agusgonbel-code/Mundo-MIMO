@@ -78,7 +78,7 @@ test('V590 keeps one catalog owner and emits one launch event per completed acti
   expect(await page.evaluate(() => globalThis.MundoMimoV2Performance.lastStartedId)).toBe('sigue-el-destello');
 });
 
-test('V590 capture owner survives a historical target listener that stops bubbling', async ({ page }) => {
+test('V590 capture owner survives a target listener that stops bubbling', async ({ page }) => {
   await page.goto('/v2/app-v200.html', { waitUntil: 'load' });
   await page.waitForFunction(() => globalThis.MundoMimoV2Performance?.version === 590);
   await page.locator('[data-age="1-2"]').click();
@@ -92,22 +92,37 @@ test('V590 capture owner survives a historical target listener that stops bubbli
   expect(await page.evaluate(() => globalThis.MundoMimoV2Performance.lastStartedId)).toBe('sigue-el-destello');
 });
 
-test('V590 finalizes the canonical game after stale click side effects finish', async ({ page }) => {
+test('V590 canonical capture owner is established before target-side effects and remains exactly once', async ({ page }) => {
   await page.goto('/v2/app-v200.html', { waitUntil: 'load' });
   await page.waitForFunction(() => globalThis.MundoMimoV2Performance?.version === 590);
   await page.locator('[data-age="1-2"]').click();
-  await page.evaluate(() => {
+  const result = await page.evaluate(() => {
     const card = document.querySelector('[data-game="sigue-el-destello"]');
-    card.addEventListener('click', () => {
-      document.getElementById('gameTitle').textContent = '';
-      document.getElementById('stage').hidden = true;
+    globalThis.__mimoCaptureOrder = [];
+    globalThis.__mimoCaptureLaunches = 0;
+    document.addEventListener('mimo:game-started', event => {
+      if (event.detail?.id === 'sigue-el-destello') {
+        globalThis.__mimoCaptureLaunches += 1;
+        globalThis.__mimoCaptureOrder.push('canonical-launch');
+      }
     }, { once: true });
+    card.addEventListener('click', () => {
+      globalThis.__mimoCaptureOrder.push('target-side-effect');
+      globalThis.__mimoTargetSawTitle = document.getElementById('gameTitle').textContent;
+    }, { once: true });
+    card.click();
+    return {
+      order: [...globalThis.__mimoCaptureOrder],
+      launches: globalThis.__mimoCaptureLaunches,
+      targetSawTitle: globalThis.__mimoTargetSawTitle,
+      finalTitle: document.getElementById('gameTitle').textContent,
+    };
   });
-  await page.locator('[data-game="sigue-el-destello"]').click();
-  await expect(page.locator('#gameTitle')).toHaveText('Sigue el destello');
-  await expect(page.locator('#stage')).not.toHaveAttribute('hidden', '');
+  expect(result.order).toEqual(['canonical-launch', 'target-side-effect']);
+  expect(result.launches).toBe(1);
+  expect(result.targetSawTitle).toBe('Sigue el destello');
+  expect(result.finalTitle).toBe('Sigue el destello');
   await expect(page.locator('[data-light="izq"]')).toBeVisible();
-  expect(await page.evaluate(() => globalThis.MundoMimoV2Performance.lastStartedId)).toBe('sigue-el-destello');
 });
 
 test('V593 preserves every rapid completed activation instead of overwriting the pending intent', async ({ page }) => {
