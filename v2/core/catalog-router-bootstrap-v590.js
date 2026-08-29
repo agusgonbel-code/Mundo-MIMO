@@ -1,10 +1,12 @@
 (()=>{'use strict';
 // V593 is loaded before every historical runtime. Historical runtimes keep their
 // game implementations, but V590 replaces the visible catalog nodes. The router
-// therefore owns exactly one capture-phase activation on the live document path.
-// Launching synchronously removes scheduler/event-loop races while preserving the
-// browser's normal propagation and default action: no retry, timer, preventDefault
-// or propagation suppression is used.
+// owns exactly one capture-phase activation on the live document path.
+//
+// WebKit can become unstable when a historical owner calls scrollIntoView() while
+// the physical click is still being dispatched. Activation therefore remains
+// synchronous and exactly-once, while only the viewport scroll is deferred by the
+// V590 dispatcher. No retry, preventDefault or propagation suppression is used.
 let lastIntent=null;
 let sequence=0;
 let launchCount=0;
@@ -20,7 +22,7 @@ function activate(id,source='click'){
   if(!id)return false;
   const dispatcher=globalThis.MundoMimoV2Performance;
   if(!dispatcher||typeof dispatcher.startGame!=='function')return false;
-  return Boolean(dispatcher.startGame(id,{source}));
+  return Boolean(dispatcher.startGame(id,{source,deferScroll:true}));
 }
 
 window.addEventListener('click',event=>{
