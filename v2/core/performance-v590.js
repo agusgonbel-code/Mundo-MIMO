@@ -60,10 +60,21 @@ function syncLegacyAge(){
   oldAgeBar.querySelectorAll('[data-age]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.age===age)));
   if(typeof Base.setAge==='function')Base.setAge(age);
 }
+function scheduleCanonicalLaunch(event,id){
+  if(!id||event.__mimoV590Scheduled)return;
+  try{Object.defineProperty(event,'__mimoV590Scheduled',{value:true,configurable:true})}catch{if(event.__mimoV590Scheduled)return;event.__mimoV590Scheduled=true}
+  queueMicrotask(()=>startGame(id,{deferScroll:true}));
+}
+function bindCardActivation(button){
+  if(!button||button.dataset.v590Bound==='true')return;
+  button.dataset.v590Bound='true';
+  button.addEventListener('click',event=>scheduleCanonicalLaunch(event,button.dataset.game));
+}
 function renderAges(){ageBar.innerHTML=P.ageBands.map(b=>`<button type="button" data-age="${b.id}" aria-pressed="${b.id===age}">${b.label}</button>`).join('')}
 function renderGames(){
   const eligible=games.filter(g=>g.ages.includes(age)&&ownerFor(g.id));
   gameGrid.innerHTML=eligible.length?eligible.map(g=>`<button class="gameCard" type="button" data-game="${g.id}" data-v590-owner="canonical"><b>${g.name}</b><small>${g.skill} · ${g.mechanic}</small></button>`).join(''):'<p>No hay todavía juegos jugables para esta franja.</p>';
+  gameGrid.querySelectorAll('[data-game]').forEach(bindCardActivation);
 }
 function setAge(next){
   if(!P.ageBands.some(b=>b.id===next)||next===age)return;
@@ -72,21 +83,15 @@ function setAge(next){
 }
 ageBar.addEventListener('click',event=>{const button=event.target?.closest?.('[data-age]');if(button)setAge(button.dataset.age)});
 
-// A completed click is the only catalog activation. Ownership lives at the stable
-// window capture boundary so a stale descendant/ancestor listener cannot prevent the
-// canonical owner from observing the event. The launch itself is committed in the
-// post-dispatch microtask: every normal click listener/default action is preserved and
-// stale synchronous side effects finish before the single canonical render. There are
-// no pointerdown/up activations, preventDefault/stopPropagation calls, timers or retries.
-const scheduledActivations=new WeakSet();
-function scheduleCanonicalLaunch(event,id){
-  if(!id||scheduledActivations.has(event))return;
-  scheduledActivations.add(event);
-  queueMicrotask(()=>startGame(id,{deferScroll:true}));
-}
-window.addEventListener('click',event=>{
+// Live cards own their completed click directly. They are created after historical
+// runtimes, so their listener is registered before any later stale card listener and
+// can queue the canonical post-dispatch render even if that stale listener stops
+// bubbling. A document-capture fallback exists only for externally cloned/replaced
+// grids, whose cards do not retain JS listeners. No pointerdown/up activation,
+// preventDefault, stopPropagation, timers or retries are used.
+document.addEventListener('click',event=>{
   const button=event.target?.closest?.('[data-game]');
-  if(!button)return;
+  if(!button||button.dataset.v590Bound==='true')return;
   const liveGrid=document.getElementById('gameGrid');
   if(!liveGrid||!liveGrid.contains(button))return;
   scheduleCanonicalLaunch(event,button.dataset.game);
