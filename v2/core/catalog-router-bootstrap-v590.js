@@ -1,5 +1,5 @@
 (()=>{'use strict';
-// V594 is loaded before every historical runtime. Capture records only completed
+// V593 is loaded before every historical runtime. Capture records only completed
 // catalog-game click intents before any later listener can stop propagation.
 // Finalization is scheduled once on the next animation frame so every synchronous
 // click listener has finished before the canonical game mutates the stage. This also
@@ -43,7 +43,7 @@ window.addEventListener('click',event=>{
 },true);
 
 globalThis.MundoMimoV2CatalogRouterBootstrap=Object.freeze({
-  version:594,
+  version:593,
   recordLaunch,
   get lastIntent(){return lastIntent;},
   get pendingCount(){return pending.length;},
