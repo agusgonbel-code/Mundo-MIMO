@@ -7,7 +7,7 @@ async function ready(page, age = '1-2') {
   await page.waitForFunction(() =>
     globalThis.MundoMimoV2RuntimeV430?.implemented?.length === 150 &&
     typeof globalThis.MundoMimoV2Performance?.startGame === 'function' &&
-    globalThis.MundoMimoV2CatalogRouterBootstrap?.version === 593
+    globalThis.MundoMimoV2CatalogRouterBootstrap?.version === 594
   );
   await page.locator(`[data-age="${age}"]`).click();
 }
@@ -49,10 +49,12 @@ test('V590 physical browser click launches exactly once through the canonical ow
     started: globalThis.MundoMimoV2Performance?.lastStartedId,
     recovery: JSON.parse(localStorage.getItem('mimo-v2-recovery-570') || '{}').activeGame || null,
     intent: globalThis.MundoMimoV2CatalogRouterBootstrap?.lastIntent,
+    launches: globalThis.MundoMimoV2CatalogRouterBootstrap?.launchCount,
   }));
   expect(first.started).toBe('sigue-el-destello');
   expect(first.recovery).toBe('sigue-el-destello');
   expect(first.intent).toMatchObject({ id:'sigue-el-destello', source:'click' });
+  expect(first.launches).toBe(1);
   const next = page.locator('#gameGrid .gameCard').nth(1);
   const nextId = await next.getAttribute('data-game');
   expect(nextId).toBeTruthy();
@@ -60,6 +62,7 @@ test('V590 physical browser click launches exactly once through the canonical ow
   await next.click();
   await expect.poll(() => page.evaluate(() => globalThis.MundoMimoV2Performance?.lastStartedId)).toBe(nextId);
   await expect.poll(() => page.evaluate(() => globalThis.MundoMimoV2CatalogRouterBootstrap?.lastIntent)).toMatchObject({ id:nextId, source:'click' });
+  expect(await page.evaluate(() => globalThis.MundoMimoV2CatalogRouterBootstrap?.launchCount)).toBe(2);
 });
 
 test('V590 keyboard activation uses the same canonical click path', async ({ page }) => {
