@@ -18,9 +18,10 @@ function record(ok){if(!currentGameId)return null;const p=D.recordOutcome(curren
 grid.addEventListener('click',e=>{const card=e.target.closest('[data-game]');if(card&&grid.contains(card))begin(card.dataset.game)});
 stage.addEventListener('click',e=>{
   if(!currentGameId||!play.contains(e.target))return;
-  // Real V430 mechanics use native controls plus semantic data hooks. Gesture buttons are
-  // intentionally custom elements, so they must participate in the same adaptive outcome
-  // path; otherwise an assisted gesture round is silently counted as a first-try success.
+  // Observe gameplay in bubble phase. Native/DOM0 handlers on the actionable target run
+  // before this ancestor listener, so both incorrect feedback and synchronous V430 persist()
+  // are already visible here. Capture-phase observation ran too early in WebKit and silently
+  // missed assisted rounds such as a wrong gesture followed by the correct gesture.
   const actionable=e.target.closest('button,[role="button"],input,select,[data-choice],[data-target],[data-answer],[data-gesture]');
   if(!actionable)return;
   const id=currentGameId,before=stats(id),feedback=document.getElementById('feedback'),beforeFeedback=feedback?.textContent||'';
@@ -31,7 +32,7 @@ stage.addEventListener('click',e=>{
     const afterFeedback=feedback?.textContent||'';
     if(afterFeedback&&afterFeedback!==beforeFeedback)roundHadError=true;
   });
-},true);
+});
 close?.addEventListener('click',()=>queueMicrotask(()=>{if(stage.hidden){currentGameId=null;roundHadError=false;lastSession=null;delete stage.dataset.adaptiveGame;delete stage.dataset.adaptiveLevel;delete stage.dataset.adaptiveActivity}}),true);
 const API=Object.freeze({version:VERSION,begin,session,record,current:()=>currentGameId,lastSession:()=>lastSession,syncMeta});
 globalThis.MundoMimoV2AdaptationV610=API;
