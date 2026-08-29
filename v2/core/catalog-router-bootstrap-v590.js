@@ -1,15 +1,14 @@
 (()=>{'use strict';
-// V593 is loaded before every historical runtime. Historical runtimes keep their
-// game implementations, but V590 replaces the visible catalog nodes. The router
-// owns exactly one capture-phase activation on the live document path.
-//
-// WebKit can become unstable when a historical owner calls scrollIntoView() while
-// the physical click is still being dispatched. Activation therefore remains
-// synchronous and exactly-once, while only the viewport scroll is deferred by the
-// V590 dispatcher. No retry, preventDefault or propagation suppression is used.
+// V594 keeps the historical runtimes as game owners but moves canonical activation
+// to the actual game-card target. Mutating the stage from a window capture listener
+// proved unreliable in WebKit because it changed the live UI before the physical
+// click had reached its target. Each live card now owns one DOM0 click handler that
+// delegates to V590. A document observer rebinds cards created or cloned later.
+// No retry, preventDefault, stopPropagation, timer or scheduler is used to launch.
 let lastIntent=null;
 let sequence=0;
 let launchCount=0;
+const BOUND=Symbol('mimo-v594-bound');
 
 function recordLaunch(id,source='click'){
   if(!id)return false;
@@ -25,15 +24,29 @@ function activate(id,source='click'){
   return Boolean(dispatcher.startGame(id,{source,deferScroll:true}));
 }
 
-window.addEventListener('click',event=>{
-  const game=event.target?.closest?.('[data-game]');
-  if(game?.dataset?.game)activate(game.dataset.game,'click');
-},true);
+function bindCard(card){
+  if(!card?.dataset?.game||card[BOUND])return false;
+  card[BOUND]=true;
+  card.onclick=()=>activate(card.dataset.game,'click');
+  return true;
+}
+
+function bind(root=document){
+  if(root?.matches?.('[data-game]'))bindCard(root);
+  root?.querySelectorAll?.('[data-game]').forEach(bindCard);
+}
+
+const observer=new MutationObserver(records=>{
+  for(const record of records)for(const node of record.addedNodes)if(node.nodeType===1)bind(node);
+});
+observer.observe(document.documentElement,{subtree:true,childList:true});
+bind(document);
 
 globalThis.MundoMimoV2CatalogRouterBootstrap=Object.freeze({
-  version:593,
+  version:594,
   recordLaunch,
   activate,
+  bind,
   get lastIntent(){return lastIntent;},
   get pendingCount(){return 0;},
   get flushScheduled(){return false;},
