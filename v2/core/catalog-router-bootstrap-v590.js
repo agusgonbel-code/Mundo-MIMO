@@ -5,12 +5,11 @@
 // click dispatch has finished; this avoids microtask interleaving between listeners
 // without timers, retries, preventDefault or propagation suppression.
 let lastIntent=null;
-let pending=null;
+const pending=[];
 let sequence=0;
 const channel=new MessageChannel();
 channel.port1.onmessage=()=>{
-  const intent=pending;
-  pending=null;
+  const intent=pending.shift();
   if(!intent)return;
   if(intent.kind==='game')globalThis.MundoMimoV2Performance?.startGame?.(intent.id,{deferScroll:true,source:'click'});
   else if(intent.kind==='parent')globalThis.MundoMimoV2ParentV520?.submit?.();
@@ -21,7 +20,7 @@ function recordLaunch(id,source='click'){
   return true;
 }
 function queueIntent(intent){
-  pending={...intent,sequence:++sequence};
+  pending.push({...intent,sequence:++sequence});
   channel.port2.postMessage(sequence);
 }
 window.addEventListener('click',event=>{
@@ -32,8 +31,9 @@ window.addEventListener('click',event=>{
 },true);
 
 globalThis.MundoMimoV2CatalogRouterBootstrap=Object.freeze({
-  version:592,
+  version:593,
   recordLaunch,
-  get lastIntent(){return lastIntent;}
+  get lastIntent(){return lastIntent;},
+  get pendingCount(){return pending.length;}
 });
 })();
