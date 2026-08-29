@@ -4,6 +4,7 @@ const stage=document.getElementById('stage'),grid=document.getElementById('gameG
 if(!stage||!grid||!ageBar||!close||!feedback||!bar)throw new Error('Mundo Mimo V640 accessibility DOM missing');
 let launcherId=null;
 const shell=document.querySelector('.shell'),brand=document.querySelector('.brand'),progress=bar.parentElement;
+const focusStyle=document.createElement('style');focusStyle.dataset.accessibilityV640='';focusStyle.textContent=':focus-visible{outline:4px solid #202035!important;outline-offset:3px!important}.stage:focus-visible{outline-offset:6px!important}';document.head.appendChild(focusStyle);
 if(shell){shell.setAttribute('role','main');shell.setAttribute('aria-label','Mundo Mimo 2');}
 brand?.setAttribute('aria-hidden','true');
 ageBar.setAttribute('role','group');ageBar.setAttribute('aria-label','Selecciona la edad');
