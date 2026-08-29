@@ -8,8 +8,6 @@ const oldAgeBar=document.getElementById('ageBar');
 const inheritedGrid=document.getElementById('gameGrid');
 if(!oldAgeBar||!inheritedGrid)throw new Error('Mundo Mimo V590 shell missing');
 
-// V590 is the final catalog shell. Replace inherited catalog nodes exactly once so
-// historical per-grid listeners/observers cannot compete with the canonical owner.
 const ageBar=oldAgeBar.cloneNode(false);
 oldAgeBar.replaceWith(ageBar);
 const gameGrid=inheritedGrid.cloneNode(false);
@@ -72,16 +70,9 @@ function setAge(next){
 }
 ageBar.addEventListener('click',event=>{const button=event.target?.closest?.('[data-age]');if(button)setAge(button.dataset.age)});
 
-// The final V590 grid is created only after all historical runtimes have installed
-// their listeners on the discarded grid. A single delegated click owner on this live
-// node therefore covers mouse, touch-generated click, keyboard activation and cloned
-// cards without cross-phase races, duplicate launches or propagation suppression.
-gameGrid.addEventListener('click',event=>{
-  const button=event.target?.closest?.('[data-game]');
-  if(!button||!gameGrid.contains(button))return;
-  startGame(button.dataset.game,{deferScroll:true,source:'click'});
-});
-
+// Game activation is intentionally not bound here. The preloaded bootstrap owns the
+// completed click in capture and posts exactly one post-dispatch task, which remains
+// valid even if live cards/grid nodes are cloned or stale target listeners stop bubble.
 syncLegacyAge();persistAge();renderAges();renderGames();
 
 globalThis.MundoMimoV2Performance=Object.freeze({version:590,setAge,startGame,ownerFor,get age(){return age;},get lastStartedId(){return lastStartedId;},gameCount:games.length,ownedGameCount:owners.size});
