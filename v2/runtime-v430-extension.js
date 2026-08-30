@@ -1,6 +1,6 @@
 (()=>{'use strict';
 const E=globalThis.MundoMimoV2ExpansionV430,R=globalThis.MundoMimoV2RuntimeV420;if(!E||!R)throw new Error('Mundo Mimo V2 v430 runtime dependencies missing');
-const $=id=>document.getElementById(id),ageBar=$('ageBar'),gameGrid=$('gameGrid'),stage=$('stage'),play=$('play'),feedback=$('feedback'),title=$('gameTitle'),meta=$('gameMeta'),bar=$('progressBar');
+const $=id=>document.getElementById(id),ageBar=$('ageBar'),stage=$('stage'),play=$('play'),feedback=$('feedback'),title=$('gameTitle'),meta=$('gameMeta'),bar=$('progressBar');let gameGrid=$('gameGrid');
 const EXTRA=E.games.map(g=>g.id),KEY='mimo-v2-runtime-200';let current=null,round=0,score=0,locked=false,rendering=false;
 const allGames=()=>E.merged,findGame=id=>allGames().find(g=>g.id===id),read=()=>{try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch{return {}}},age=()=>ageBar.querySelector('[aria-pressed="true"]')?.dataset.age||'5-6';
 function persist(ok){const s=read();s.games??={};const g=s.games[current.id]??={plays:0,success:0};g.plays++;if(ok)g.success++;g.last=Date.now();s.games[current.id]=g;s.age=age();try{localStorage.setItem(KEY,JSON.stringify(s))}catch{}}
@@ -15,6 +15,18 @@ function rulePath(){const rounds=[{path:['A','B','C'],blocked:'X'},{path:['1','2
 function evidenceDetective(){const sets=[{q:'El suelo está mojado y hay un paraguas abierto junto a la puerta. ¿Qué pasó?',a:'llovio',o:['llovio','se-rompio-una-lampara','hizo-mucho-sol']},{q:'El hielo era sólido y ahora hay agua en el vaso. ¿Qué ocurrió?',a:'se-calento',o:['se-calento','se-congelo-mas','se-volvio-piedra']},{q:'La planta está caída y la tierra está muy seca. ¿Qué causa encaja mejor?',a:'falta-agua',o:['falta-agua','demasiada-luz-de-luna','mucho-ruido']}],s=sets[round%3];play.innerHTML=`<div><p>${s.q}</p><div class="choices">${s.o.map(x=>`<button class="choice" data-evidence-cause="${x}">${x.replaceAll('-',' ')}</button>`).join('')}</div></div>`;play.querySelectorAll('[data-evidence-cause]').forEach(b=>b.onclick=()=>b.dataset.evidenceCause===s.a?finish(true,'¡La causa explica todas las pistas!'):(feedback.textContent='Esa explicación no encaja con toda la evidencia.'))}
 const handlers={'eco-de-gestos':gestureEcho,'caja-de-sonidos':soundBox,'torres-iguales':equalTowers,'palabra-y-dibujo':wordPicture,'camino-con-reglas':rulePath,'detective-de-evidencias':evidenceDetective};
 function augment(){if(rendering)return;rendering=true;try{const a=age();for(const id of EXTRA){const g=findGame(id);if(!g||!g.ages.includes(a)||gameGrid.querySelector(`[data-game="${id}"]`))continue;const b=document.createElement('button');b.className='gameCard';b.type='button';b.dataset.game=id;b.innerHTML=`<b>${g.name}</b><small>${g.skill} · ${g.mechanic}</small>`;b.onclick=()=>start(id);gameGrid.appendChild(b)}}finally{rendering=false}}
-new MutationObserver(()=>queueMicrotask(augment)).observe(gameGrid,{childList:true});ageBar.addEventListener('click',()=>setTimeout(augment,0));augment();
+function runtimeFor(id){if(EXTRA.includes(id))return start;for(let v=420;v>=210;v-=10){const layer=globalThis[`MundoMimoV2RuntimeV${v}`];if(layer?.extra?.includes(id))return layer.start}return globalThis.MundoMimoV2Runtime?.start}
+const ageNodes=new Map();
+function buildAgeNodes(a){if(ageNodes.has(a))return ageNodes.get(a);const nodes=allGames().filter(g=>g.ages.includes(a)).map(g=>{const b=document.createElement('button');b.className='gameCard';b.type='button';b.dataset.game=g.id;b.innerHTML=`<b>${g.name}</b><small>${g.skill} · ${g.mechanic}</small>`;return b});ageNodes.set(a,nodes);return nodes}
+function renderUnified(a){const nodes=buildAgeNodes(a);gameGrid.replaceChildren(...nodes);if(!nodes.length){const p=document.createElement('p');p.textContent='No hay juegos jugables para esta franja.';gameGrid.appendChild(p)}}
+augment();
+// V590: detach the final grid from the legacy observer chain. Earlier incremental runtimes
+// keep observing their old node. The final runtime prebuilds each age-band card set once and
+// thereafter swaps cached nodes without reparsing HTML or rebinding per-card listeners.
+const cleanGrid=gameGrid.cloneNode(false);gameGrid.replaceWith(cleanGrid);gameGrid=cleanGrid;
+for(const b of ageBar.querySelectorAll('[data-age]'))buildAgeNodes(b.dataset.age);
+gameGrid.addEventListener('click',e=>{const b=e.target.closest('[data-game]');if(!b||!gameGrid.contains(b))return;runtimeFor(b.dataset.game)?.(b.dataset.game)});
+renderUnified(age());
+ageBar.addEventListener('click',e=>{const b=e.target.closest('[data-age]');if(!b)return;e.preventDefault();e.stopImmediatePropagation();ageBar.querySelectorAll('[data-age]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));const s=read();s.age=b.dataset.age;try{localStorage.setItem(KEY,JSON.stringify(s))}catch{}renderUnified(b.dataset.age)},true);
 globalThis.MundoMimoV2RuntimeV430=Object.freeze({version:430,extra:Object.freeze([...EXTRA]),implemented:Object.freeze([...R.implemented,...EXTRA]),handlers:Object.freeze([...R.handlers,...Object.keys(handlers)]),start,allGames});
 })();

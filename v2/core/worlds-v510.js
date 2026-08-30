@@ -28,13 +28,18 @@ function representative(worldId,band=age()){
  if(unplayed)return unplayed;
  return [...games].sort((a,b)=>D.progress(a.id).level-D.progress(b.id).level)[0]||games[0];
 }
+function startGame(id){
+ const dispatcher=globalThis.MundoMimoV2Performance;
+ if(dispatcher?.startGame)return dispatcher.startGame(id);
+ return Boolean(R.start?.(id));
+}
 function render(){
  const host=document.getElementById('worldMap');if(!host)return;
  const worlds=worldState();
  host.innerHTML=worlds.map(w=>`<article class="worldCard ${w.unlocked?'':'locked'}" data-world-card="${w.id}" aria-label="${w.name}${w.unlocked?'':' bloqueado'}"><div class="worldIcon" aria-hidden="true">${w.emoji}</div><div class="worldBody"><h3>${w.name}</h3><p>${w.blurb}</p><small>${w.totalGames} juegos para esta edad · ${w.completedGames} completados</small></div><button type="button" class="worldEnter" data-world="${w.id}" ${w.unlocked?'':'disabled'}>${w.unlocked?(w.visited?'Volver':'Explorar'):`🔒 ${w.unlock}`}</button></article>`).join('');
  host.querySelectorAll('[data-world]').forEach(btn=>btn.onclick=()=>enter(btn.dataset.world));
 }
-function enter(id){const w=worldState().find(x=>x.id===id);if(!w||!w.unlocked)return false;persistVisit(id);const g=representative(id);render();if(!g){const host=document.getElementById('worldStatus');if(host)host.textContent='Este mundo no tiene aún juegos adecuados para la edad seleccionada.';return false;}const status=document.getElementById('worldStatus');if(status)status.textContent=`${w.emoji} ${w.name}: siguiente misión, ${g.name}.`;R.start(g.id);return true;}
+function enter(id){const w=worldState().find(x=>x.id===id);if(!w||!w.unlocked)return false;persistVisit(id);const g=representative(id);render();if(!g){const host=document.getElementById('worldStatus');if(host)host.textContent='Este mundo no tiene aún juegos adecuados para la edad seleccionada.';return false;}const status=document.getElementById('worldStatus');if(status)status.textContent=`${w.emoji} ${w.name}: siguiente misión, ${g.name}.`;return startGame(g.id);}
 function reset(){localStorage.removeItem(KEY);render()}
 function mount(){
  const gamesSection=document.getElementById('gamesTitle')?.closest('section');if(!gamesSection||document.getElementById('worldsTitle'))return;

@@ -1,0 +1,41 @@
+name: Mundo Mimo V590 Performance QA
+
+on:
+  pull_request:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+concurrency:
+  group: mundo-mimo-v590-performance-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  performance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Playwright WebKit
+        run: |
+          npm install --no-save @playwright/test
+          npx playwright install --with-deps webkit
+      - name: Start Mundo Mimo V2
+        run: python3 -m http.server 4173 >/tmp/mimo-v590-http.log 2>&1 &
+      - name: Enforce iPhone/iPad performance budgets and canonical routing
+        env:
+          PLAYWRIGHT_BASE_URL: http://127.0.0.1:4173
+        run: npx playwright test qa/performance-v590.spec.js qa/v590-live-grid-routing.spec.js qa/v590-synchronous-card-ownership.spec.js qa/v590-pointer-ownership.spec.js qa/v590-post-launch-interaction.spec.js qa/v593-completed-click-routing.spec.js qa/v595-webkit-hit-testing.spec.js --config=qa/playwright.config.js --reporter=line
+      - name: Upload diagnostics on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mundo-mimo-v590-performance-diagnostics
+          path: |
+            test-results/
+            /tmp/mimo-v590-http.log
+          if-no-files-found: warn
+          retention-days: 14

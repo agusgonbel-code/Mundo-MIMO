@@ -8,9 +8,8 @@ const worlds={
 };
 
 async function setAge(page,age){
-  await page.goto('/app-v70.html');
-  await page.evaluate(a=>localStorage.setItem('mimo70',JSON.stringify({age:a,sessions:0,rounds:0,stars:0,daily:0,dailyDate:new Date().toISOString().slice(0,10),skills:{}})),age);
-  await page.reload();
+  await page.addInitScript(a=>localStorage.setItem('mimo70',JSON.stringify({age:a,sessions:0,rounds:0,stars:0,daily:0,dailyDate:new Date().toISOString().slice(0,10),skills:{}})),age);
+  await page.goto('/app-v70.html',{waitUntil:'domcontentloaded'});
   await expect(page.locator('#home')).toHaveClass(/on/);
   await page.waitForFunction(()=>Boolean(window.MundoMimoVisualV110));
   await expect(page.locator('body')).toHaveClass(/mimo-vector-ready/);
